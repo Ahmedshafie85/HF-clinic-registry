@@ -9,14 +9,16 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
     <style>
-        :root{--primary:#8b0000;--primary-dark:#5c0000}
+        :root{--primary:#8b0000;--primary-dark:#5c0000;--secondary:#6c757d}
         body{background:#f4f6f9;font-family:sans-serif;font-size:0.85rem}
         .clinic-header{background:linear-gradient(135deg,var(--primary),#b30000);color:#fff;padding:25px 0;border-radius:0 0 15px 15px;position:relative}
         .card{border:none;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:20px}
         .section-title{color:var(--primary);font-weight:bold;border-bottom:2px solid #e9ecef;padding-bottom:5px;margin-top:20px;margin-bottom:12px}
+        .visit-section{background:#fff;border-left:4px solid var(--primary);padding:15px;margin-bottom:15px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
         label{font-weight:600;font-size:.75rem;color:#495057;display:block;margin-bottom:2px}
         .form-control,.form-select{border-radius:6px;font-size:.85rem;padding:4px 8px}
         .btn-medical{background:var(--primary);color:#fff;font-weight:bold;width:100%;padding:12px;border:none;border-radius:8px}
+        .btn-visit{background:#17a2b8;color:#fff;font-weight:bold}
         .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;display:flex;justify-content:center;align-items:center}
         .modal-box{background:#fff;border-radius:16px;padding:30px 20px;text-align:center;max-width:350px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.4);animation:pop .3s ease}
         @keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
@@ -26,6 +28,8 @@
         .patient-card th{background:#f8f9fa;width:40%;font-weight:600}
         .patient-card td{background:#fff}
         .empty-field{color:#adb5bd;font-style:italic}
+        .visit-history{border-left:3px solid #17a2b8;padding-left:10px;margin:10px 0}
+        .medication-group{background:#f8f9fa;padding:8px;border-radius:4px;margin-bottom:8px}
     </style>
 </head>
 <body>
@@ -51,6 +55,7 @@
         <div class="card p-3 border-top border-4 border-danger">
             <h4 class="mb-3 text-dark fw-bold" id="formTitle">New Patient Entry</h4>
             <div id="hfForm">
+                <!-- Original 8 Sections -->
                 <h6 class="section-title">1. Demographics & Entry Info</h6>
                 <div class="row g-2">
                     <div class="col-6 col-md-3"><label class="text-primary fw-bold">Entered By *</label><select class="form-select border-primary" id="Doctor_Name"><option value="">Select...</option><option>Dr Farouk</option><option>Dr Badawy</option><option>Dr Ali</option><option>Dr Hamza</option><option>Dr Ahmed</option></select></div>
@@ -161,6 +166,128 @@
                     <div class="col-12 col-md-12"><label>Management Plan / Notes</label><textarea class="form-control" id="Notes" rows="2"></textarea></div>
                 </div>
 
+                <!-- NEW: Section 9 - Visits & Follow-ups -->
+                <h6 class="section-title">9. Visits & Follow-ups</h6>
+                <div id="visitHistory" class="mb-3"></div>
+                
+                <div class="visit-section">
+                    <h6 class="text-primary mb-3">Add New Visit</h6>
+                    <div class="row g-2">
+                        <div class="col-6 col-md-3"><label>Visit Date *</label><input type="date" class="form-control" id="Visit_Date"></div>
+                        <div class="col-6 col-md-3"><label>Visit Type</label><select class="form-select" id="Visit_Type"><option>Routine</option><option>Urgent</option><option>Post-Discharge</option><option>Telemedicine</option></select></div>
+                        
+                        <div class="col-12"><hr class="my-2"></div>
+                        
+                        <h6 class="col-12 text-secondary">Symptoms</h6>
+                        <div class="col-4 col-md-2"><label>Fatigue</label><select class="form-select" id="V_Fatigue"><option>N</option><option>Y</option></select></div>
+                        <div class="col-4 col-md-2"><label>NYHA Class</label><select class="form-select" id="V_NYHA"><option value="">Select</option><option>I</option><option>II</option><option>III</option><option>IV</option></select></div>
+                        <div class="col-4 col-md-3"><label>Edema</label><select class="form-select" id="V_Edema"><option>No</option><option>Mild feet</option><option>Moderate</option><option>Severe</option></select></div>
+                        
+                        <div class="col-12"><hr class="my-2"></div>
+                        
+                        <h6 class="col-12 text-secondary">Signs / Vitals</h6>
+                        <div class="col-4 col-md-2"><label>Pulse</label><input type="text" class="form-control" id="V_Pulse"></div>
+                        <div class="col-4 col-md-2"><label>BP</label><input type="text" class="form-control" id="V_BP" placeholder="120/80"></div>
+                        <div class="col-4 col-md-2"><label>SpO2 %</label><input type="number" class="form-control" id="V_SpO2"></div>
+                        <div class="col-4 col-md-2"><label>Weight (kg)</label><input type="number" class="form-control" id="V_Weight"></div>
+                        <div class="col-4 col-md-2"><label>JVP</label><select class="form-select" id="V_JVP"><option>N</option><option>Raised</option></select></div>
+                        <div class="col-4 col-md-2"><label>Pulm. Rales</label><select class="form-select" id="V_Rales"><option>N</option><option>Y</option></select></div>
+                        <div class="col-4 col-md-2"><label>S3</label><select class="form-select" id="V_S3"><option>N</option><option>Y</option></select></div>
+                        
+                        <div class="col-12"><hr class="my-2"></div>
+                        
+                        <h6 class="col-12 text-secondary">ECG</h6>
+                        <div class="col-4 col-md-3"><label>LBBB</label><select class="form-select" id="V_LBBB"><option>No</option><option>Yes</option></select></div>
+                        <div class="col-4 col-md-3"><label>QRS Width (ms)</label><input type="text" class="form-control" id="V_QRS"></div>
+                        <div class="col-4 col-md-3"><label>Arrhythmia</label><input type="text" class="form-control" id="V_Arrhythmia"></div>
+                        
+                        <div class="col-12"><hr class="my-2"></div>
+                        
+                        <h6 class="col-12 text-secondary">Echo</h6>
+                        <div class="col-6 col-md-4"><label>Change in EF</label><input type="text" class="form-control" id="V_EF_Change" placeholder="e.g., Recovered 60%"></div>
+                        <div class="col-6 col-md-4"><label>Other Echo Findings</label><input type="text" class="form-control" id="V_Echo_Other"></div>
+                        
+                        <div class="col-12"><hr class="my-2"></div>
+                        
+                        <h6 class="col-12 text-secondary">Labs</h6>
+                        <div class="col-3 col-md-2"><label>HbA1c</label><input type="text" class="form-control" id="V_HbA1c"></div>
+                        <div class="col-3 col-md-2"><label>Gluc</label><input type="text" class="form-control" id="V_Gluc"></div>
+                        <div class="col-3 col-md-2"><label>Urea</label><input type="text" class="form-control" id="V_Urea"></div>
+                        <div class="col-3 col-md-2"><label>Creat</label><input type="text" class="form-control" id="V_Creat"></div>
+                        <div class="col-3 col-md-2"><label>eGFR</label><input type="text" class="form-control" id="V_eGFR"></div>
+                        <div class="col-3 col-md-2"><label>Na</label><input type="text" class="form-control" id="V_Na"></div>
+                        <div class="col-3 col-md-2"><label>K</label><input type="text" class="form-control" id="V_K"></div>
+                        <div class="col-3 col-md-2"><label>BNP</label><input type="text" class="form-control" id="V_BNP"></div>
+                        <div class="col-3 col-md-2"><label>NT-pro BNP</label><input type="text" class="form-control" id="V_NTproBNP"></div>
+                        <div class="col-3 col-md-2"><label>INR</label><input type="text" class="form-control" id="V_INR"></div>
+                        <div class="col-3 col-md-2"><label>Iron</label><input type="text" class="form-control" id="V_Iron"></div>
+                        <div class="col-3 col-md-2"><label>Transferrin</label><input type="text" class="form-control" id="V_Transferrin"></div>
+                        <div class="col-3 col-md-2"><label>Ferritin</label><input type="text" class="form-control" id="V_Ferritin"></div>
+                        <div class="col-3 col-md-2"><label>WBC</label><input type="text" class="form-control" id="V_WBC"></div>
+                        <div class="col-3 col-md-2"><label>Hb</label><input type="text" class="form-control" id="V_Hb"></div>
+                        <div class="col-3 col-md-2"><label>Plt</label><input type="text" class="form-control" id="V_Plt"></div>
+                        <div class="col-3 col-md-2"><label>TSH</label><input type="text" class="form-control" id="V_TSH"></div>
+                        <div class="col-3 col-md-2"><label>Free T4</label><input type="text" class="form-control" id="V_FreeT4"></div>
+                        
+                        <div class="col-12"><hr class="my-2"></div>
+                        
+                        <h6 class="col-12 text-secondary">Medications (Doses)</h6>
+                        <div class="col-6 col-md-3"><label>Concor</label><input type="text" class="form-control" id="V_Concor" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Betaloc</label><input type="text" class="form-control" id="V_Betaloc" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Dilatrend</label><input type="text" class="form-control" id="V_Dilatrend" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Lopressor</label><input type="text" class="form-control" id="V_Lopressor" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Zestril</label><input type="text" class="form-control" id="V_Zestril" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Tritace</label><input type="text" class="form-control" id="V_Tritace" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Capoten</label><input type="text" class="form-control" id="V_Capoten" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Diovan</label><input type="text" class="form-control" id="V_Diovan" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Atacand</label><input type="text" class="form-control" id="V_Atacand" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Entresto</label><input type="text" class="form-control" id="V_Entresto" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Aldactone</label><input type="text" class="form-control" id="V_Aldactone" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Eplerenone</label><input type="text" class="form-control" id="V_Eplerenone" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Forxiga</label><input type="text" class="form-control" id="V_Forxiga" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Jardiance</label><input type="text" class="form-control" id="V_Jardiance" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Hydralazine</label><input type="text" class="form-control" id="V_Hydralazine" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Nitrates</label><input type="text" class="form-control" id="V_Nitrates" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Furosemide</label><input type="text" class="form-control" id="V_Furosemide" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Metolazone</label><input type="text" class="form-control" id="V_Metolazone" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Mounjaro</label><input type="text" class="form-control" id="V_Mounjaro" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Ozempic</label><input type="text" class="form-control" id="V_Ozempic" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Warfarin</label><input type="text" class="form-control" id="V_Warfarin" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Xarelto</label><input type="text" class="form-control" id="V_Xarelto" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Eliquis</label><input type="text" class="form-control" id="V_Eliquis" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Zocor</label><input type="text" class="form-control" id="V_Zocor" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Lipitor</label><input type="text" class="form-control" id="V_Lipitor" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Crestor</label><input type="text" class="form-control" id="V_Crestor" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Ezetrol</label><input type="text" class="form-control" id="V_Ezetrol" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Repatha</label><input type="text" class="form-control" id="V_Repatha" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Praluent</label><input type="text" class="form-control" id="V_Praluent" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Atozet</label><input type="text" class="form-control" id="V_Atozet" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Vytorin</label><input type="text" class="form-control" id="V_Vytorin" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Fibrates</label><input type="text" class="form-control" id="V_Fibrates" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Omacor</label><input type="text" class="form-control" id="V_Omacor" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Veltassa</label><input type="text" class="form-control" id="V_Veltassa" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Lokelma</label><input type="text" class="form-control" id="V_Lokelma" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Cordarone</label><input type="text" class="form-control" id="V_Cordarone" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Flecainide</label><input type="text" class="form-control" id="V_Flecainide" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Sotalol</label><input type="text" class="form-control" id="V_Sotalol" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Propafenone</label><input type="text" class="form-control" id="V_Propafenone" placeholder="mg"></div>
+                        <div class="col-6 col-md-3"><label>Procorolan</label><input type="text" class="form-control" id="V_Procorolan" placeholder="mg"></div>
+                        
+                        <div class="col-12"><hr class="my-2"></div>
+                        
+                        <h6 class="col-12 text-secondary">Assessment & Plan</h6>
+                        <div class="col-12 col-md-6"><label>Adverse Effects / Complaints</label><textarea class="form-control" id="V_Adverse" rows="2"></textarea></div>
+                        <div class="col-12 col-md-6"><label>Plan / Recommendations</label><textarea class="form-control" id="V_Plan" rows="2"></textarea></div>
+                        <div class="col-12"><label>Other Notes</label><textarea class="form-control" id="V_Others" rows="2"></textarea></div>
+                        
+                        <div class="col-12 mt-3">
+                            <button type="button" class="btn btn-visit w-100" onclick="saveVisit()">
+                                <i class="fa fa-plus-circle"></i> ADD VISIT TO PATIENT RECORD
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <hr class="mt-4 border-danger">
                 <button type="button" class="btn btn-medical shadow" id="submitBtn" onclick="savePatient()">SAVE PATIENT DATA</button>
                 <button type="button" class="btn btn-secondary w-100 mt-2 d-none" id="cancelEditBtn" onclick="resetForm()">Cancel Edit</button>
@@ -197,7 +324,7 @@ firebase.initializeApp({
     messagingSenderId:"898458296631",
     appId:"1:898458296631:web:85fea7a2c6661ae0563ab2"
 });
-var db=firebase.firestore(), editingDocId=null, PC={};
+var db=firebase.firestore(), editingDocId=null, currentPatientId=null, PC={}, visits=[];
 
 function calcBMI(){
     var w=parseFloat(document.getElementById("Weight").value), h=parseFloat(document.getElementById("Height").value);
@@ -221,7 +348,9 @@ function showPopup(type, title, msg){
 
 function savePatient(){
     var data={}; 
-    document.querySelectorAll('#hfForm input, #hfForm select, #hfForm textarea').forEach(el=>{ if(el.id) data[el.id]=el.value; });
+    document.querySelectorAll('#hfForm input, #hfForm select, #hfForm textarea').forEach(el=>{ 
+        if(el.id && !el.id.startsWith('V_')) data[el.id]=el.value; 
+    });
     if(!data.Doctor_Name || !data.Patient_Name || !data.Civil_ID || !data.File_No){ 
         showPopup("error","Missing Fields","Please fill Name, Civil ID, File No and Doctor Name."); 
         return; 
@@ -234,8 +363,9 @@ function savePatient(){
     if(editingDocId){
         db.collection("patients").doc(editingDocId).update(data)
         .then(()=>{ 
-            showPopup("success","Updated!","Record updated successfully."); 
-            resetForm(); 
+            currentPatientId = editingDocId;
+            showPopup("success","Updated!","Record updated. You can now add visits below."); 
+            loadVisits(editingDocId);
         })
         .catch((error)=>{
             console.error("Update error:", error);
@@ -247,9 +377,14 @@ function savePatient(){
     } else {
         data.timestamp=new Date().toISOString();
         db.collection("patients").add(data)
-        .then(()=>{ 
-            showPopup("success","Saved!","Patient added successfully."); 
-            resetForm(); 
+        .then((docRef)=>{ 
+            currentPatientId = docRef.id;
+            editingDocId = docRef.id;
+            showPopup("success","Saved!","Patient added. You can now add visits below."); 
+            document.getElementById("formTitle").innerText="Editing: "+data.Patient_Name;
+            document.getElementById("cancelEditBtn").classList.remove("d-none"); 
+            document.getElementById("submitBtn").innerText="Update Patient";
+            loadVisits(docRef.id);
         })
         .catch((error)=>{
             console.error("Save error:", error);
@@ -261,9 +396,75 @@ function savePatient(){
     }
 }
 
+function saveVisit(){
+    if(!currentPatientId && !editingDocId){
+        showPopup("error","Error","Please save patient data first before adding visits.");
+        return;
+    }
+    
+    var patientId = currentPatientId || editingDocId;
+    var visitData = {};
+    var visitDate = document.getElementById("Visit_Date").value;
+    
+    if(!visitDate){
+        showPopup("error","Error","Please enter visit date.");
+        return;
+    }
+    
+    document.querySelectorAll('[id^="V_"]').forEach(el=>{
+        if(el.id) visitData[el.id]=el.value;
+    });
+    visitData.visitDate = visitDate;
+    visitData.visitType = document.getElementById("Visit_Type").value;
+    visitData.timestamp = new Date().toISOString();
+    
+    db.collection("patients").doc(patientId).collection("visits").add(visitData)
+    .then(()=>{
+        showPopup("success","Visit Added!","Follow-up visit saved successfully.");
+        clearVisitForm();
+        loadVisits(patientId);
+    })
+    .catch(error=>{
+        showPopup("error","Error", error.message);
+    });
+}
+
+function clearVisitForm(){
+    document.querySelectorAll('[id^="V_"]').forEach(el=>{ el.value=""; });
+    document.getElementById("Visit_Date").value="";
+    document.getElementById("Visit_Type").value="Routine";
+}
+
+function loadVisits(patientId){
+    if(!patientId) return;
+    currentPatientId = patientId;
+    
+    db.collection("patients").doc(patientId).collection("visits").orderBy("visitDate","desc").get()
+    .then(snapshot=>{
+        visits = [];
+        var html = "";
+        if(snapshot.size > 0){
+            html = "<div class='alert alert-info'><h6>Previous Visits:</h6>";
+            snapshot.forEach(doc=>{
+                var v = doc.data();
+                visits.push({id: doc.id, ...v});
+                html += "<div class='visit-history'>";
+                html += "<strong>"+v.visitDate+"</strong> ("+v.visitType+")<br>";
+                html += "<small>NYHA: "+(v.V_NYHA||'-')+", BP: "+(v.V_BP||'-')+", Weight: "+(v.V_Weight||'-')+"kg</small>";
+                html += "</div>";
+            });
+            html += "</div>";
+        }
+        document.getElementById("visitHistory").innerHTML = html;
+    });
+}
+
 function resetForm(){
     document.querySelectorAll('#hfForm input, #hfForm select, #hfForm textarea').forEach(el=>{ el.value=""; });
     editingDocId=null; 
+    currentPatientId=null;
+    visits=[];
+    document.getElementById("visitHistory").innerHTML="";
     document.getElementById("submitBtn").disabled=false; 
     document.getElementById("submitBtn").innerText="SAVE PATIENT DATA";
     document.getElementById("submitBtn").classList.remove("loading");
@@ -295,21 +496,13 @@ function renderCard(data, id){
     
     // Define ALL possible fields in order of sections
     var allFields = [
-        // Demographics
         ['Patient_Name', 'Civil_ID', 'File_No', 'Age', 'Gender', 'Nationality', 'Mobile', 'Doctor_Name'],
-        // HF Diagnosis
         ['HF_Type', 'EF_Diagnosis', 'Advanced_HF', 'Other_Cardio', 'Valvular_Disease', 'Admissions', 'Last_Admission', 'LOS'],
-        // Symptoms
         ['Height', 'Weight', 'BMI', 'Dry_Weight', 'NYHA', 'Fatigue', 'Pulse', 'BP', 'SpO2', 'Edema', 'JVP', 'Rales', 'S3', 'Murmur'],
-        // Investigations
         ['ECG', 'ECHO', 'CMR_CT', 'Walk_Test', 'Device_Info', 'Cath'],
-        // Comorbidities
         ['DM', 'HTN', 'AF', 'IHD', 'PCI_CABG', 'CKD', 'CVA', 'PVD', 'Smoker', 'Obese_OSA', 'Lung_Dz', 'Liver_Dz', 'FH_Genetics'],
-        // Labs
         ['Lab_HbA1c', 'Lab_Gluc', 'Lab_UreaCreat', 'Lab_eGFR', 'Lab_NaK', 'Lab_BNP', 'Lab_IronFerritin', 'Lab_TrSats', 'Lab_CBC', 'Lab_Thyroid', 'Lab_Lipids', 'Lab_AlbCreat'],
-        // Medications
         ['Med_ARNI', 'Med_SGLT2i', 'Med_BB', 'Med_MRA', 'Med_ACEiARB', 'Med_Diuretic', 'Med_Lipid', 'Med_Antiplat', 'Med_OAC', 'Med_Arrhythmia', 'Med_Misc', 'Med_K_Chelator'],
-        // Outcomes
         ['Quad_GDMT', 'Compliance', 'Mortality', 'Rehab', 'Notes']
     ];
     
@@ -354,72 +547,15 @@ function loadAdmin(){
     });
 }
 
-function pdfFromAdmin(id){
-    var data = PC[id];
-    if(!data){
-        showPopup("error","Error","Patient data not found");
-        return;
-    }
-    
-    // Create temporary card for PDF
-    var container = document.getElementById('pdfContainer');
-    container.innerHTML = '';
-    
-    // Define ALL possible fields in order of sections
-    var allFields = [
-        ['Patient_Name', 'Civil_ID', 'File_No', 'Age', 'Gender', 'Nationality', 'Mobile', 'Doctor_Name'],
-        ['HF_Type', 'EF_Diagnosis', 'Advanced_HF', 'Other_Cardio', 'Valvular_Disease', 'Admissions', 'Last_Admission', 'LOS'],
-        ['Height', 'Weight', 'BMI', 'Dry_Weight', 'NYHA', 'Fatigue', 'Pulse', 'BP', 'SpO2', 'Edema', 'JVP', 'Rales', 'S3', 'Murmur'],
-        ['ECG', 'ECHO', 'CMR_CT', 'Walk_Test', 'Device_Info', 'Cath'],
-        ['DM', 'HTN', 'AF', 'IHD', 'PCI_CABG', 'CKD', 'CVA', 'PVD', 'Smoker', 'Obese_OSA', 'Lung_Dz', 'Liver_Dz', 'FH_Genetics'],
-        ['Lab_HbA1c', 'Lab_Gluc', 'Lab_UreaCreat', 'Lab_eGFR', 'Lab_NaK', 'Lab_BNP', 'Lab_IronFerritin', 'Lab_TrSats', 'Lab_CBC', 'Lab_Thyroid', 'Lab_Lipids', 'Lab_AlbCreat'],
-        ['Med_ARNI', 'Med_SGLT2i', 'Med_BB', 'Med_MRA', 'Med_ACEiARB', 'Med_Diuretic', 'Med_Lipid', 'Med_Antiplat', 'Med_OAC', 'Med_Arrhythmia', 'Med_Misc', 'Med_K_Chelator'],
-        ['Quad_GDMT', 'Compliance', 'Mortality', 'Rehab', 'Notes']
-    ];
-    
-    var sectionNames = ['Demographics', 'HF Diagnosis & Status', 'Symptoms & Signs', 'Investigations', 'Comorbidities', 'Laboratory Results', 'Medications', 'Outcomes & Management'];
-    
-    // Create PDF content
-    var html = "<div class='card p-4 patient-card' style='width:800px; background:white;'>";
-    html += "<div class='text-center mb-4'><h3 style='color:#8b0000;'>Mubarak Al-Kabeer Hospital</h3><h4>Heart Failure Clinic Registry</h4><hr></div>";
-    html += "<h4 class='text-primary mb-3'>"+(data.Patient_Name||'Unknown')+" - File: "+(data.File_No||'N/A')+"</h4>";
-    
-    allFields.forEach((section, idx)=>{
-        html += "<h5 style='color:#8b0000; border-bottom:2px solid #e9ecef; padding-bottom:5px; margin-top:20px;'>"+sectionNames[idx]+"</h5>";
-        html += "<table class='table table-bordered table-sm' style='font-size:0.75rem;'>";
-        section.forEach(field=>{
-            var val = data[field];
-            var displayVal = (val && val !== '') ? val : '-';
-            var label = field.replace(/_/g, " ").replace(/Lab /g, "").replace(/Med /g, "");
-            html += "<tr><th style='width:40%; background:#f8f9fa;'>"+label+"</th><td>"+displayVal+"</td></tr>";
-        });
-        html += "</table>";
-    });
-    
-    html += "<div style='margin-top:30px; text-align:center; font-size:0.7rem; color:#666;'><p>Generated on: "+new Date().toLocaleString()+"</p></div>";
-    html += "</div>";
-    
-    container.innerHTML = html;
-    var element = container.firstChild;
-    
-    // Generate PDF
-    html2pdf().from(element).set({
-        margin: 0.5,
-        filename: "HF_Report_"+(data.File_No||'unknown')+"_"+(data.Patient_Name||'patient')+".pdf",
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-    }).save().then(() => {
-        container.innerHTML = ''; // Clean up
-    });
-}
-
 function editPt(id){
     var d=PC[id]; 
     editingDocId=id;
+    currentPatientId=id;
     Object.keys(d).forEach(k=>{ var el=document.getElementById(k); if(el) el.value=d[k]||""; });
     document.getElementById("formTitle").innerText="Editing: "+d.Patient_Name;
     document.getElementById("cancelEditBtn").classList.remove("d-none"); 
     document.getElementById("submitBtn").innerText="Update Patient";
+    loadVisits(id);
     window.scrollTo({top:0, behavior:"smooth"});
 }
 
@@ -436,6 +572,114 @@ function delPt(id){
             showPopup("error","Error", error.message);
         });
     } 
+}
+
+function pdfFromAdmin(id){
+    var data = PC[id];
+    if(!data){
+        showPopup("error","Error","Patient data not found");
+        return;
+    }
+    
+    // Load visits first then generate PDF
+    db.collection("patients").doc(id).collection("visits").orderBy("visitDate","desc").get()
+    .then(visitSnap=>{
+        var visitsData = [];
+        visitSnap.forEach(doc=>{
+            visitsData.push(doc.data());
+        });
+        generatePDF(data, visitsData, id);
+    })
+    .catch(()=>{
+        generatePDF(data, [], id);
+    });
+}
+
+function generatePDF(data, visitsData, id){
+    var container = document.getElementById('pdfContainer');
+    container.innerHTML = '';
+    
+    // Create PDF content
+    var html = "<div style='width:800px; background:white; padding:20px; font-family:Arial;'>";
+    html += "<div style='text-align:center; border-bottom:3px solid #8b0000; padding-bottom:10px; margin-bottom:20px;'>";
+    html += "<h2 style='color:#8b0000; margin:0;'>Mubarak Al-Kabeer Hospital</h2>";
+    html += "<h3 style='margin:5px 0;'>Heart Failure Clinic Registry</h3>";
+    html += "</div>";
+    
+    html += "<h3 style='color:#333;'>Patient: "+(data.Patient_Name||'Unknown')+" | File: "+(data.File_No||'N/A')+"</h3>";
+    
+    // Main patient data sections
+    var sections = [
+        {name:'Demographics', fields:['Patient_Name', 'Civil_ID', 'File_No', 'Age', 'Gender', 'Nationality', 'Mobile', 'Doctor_Name']},
+        {name:'HF Diagnosis', fields:['HF_Type', 'EF_Diagnosis', 'Advanced_HF', 'Other_Cardio', 'Valvular_Disease', 'Admissions', 'Last_Admission', 'LOS']},
+        {name:'Symptoms & Signs', fields:['Height', 'Weight', 'BMI', 'Dry_Weight', 'NYHA', 'Fatigue', 'Pulse', 'BP', 'SpO2', 'Edema', 'JVP', 'Rales', 'S3', 'Murmur']},
+        {name:'Investigations', fields:['ECG', 'ECHO', 'CMR_CT', 'Walk_Test', 'Device_Info', 'Cath']},
+        {name:'Comorbidities', fields:['DM', 'HTN', 'AF', 'IHD', 'PCI_CABG', 'CKD', 'CVA', 'PVD', 'Smoker', 'Obese_OSA', 'Lung_Dz', 'Liver_Dz', 'FH_Genetics']},
+        {name:'Laboratory', fields:['Lab_HbA1c', 'Lab_Gluc', 'Lab_UreaCreat', 'Lab_eGFR', 'Lab_NaK', 'Lab_BNP', 'Lab_IronFerritin', 'Lab_TrSats', 'Lab_CBC', 'Lab_Thyroid', 'Lab_Lipids', 'Lab_AlbCreat']},
+        {name:'Medications', fields:['Med_ARNI', 'Med_SGLT2i', 'Med_BB', 'Med_MRA', 'Med_ACEiARB', 'Med_Diuretic', 'Med_Lipid', 'Med_Antiplat', 'Med_OAC', 'Med_Arrhythmia', 'Med_Misc', 'Med_K_Chelator']},
+        {name:'Outcomes', fields:['Quad_GDMT', 'Compliance', 'Mortality', 'Rehab', 'Notes']}
+    ];
+    
+    sections.forEach(sec=>{
+        html += "<h4 style='background:#f0f0f0; padding:8px; margin-top:15px; color:#8b0000;'>"+sec.name+"</h4>";
+        html += "<table style='width:100%; border-collapse:collapse; font-size:12px;'>";
+        sec.fields.forEach(field=>{
+            var val = data[field] || '-';
+            var label = field.replace(/_/g, " ").replace(/Lab /g, "").replace(/Med /g, "");
+            html += "<tr style='border-bottom:1px solid #ddd;'><td style='width:40%; padding:6px; background:#fafafa; font-weight:bold;'>"+label+"</td><td style='padding:6px;'>"+val+"</td></tr>";
+        });
+        html += "</table>";
+    });
+    
+    // Visits Section
+    if(visitsData.length > 0){
+        html += "<div style='page-break-before:always;'></div>";
+        html += "<h3 style='color:#8b0000; margin-top:20px;'>Visit History & Follow-ups</h3>";
+        
+        visitsData.forEach((visit, idx)=>{
+            html += "<div style='border:2px solid #17a2b8; margin:15px 0; padding:15px; border-radius:8px;'>";
+            html += "<h4 style='color:#17a2b8; margin-top:0;'>Visit #"+(visitsData.length-idx)+": "+visit.visitDate+" ("+visit.visitType+")</h4>";
+            
+            // Visit sections
+            var vSections = [
+                {name:'Symptoms', fields:['V_Fatigue', 'V_NYHA', 'V_Edema']},
+                {name:'Signs/Vitals', fields:['V_Pulse', 'V_BP', 'V_SpO2', 'V_Weight', 'V_JVP', 'V_Rales', 'V_S3']},
+                {name:'ECG', fields:['V_LBBB', 'V_QRS', 'V_Arrhythmia']},
+                {name:'Echo', fields:['V_EF_Change', 'V_Echo_Other']},
+                {name:'Labs', fields:['V_HbA1c', 'V_Gluc', 'V_Urea', 'V_Creat', 'V_eGFR', 'V_Na', 'V_K', 'V_BNP', 'V_NTproBNP', 'V_INR', 'V_Iron', 'V_Transferrin', 'V_Ferritin', 'V_WBC', 'V_Hb', 'V_Plt', 'V_TSH', 'V_FreeT4']},
+                {name:'Plan', fields:['V_Adverse', 'V_Plan', 'V_Others']}
+            ];
+            
+            vSections.forEach(vsec=>{
+                html += "<h5 style='margin:10px 0 5px 0; color:#555;'>"+vsec.name+"</h5>";
+                html += "<table style='width:100%; border-collapse:collapse; font-size:11px; margin-bottom:10px;'>";
+                vsec.fields.forEach(vf=>{
+                    if(visit[vf]){
+                        var vlabel = vf.replace('V_', '').replace(/_/g, ' ');
+                        html += "<tr style='border-bottom:1px solid #eee;'><td style='width:40%; padding:4px; background:#f5f5f5;'>"+vlabel+"</td><td style='padding:4px;'>"+visit[vf]+"</td></tr>";
+                    }
+                });
+                html += "</table>";
+            });
+            
+            html += "</div>";
+        });
+    }
+    
+    html += "<div style='margin-top:30px; text-align:center; font-size:11px; color:#666;'>Generated: "+new Date().toLocaleString()+"</div>";
+    html += "</div>";
+    
+    container.innerHTML = html;
+    var element = container.firstChild;
+    
+    html2pdf().from(element).set({
+        margin: 0.5,
+        filename: "HF_Report_"+(data.File_No||'unknown')+"_"+(data.Patient_Name||'patient')+".pdf",
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    }).save().then(() => {
+        container.innerHTML = '';
+    });
 }
 
 function pdfCard(id, fno){
