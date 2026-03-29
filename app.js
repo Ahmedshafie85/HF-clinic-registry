@@ -20,27 +20,41 @@ let editingDocId = null;
 // =============================================
 
 // =============================================
-// 2. SUCCESS POPUP MODAL
+// 2. SUCCESS POPUP — created dynamically (never on page load)
 // =============================================
-const successModal = document.getElementById(‘successModal’);
-const successTitle = document.getElementById(‘successTitle’);
-const successMessage = document.getElementById(‘successMessage’);
-const successFileNo = document.getElementById(‘successFileNo’);
-
 function showSuccess(title, message, fileNo) {
-successTitle.textContent = title;
-successMessage.textContent = message;
-successFileNo.textContent = fileNo ? `File No: ${fileNo}` : ‘’;
-successModal.classList.add(‘show’);
-}
+// Remove any existing modal first
+const existing = document.getElementById(‘successModal’);
+if (existing) existing.remove();
 
-document.getElementById(‘successOkBtn’).addEventListener(‘click’, () => {
-successModal.classList.remove(‘show’);
+```
+const overlay = document.createElement('div');
+overlay.id = 'successModal';
+overlay.className = 'success-overlay';
+overlay.innerHTML = `
+    <div class="success-box">
+        <div style="width:80px;height:80px;border-radius:50%;background:#28a745;color:white;font-size:40px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <h3 style="color:#28a745;font-weight:800;">${title}</h3>
+        <p style="color:#555;font-size:0.95rem;">${message}</p>
+        ${fileNo ? `<p class="fw-bold text-primary">File No: ${fileNo}</p>` : ''}
+        <button class="btn btn-success fw-bold px-4 py-2" style="margin-top:15px;" id="successOkBtn">OK</button>
+    </div>
+`;
+document.body.appendChild(overlay);
+
+// Close on OK button
+document.getElementById('successOkBtn').addEventListener('click', () => {
+    overlay.remove();
 });
-// Close modal on background click
-successModal.addEventListener(‘click’, (e) => {
-if (e.target === successModal) successModal.classList.remove(‘show’);
+// Close on background click
+overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.remove();
 });
+```
+
+}
 
 // =============================================
 // 3. BUILD PATIENT CARD (with PDF Export)
@@ -239,10 +253,15 @@ try {
         const data = docSnap.data();
         const docId = docSnap.id;
         const dateStr = data.timestamp ? new Date(data.timestamp).toLocaleDateString() : 'N/A';
-        const encodedData = encodeURIComponent(JSON.stringify(data));
+        
+        // Store data on a global cache to avoid inline encoding issues
+        if (!window._patientCache) window._patientCache = {};
+        window._patientCache[docId] = data;
+
+        const safeName = (data.Name || 'Unknown').replace(/'/g, "\\'").replace(/"/g, '&quot;');
 
         tbody.innerHTML += `
-            <tr>
+            <tr id="admin-row-${docId}">
                 <td class="fw-bold text-primary">${data.File_No || 'N/A'}</td>
                 <td>${data.Name || 'N/A'}</td>
                 <td>${data.Civil_ID || 'N/A'}</td>
@@ -250,13 +269,13 @@ try {
                 <td>${dateStr}</td>
                 <td>
                     <div class="btn-group btn-group-sm" role="group">
-                        <button class="btn btn-outline-primary" title="View / Edit" onclick="window.editPatient('${docId}', '${encodedData}')">
+                        <button class="btn btn-outline-primary" title="Edit" onclick="window.editFromCache('${docId}')">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </button>
-                        <button class="btn btn-outline-danger" title="Delete" onclick="window.deletePatient('${docId}', '${(data.Name || 'Unknown').replace(/'/g, "\\'")}')">
+                        <button class="btn btn-outline-danger" title="Delete" onclick="window.deletePatient('${docId}', '${safeName}')">
                             <i class="fa-solid fa-trash"></i>
                         </button>
-                        <button class="btn btn-outline-dark" title="Export PDF" onclick="window.adminViewAndExport('${docId}', '${encodedData}')">
+                        <button class="btn btn-outline-dark" title="PDF" onclick="window.exportFromCache('${docId}')">
                             <i class="fa-solid fa-file-pdf"></i>
                         </button>
                     </div>
@@ -323,11 +342,8 @@ try {
     );
 
     // Remove row from admin table if visible
-    const tbody = document.getElementById('adminTableBody');
-    const rows = tbody.querySelectorAll('tr');
-    rows.forEach(row => {
-        if (row.innerHTML.includes(docId)) row.remove();
-    });
+    const row = document.getElementById('admin-row-' + docId);
+    if (row) row.remove();
 
     // Update count
     const totalSpan = document.getElementById('totalPatients');
@@ -368,13 +384,41 @@ element.classList.add(‘card-body’);
 });
 };
 
-// PDF EXPORT FROM ADMIN — renders a hidden card, exports, then removes it
-window.adminViewAndExport = function (docId, dataString) {
-const data = JSON.parse(decodeURIComponent(dataString));
-const tempId = ‘admin-print-’ + docId;
+// ADMIN — Edit from cache (safe, no inline encoding)
+window.editFromCache = function (docId) {
+const data = window._patientCache && window._patientCache[docId];
+if (!data) {
+alert(“❌ Could not load patient data. Please reload the Admin panel.”);
+return;
+}
+editingDocId = docId;
 
 ```
-// Create a temporary hidden container for PDF
+for (let key in data) {
+    if (document.getElementById(key)) {
+        document.getElementById(key).value = data[key];
+    }
+}
+
+document.getElementById('formTitle').innerHTML = '<i class="fa-solid fa-pen-to-square me-2 text-primary"></i>Editing Patient: ' + (data.Name || '');
+document.getElementById('submitBtn').innerHTML = '<i class="fa-solid fa-floppy-disk me-2"></i>Update Patient Data';
+document.getElementById('cancelEditBtn').classList.remove('d-none');
+document.getElementById('adminPanel').classList.add('d-none');
+document.getElementById('hfForm').scrollIntoView({ behavior: 'smooth' });
+```
+
+};
+
+// ADMIN — Export PDF from cache
+window.exportFromCache = function (docId) {
+const data = window._patientCache && window._patientCache[docId];
+if (!data) {
+alert(“❌ Could not load patient data. Please reload the Admin panel.”);
+return;
+}
+
+```
+const tempId = 'admin-print-' + docId;
 let tempDiv = document.getElementById(tempId);
 if (tempDiv) tempDiv.remove();
 
