@@ -32,7 +32,7 @@
     
     <div id="adminPanel" class="card border-dark border-2 d-none shadow-lg">
         <div class="card-header bg-dark text-white fw-bold d-flex justify-content-between align-items-center">
-            <span><i class="fa-solid fa-database me-2"></i>Master Database Viewer</span>
+            <span><i class="fa-solid fa-database me-2"></i>Master Database Viewer (<span id="totalPatients">0</span> Patients)</span>
             <button class="btn btn-sm btn-danger" id="closeAdminBtn"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="card-body overflow-auto" style="max-height: 400px;">
@@ -63,10 +63,10 @@
             <form id="hfForm">
                 <h6 class="section-title">1. Demographics & Entry Info</h6>
                 <div class="row g-2">
-                    <div class="col-md-3"><label class="text-danger">Data Entered By</label><select class="form-select border-danger" id="Doctor_Name" required><option value="">Select Doctor...</option><option value="Dr Farouk">Dr Farouk</option><option value="Dr Badawy">Dr Badawy</option><option value="Dr Ali">Dr Ali</option><option value="Dr Hamza">Dr Hamza</option><option value="Dr Ahmed">Dr Ahmed</option></select></div>
-                    <div class="col-md-3"><label>Patient Name</label><input type="text" class="form-control" id="Name" required></div>
-                    <div class="col-md-3"><label>Civil ID</label><input type="number" class="form-control" id="Civil_ID" required></div>
-                    <div class="col-md-3"><label>File No</label><input type="number" class="form-control" id="File_No" required></div>
+                    <div class="col-md-3"><label class="text-primary fw-bold">Data Entered By *</label><select class="form-select border-primary" id="Doctor_Name"><option value="">Select Doctor...</option><option value="Dr Farouk">Dr Farouk</option><option value="Dr Badawy">Dr Badawy</option><option value="Dr Ali">Dr Ali</option><option value="Dr Hamza">Dr Hamza</option><option value="Dr Ahmed">Dr Ahmed</option></select></div>
+                    <div class="col-md-3"><label>Patient Name *</label><input type="text" class="form-control" id="Name"></div>
+                    <div class="col-md-3"><label>Civil ID *</label><input type="number" class="form-control" id="Civil_ID"></div>
+                    <div class="col-md-3"><label>File No *</label><input type="number" class="form-control" id="File_No"></div>
                     <div class="col-md-2"><label>Age</label><input type="number" class="form-control" id="Age"></div>
                     <div class="col-md-3"><label>Gender</label><select class="form-select" id="Gender"><option value="">Select...</option><option value="Male">Male</option><option value="Female">Female</option></select></div>
                     <div class="col-md-3"><label>Nationality</label><input type="text" class="form-control" id="Nationality"></div>
@@ -93,10 +93,12 @@
                     <div class="col-md-2"><label>Pulse</label><input type="text" class="form-control" id="Pulse"></div>
                     <div class="col-md-2"><label>BP</label><input type="text" class="form-control" id="BP" placeholder="e.g. 120/80"></div>
                     <div class="col-md-2"><label>SpO2 (%)</label><input type="number" class="form-control" id="SpO2"></div>
-                    <div class="col-md-2"><label>Weight (kg)</label><input type="number" class="form-control" id="Weight"></div>
+                    
+                    <div class="col-md-2"><label class="text-primary fw-bold">Height (cm)</label><input type="number" class="form-control border-primary" id="Height"></div>
+                    <div class="col-md-2"><label class="text-primary fw-bold">Weight (kg)</label><input type="number" class="form-control border-primary" id="Weight"></div>
+                    <div class="col-md-2"><label class="text-success fw-bold">BMI (Auto)</label><input type="number" class="form-control bg-light text-success fw-bold" id="BMI" readonly placeholder="Will Auto-calculate"></div>
+                    
                     <div class="col-md-2"><label>Dry Wt (kg)</label><input type="number" class="form-control" id="Dry_Weight"></div>
-                    <div class="col-md-2"><label>Height (cm)</label><input type="number" class="form-control" id="Height"></div>
-                    <div class="col-md-2"><label>BMI</label><input type="number" step="0.1" class="form-control" id="BMI"></div>
                     <div class="col-md-2"><label>Edema</label><select class="form-select" id="Edema"><option value="No">No</option><option value="Yes">Yes</option></select></div>
                     <div class="col-md-2"><label>JVP</label><select class="form-select" id="JVP"><option value="Normal">Normal</option><option value="Raised">Raised</option></select></div>
                     <div class="col-md-3"><label>Pulmonary Rales</label><select class="form-select" id="Rales"><option value="No">No</option><option value="Yes">Yes</option></select></div>
