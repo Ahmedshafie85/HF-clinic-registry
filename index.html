@@ -20,26 +20,16 @@
         .btn-medical:hover { background-color: #5c0000; color: white; }
 
 ```
-    /* Success Modal — hidden by default with multiple safeguards */
+    /* Success Modal — created dynamically by JS */
     .success-overlay {
-        display: none !important;
-        visibility: hidden;
-        opacity: 0;
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background: rgba(0,0,0,0.5); z-index: 9999;
-        justify-content: center; align-items: center;
-    }
-    .success-overlay.show {
-        display: flex !important;
-        visibility: visible;
-        opacity: 1;
+        display: flex; justify-content: center; align-items: center;
     }
     .success-box {
         background: white; border-radius: 16px; padding: 40px 30px;
         text-align: center; max-width: 400px; width: 90%;
         box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    }
-    .success-overlay.show .success-box {
         animation: popIn 0.4s ease;
     }
     @keyframes popIn {
@@ -60,18 +50,6 @@
 
 </head>
 <body>
-
-<!-- SUCCESS POPUP MODAL -->
-
-<div class="success-overlay" id="successModal">
-    <div class="success-box">
-        <div class="success-icon"><i class="fa-solid fa-check"></i></div>
-        <h3 id="successTitle">Saved Successfully!</h3>
-        <p id="successMessage">Patient data has been saved to the registry.</p>
-        <p class="fw-bold text-primary" id="successFileNo"></p>
-        <button class="btn btn-success fw-bold px-4 py-2" id="successOkBtn">OK</button>
-    </div>
-</div>
 
 <div class="clinic-header text-center mb-4">
     <button class="btn btn-dark btn-sm position-absolute top-0 end-0 m-3 shadow" id="adminBtn"><i class="fa-solid fa-lock me-1"></i>Admin</button>
