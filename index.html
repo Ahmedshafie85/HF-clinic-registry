@@ -28,27 +28,9 @@
     #pageLogin {
         display: none;
         min-height: 100vh;
-        background: linear-gradient(160deg, #1a0000 0%, #3d0000 40%, #8b0000 100%);
-        position: relative;
-        overflow: hidden;
-    }
-    #pageLogin::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(ellipse at center, rgba(139,0,0,0.15) 0%, transparent 60%);
-        animation: pulse-bg 4s ease-in-out infinite;
-    }
-    @keyframes pulse-bg {
-        0%, 100% { transform: scale(1); opacity: 0.5; }
-        50% { transform: scale(1.1); opacity: 1; }
+        background-color: #8b0000;
     }
     .login-container {
-        position: relative;
-        z-index: 10;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -56,167 +38,28 @@
         min-height: 100vh;
         padding: 30px 20px;
     }
-    .login-logo {
-        text-align: center;
-        margin-bottom: 40px;
-        animation: fadeDown 0.8s ease forwards;
-    }
-    @keyframes fadeDown {
-        from { opacity: 0; transform: translateY(-20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    .login-logo .heart-icon {
-        font-size: 3rem;
-        color: #ff6b6b;
-        filter: drop-shadow(0 0 20px rgba(255,107,107,0.5));
-        animation: heartbeat 1.5s ease-in-out infinite;
-    }
-    @keyframes heartbeat {
-        0%, 100% { transform: scale(1); }
-        15% { transform: scale(1.15); }
-        30% { transform: scale(1); }
-        45% { transform: scale(1.08); }
-    }
-    .login-logo h1 {
-        font-family: 'Crimson Pro', serif;
-        color: #fff;
-        font-size: 1.6rem;
-        font-weight: 700;
-        margin: 12px 0 4px;
-        letter-spacing: 0.02em;
-    }
-    .login-logo p {
-        color: rgba(255,255,255,0.6);
-        font-size: 0.8rem;
-        font-weight: 300;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-    }
-    .login-card {
-        background: rgba(255,255,255,0.07);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255,255,255,0.12);
-        border-radius: 20px;
-        padding: 35px 28px;
-        width: 100%;
-        max-width: 380px;
-        animation: fadeUp 0.8s ease 0.2s forwards;
-        opacity: 0;
-    }
-    @keyframes fadeUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    .login-card h2 {
-        font-family: 'Crimson Pro', serif;
-        color: #fff;
-        font-size: 1.4rem;
-        font-weight: 600;
-        margin-bottom: 6px;
-    }
-    .login-card .subtitle {
-        color: rgba(255,255,255,0.5);
-        font-size: 0.78rem;
-        margin-bottom: 28px;
-    }
-    .login-field {
-        margin-bottom: 16px;
-    }
-    .login-field label {
-        color: rgba(255,255,255,0.7);
-        font-size: 0.72rem;
-        font-weight: 500;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        display: block;
-        margin-bottom: 6px;
-    }
-    .login-field .input-wrap {
-        position: relative;
-    }
-    .login-field .input-wrap i {
-        position: absolute;
-        left: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: rgba(255,255,255,0.4);
-        font-size: 0.85rem;
-    }
-    .login-field input {
-        width: 100%;
-        background: rgba(255,255,255,0.08);
-        border: 1px solid rgba(255,255,255,0.15);
-        border-radius: 10px;
-        padding: 12px 14px 12px 38px;
-        color: #fff;
-        font-size: 0.9rem;
-        font-family: 'DM Sans', sans-serif;
-        transition: all 0.2s;
-        outline: none;
-    }
-    .login-field input:focus {
-        border-color: rgba(255,107,107,0.6);
-        background: rgba(255,255,255,0.12);
-        box-shadow: 0 0 0 3px rgba(255,107,107,0.15);
-    }
-    .login-field input::placeholder { color: rgba(255,255,255,0.3); }
-    .btn-login {
-        width: 100%;
-        padding: 13px;
-        background: linear-gradient(135deg, #c0392b, #8b0000);
-        border: none;
-        border-radius: 10px;
-        color: #fff;
-        font-family: 'DM Sans', sans-serif;
-        font-size: 0.9rem;
-        font-weight: 600;
-        letter-spacing: 0.05em;
-        cursor: pointer;
-        transition: all 0.2s;
-        margin-top: 8px;
-        box-shadow: 0 4px 20px rgba(139,0,0,0.4);
-    }
-    .btn-login:hover { transform: translateY(-1px); box-shadow: 0 6px 25px rgba(139,0,0,0.5); }
-    .btn-login:active { transform: translateY(0); }
-    .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-    .login-error {
-        background: rgba(220,53,69,0.2);
-        border: 1px solid rgba(220,53,69,0.4);
-        border-radius: 8px;
-        color: #ff8a8a;
-        font-size: 0.8rem;
-        padding: 10px 14px;
-        margin-top: 14px;
-        display: none;
-        text-align: center;
-    }
-    .login-footer {
-        margin-top: 28px;
-        text-align: center;
-        color: rgba(255,255,255,0.3);
-        font-size: 0.72rem;
-    }
-
-    /* ===== LOADING SCREEN ===== */
-    #pageLoading {
-        display: flex;
-        min-height: 100vh;
-        background: linear-gradient(160deg, #1a0000 0%, #8b0000 100%);
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        gap: 16px;
-    }
-    .loading-heart {
-        font-size: 2.5rem;
-        animation: heartbeat 1.2s ease-in-out infinite;
-    }
-    .loading-text {
-        color: rgba(255,255,255,0.6);
-        font-size: 0.85rem;
-        letter-spacing: 0.06em;
-    }
-
+    .login-logo { text-align: center; margin-bottom: 40px; }
+    .login-logo .heart-icon { font-size: 3rem; }
+    .login-logo h1 { font-family: "Crimson Pro", serif; color: #fff; font-size: 1.6rem; font-weight: 700; margin: 12px 0 4px; }
+    .login-logo p { color: rgba(255,255,255,0.75); font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; }
+    .login-card { background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.25); border-radius: 20px; padding: 35px 28px; width: 100%; max-width: 380px; }
+    .login-card h2 { font-family: "Crimson Pro", serif; color: #fff; font-size: 1.4rem; font-weight: 600; margin-bottom: 6px; }
+    .login-card .subtitle { color: rgba(255,255,255,0.65); font-size: 0.78rem; margin-bottom: 28px; }
+    .login-field { margin-bottom: 16px; }
+    .login-field label { color: rgba(255,255,255,0.85); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; display: block; margin-bottom: 6px; }
+    .login-field .input-wrap { position: relative; }
+    .login-field .input-wrap i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.5); font-size: 0.85rem; }
+    .login-field input { width: 100%; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.35); border-radius: 10px; padding: 12px 14px 12px 38px; color: #fff; font-size: 0.9rem; outline: none; }
+    .login-field input:focus { border-color: #fff; background: rgba(255,255,255,0.2); }
+    .login-field input::placeholder { color: rgba(255,255,255,0.4); }
+    .btn-login { width: 100%; padding: 13px; background: #fff; border: none; border-radius: 10px; color: #8b0000; font-size: 0.9rem; font-weight: 700; cursor: pointer; margin-top: 8px; }
+    .btn-login:hover { background: #f0e0e0; }
+    .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
+    .login-error { background: rgba(0,0,0,0.25); border: 1px solid rgba(255,150,150,0.5); border-radius: 8px; color: #ffbbbb; font-size: 0.8rem; padding: 10px 14px; margin-top: 14px; display: none; text-align: center; }
+    .login-footer { margin-top: 28px; text-align: center; color: rgba(255,255,255,0.45); font-size: 0.72rem; }
+    #pageLoading { display: flex; min-height: 100vh; background-color: #8b0000; align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
+    .loading-heart { font-size: 2.5rem; }
+    .loading-text { color: rgba(255,255,255,0.7); font-size: 0.85rem; letter-spacing: 0.06em; }
     /* ===== MAIN APP ===== */
     .clinic-header{background:linear-gradient(135deg,var(--primary),#b30000);color:#fff;padding:25px 0;border-radius:0 0 15px 15px;position:relative}
     .card{border:none;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:20px}
