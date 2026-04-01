@@ -45,7 +45,8 @@
     .chart-container{position: relative; height:22vh; width:100%; margin-bottom: 15px;}
     .clickable-tab{cursor:pointer; padding: 10px; background-color: #e9ecef; border-radius: 5px; border-left: 5px solid var(--primary); transition: 0.2s;}
     .clickable-tab:hover{background-color: #dee2e6;}
-    #pdfContainer{position:fixed;left:-9999px;top:0;z-index:-1;width:800px;overflow:visible;}
+    #pdfContainer{position:fixed;top:0;left:0;width:100%;min-height:100%;overflow:auto;z-index:99998;background:#fff;display:none;}
+    #pdfContainer.active{display:block;}
 </style>
 ```
 
@@ -911,11 +912,14 @@ function pdfFromAdmin(id){
 function generatePDF(data, visitsData, id){
     var container = document.getElementById('pdfContainer');
     container.innerHTML = '';
+    container.classList.add('active');
+    // Scroll to top so html2canvas captures from the start
+    container.scrollTop = 0;
     
-    var html = "<div style='width:800px; background:white; padding:20px; font-family:Arial, Helvetica, sans-serif; color:#000;'>";
+    var html = "<div id='pdfContent' style='width:750px; margin:0 auto; background:#fff; padding:20px; font-family:Arial,Helvetica,sans-serif; color:#000;'>";
     html += "<div style='text-align:center; border-bottom:3px solid #8b0000; padding-bottom:10px; margin-bottom:20px;'>";
     html += "<h2 style='color:#8b0000; margin:0;'>Mubarak Al-Kabeer Hospital</h2>";
-    html += "<h3 style='margin:5px 0;'>Heart Failure Clinic Registry</h3>";
+    html += "<h3 style='margin:5px 0; color:#333;'>Heart Failure Clinic Registry</h3>";
     html += "</div>";
     
     html += "<h3 style='color:#333;'>Patient: "+(data.Patient_Name||'Unknown')+" | File: "+(data.File_No||'N/A')+"</h3>";
@@ -931,10 +935,10 @@ function generatePDF(data, visitsData, id){
         {name:'Outcomes & Follow-up', fields:['Quad_GDMT', 'Compliance', 'Mortality', 'Rehab', 'HF_Dur', 'MAGGIC_Score', 'MAGGIC_Risk', 'Notes', 'Next_Appt']}
     ];
     
-    sections.forEach(sec=>{
+    sections.forEach(function(sec){
         html += "<h4 style='background:#f0f0f0; padding:8px; margin-top:15px; color:#8b0000;'>"+sec.name+"</h4>";
         html += "<table style='width:100%; border-collapse:collapse; font-size:12px;'>";
-        sec.fields.forEach(field=>{
+        sec.fields.forEach(function(field){
             var val = data[field] || '-';
             var label = field.replace(/_/g, " ").replace(/Lab /g, "").replace(/Med /g, "");
             html += "<tr style='border-bottom:1px solid #ddd;'><td style='width:40%; padding:6px; background:#fafafa; font-weight:bold;'>"+label+"</td><td style='padding:6px;'>"+val+"</td></tr>";
@@ -946,7 +950,9 @@ function generatePDF(data, visitsData, id){
         html += "<div style='page-break-before:always;'></div>";
         html += "<h3 style='color:#8b0000; margin-top:20px;'>Visit History & Follow-ups</h3>";
         
-        visitsData.forEach((visit, idx)=>{
+        var medFields = ['V_Concor','V_Betaloc','V_Dilatrend','V_Lopressor','V_Zestril','V_Tritace','V_Capoten','V_Diovan','V_Atacand','V_Entresto','V_Aldactone','V_Eplerenone','V_Finerenone','V_Forxiga','V_Jardiance','V_Hydralazine','V_Nitrates','V_Furosemide','V_Metolazone','V_Mounjaro','V_Ozempic','V_Warfarin','V_Xarelto','V_Eliquis','V_Zocor','V_Lipitor','V_Crestor','V_Ezetrol','V_Repatha','V_Praluent','V_Atozet','V_Vytorin','V_Zympass','V_Fibrates','V_Omacor','V_Veltassa','V_Lokelma','V_Cordarone','V_Flecainide','V_Sotalol','V_Propafenone','V_Procorolan'];
+        
+        visitsData.forEach(function(visit, idx){
             html += "<div style='border:2px solid #17a2b8; margin:15px 0; padding:15px; border-radius:8px;'>";
             html += "<h4 style='color:#17a2b8; margin-top:0;'>Visit #"+(visitsData.length-idx)+": "+visit.visitDate+" ("+visit.visitType+")</h4>";
             
@@ -956,16 +962,22 @@ function generatePDF(data, visitsData, id){
                 {name:'ECG', fields:['V_LBBB', 'V_QRS', 'V_Arrhythmia']},
                 {name:'Echo', fields:['V_EF_Change', 'V_Echo_Other']},
                 {name:'Labs', fields:['V_HbA1c', 'V_Gluc', 'V_Urea', 'V_Creat', 'V_eGFR', 'V_Na', 'V_K', 'V_BNP', 'V_NTproBNP', 'V_INR', 'V_Iron', 'V_Transferrin', 'V_Ferritin', 'V_WBC', 'V_Hb', 'V_Plt', 'V_TSH', 'V_FreeT4']},
+                {name:'Medications (Doses)', fields: medFields},
                 {name:'Plan', fields:['V_Adverse', 'V_Plan', 'V_Others']}
             ];
             
-            vSections.forEach(vsec=>{
+            vSections.forEach(function(vsec){
+                var hasData = false;
+                vsec.fields.forEach(function(vf){ if(visit[vf] && visit[vf].trim && visit[vf].trim() !== '') hasData = true; else if(visit[vf]) hasData = true; });
+                if(!hasData) return;
+                
                 html += "<h5 style='margin:10px 0 5px 0; color:#555;'>"+vsec.name+"</h5>";
                 html += "<table style='width:100%; border-collapse:collapse; font-size:11px; margin-bottom:10px;'>";
-                vsec.fields.forEach(vf=>{
-                    if(visit[vf]){
+                vsec.fields.forEach(function(vf){
+                    var val = visit[vf];
+                    if(val && ((typeof val === 'string' && val.trim() !== '') || (typeof val !== 'string'))){
                         var vlabel = vf.replace('V_', '').replace(/_/g, ' ');
-                        html += "<tr style='border-bottom:1px solid #eee;'><td style='width:40%; padding:4px; background:#f5f5f5;'>"+vlabel+"</td><td style='padding:4px;'>"+visit[vf]+"</td></tr>";
+                        html += "<tr style='border-bottom:1px solid #eee;'><td style='width:40%; padding:4px; background:#f5f5f5;'>"+vlabel+"</td><td style='padding:4px;'>"+val+"</td></tr>";
                     }
                 });
                 html += "</table>";
@@ -979,21 +991,24 @@ function generatePDF(data, visitsData, id){
     html += "</div>";
     
     container.innerHTML = html;
-    var element = container.firstChild;
+    var element = document.getElementById('pdfContent');
     
-    // FIXED: Use requestAnimationFrame + setTimeout to ensure browser has fully rendered
-    // the off-screen content before html2pdf captures it
-    requestAnimationFrame(function() {
-        setTimeout(function() {
-            html2pdf().from(element).set({
-                margin: 0.5,
-                filename: "HF_Report_"+(data.File_No||'unknown')+"_"+(data.Patient_Name||'patient')+".pdf",
-                html2canvas: { scale: 2, useCORS: true, logging: false, windowWidth: 900 },
-                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
-                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-            }).save().then(function() { container.innerHTML = ''; });
-        }, 300);
-    });
+    // Wait for the visible overlay to fully render before capturing
+    setTimeout(function() {
+        html2pdf().from(element).set({
+            margin: [0.4, 0.4, 0.4, 0.4],
+            filename: "HF_Report_"+(data.File_No||'unknown')+"_"+(data.Patient_Name||'patient')+".pdf",
+            html2canvas: { scale: 2, useCORS: true, scrollY: 0, scrollX: 0, windowWidth: 800 },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+            pagebreak: { mode: ['css', 'legacy'] }
+        }).save().then(function() {
+            container.innerHTML = '';
+            container.classList.remove('active');
+        }).catch(function() {
+            container.innerHTML = '';
+            container.classList.remove('active');
+        });
+    }, 500);
 }
 
 function editPt(id){
