@@ -11,6 +11,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="HF Registry">
     <meta name="theme-color" content="#8b0000">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -20,53 +21,51 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
         :root{--primary:#8b0000;--primary-dark:#5c0000;--secondary:#6c757d}
         body{background:#f4f6f9;font-family:'DM Sans',sans-serif;font-size:0.85rem}
         body.login-active{background:#8b0000!important;}
+        
+        /* Preserve Original Styles */
         #pageLogin { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; min-height: 100vh; width: 100%; z-index: 9999; background: linear-gradient(160deg, #1a0000 0%, #3d0000 40%, #8b0000 100%); overflow: hidden; }
         .login-container { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 30px 20px; }
-        .login-logo { text-align: center; margin-bottom: 40px; }
         .login-logo .heart-icon { font-size: 3rem; color: #ff6b6b; animation: heartbeat 1.5s ease-in-out infinite; }
         @keyframes heartbeat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.15); } 30% { transform: scale(1); } 45% { transform: scale(1.08); } }
-        .login-card { background: rgba(255,255,255,0.07); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 35px 28px; width: 100%; max-width: 380px; }
-        .btn-login { width: 100%; padding: 13px; background: linear-gradient(135deg, #c0392b, #8b0000); border: none; border-radius: 10px; color: #fff; font-weight: 600; margin-top: 8px; box-shadow: 0 4px 20px rgba(139,0,0,0.4); }
-        #pageLoading { display: flex; min-height: 100vh; background: #8b0000; align-items: center; justify-content: center; flex-direction: column; color: white; }
         .clinic-header{background:linear-gradient(135deg,var(--primary),#b30000);color:#fff;padding:25px 0;border-radius:0 0 15px 15px;position:relative}
         .card{border:none;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:20px}
         .section-title{color:var(--primary);font-weight:bold;border-bottom:2px solid #e9ecef;padding-bottom:5px;margin-top:20px;margin-bottom:12px}
-        .visit-section{background:#fff;border-left:4px solid var(--primary);padding:15px;margin-bottom:15px;border-radius:8px;}
-        label{font-weight:600;font-size:.75rem;color:#495057;display:block;margin-bottom:2px}
-        .form-control,.form-select{border-radius:6px;font-size:.85rem;padding:4px 8px}
-        .btn-medical{background:var(--primary);color:#fff;font-weight:bold;width:100%;padding:12px;border:none;border-radius:8px}
+        .visit-section{background:#fff;border-left:4px solid var(--primary);padding:15px;margin-bottom:15px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
         .page{display:none}.page.active{display:block}
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;display:flex;justify-content:center;align-items:center}
+        .modal-box{background:#fff;border-radius:16px;padding:30px 20px;max-width:500px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.4);max-height:90vh; overflow-y:auto;}
         
-        /* New Analytics Styles */
-        .stat-card { transition: transform 0.2s; border-left: 5px solid transparent; }
+        /* New Analytics UI Styles */
+        .stat-card { border-left: 5px solid var(--primary); transition: transform 0.2s; }
         .stat-card:hover { transform: translateY(-3px); }
-        .chart-wrapper { position: relative; height: 280px; width: 100%; }
+        .analytics-chart-container { position: relative; height: 250px; width: 100%; }
         .bg-gradient-dark { background: linear-gradient(135deg, #2c3e50, #000000); color: white; }
     </style>
 </head>
 <body>
 
 <div id="pageLoading">
-    <div style="font-size:3rem;">❤️</div>
-    <div>Loading Registry...</div>
+    <div style="font-size:3rem; animation: heartbeat 1.2s infinite; color:white;">❤️</div>
+    <div style="color:white; margin-top:10px;">Loading Registry...</div>
 </div>
 
 <div id="pageLogin">
     <div class="login-container">
-        <div class="login-logo">
+        <div class="login-logo text-center">
             <div class="heart-icon">❤️</div>
-            <h1 class="text-white">Mubarak Al-Kabeer Hospital</h1>
+            <h1 class="text-white mt-2">Mubarak Al-Kabeer Hospital</h1>
             <p class="text-white-50">Heart Failure Clinic Registry</p>
         </div>
         <div class="login-card">
             <input type="email" id="loginEmail" class="form-control mb-3" placeholder="Email">
-            <input type="password" id="loginPassword" class="form-control mb-3" placeholder="Password">
-            <button class="btn-login" id="loginBtn" onclick="doLogin()">Sign In</button>
-            <div id="loginError" class="text-danger mt-2" style="display:none"></div>
+            <input type="password" id="loginPassword" class="form-control mb-3" placeholder="Password" onkeydown="if(event.key==='Enter') doLogin()">
+            <button class="btn btn-danger w-100 fw-bold" onclick="doLogin()">Sign In</button>
+            <div id="loginError" class="text-danger mt-2 text-center" style="display:none"></div>
         </div>
     </div>
 </div>
@@ -74,10 +73,15 @@
 <div id="pageMain" class="page">
     <div class="clinic-header text-center">
         <div class="position-absolute top-0 end-0 m-2">
-            <button class="btn btn-info btn-sm me-1" onclick="showAnalytics()"><i class="fa fa-chart-line me-1"></i> Analytics</button>
+            <button class="btn btn-info btn-sm me-1" onclick="showAnalytics()">
+                <i class="fa fa-chart-line me-1"></i> Analytics
+            </button>
             <button class="btn btn-dark btn-sm" onclick="showAdminLogin()">Admin</button>
         </div>
-        <div class="position-absolute top-0 start-0 m-2"><button class="btn btn-link btn-sm text-white" onclick="doLogout()">Logout</button></div>
+        <div class="position-absolute top-0 start-0 m-2 text-start">
+            <div class="user-badge" id="userBadge" style="font-size:0.7rem; color:rgba(255,255,255,0.7);"></div>
+            <button class="btn btn-outline-light btn-sm" onclick="doLogout()"><i class="fa fa-sign-out-alt me-1"></i>Logout</button>
+        </div>
         <i class="fa-solid fa-heart-pulse fa-3x mb-1"></i>
         <h2 class="fw-bold mb-0">Mubarak Al-Kabeer Hospital</h2>
         <p class="mb-0">Heart Failure Clinic Registry</p>
@@ -94,7 +98,13 @@
         </div>
 
         <div class="card p-3 border-top border-4 border-danger">
-            <h4 class="mb-3 text-dark fw-bold" id="formTitle">New Patient Entry</h4>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="fw-bold mb-0" id="formTitle">New Patient Entry</h4>
+                <button class="btn btn-outline-danger btn-sm" onclick="generatePDF(PC[currentPatientId])" id="pdfBtn" style="display:none">
+                    <i class="fa fa-file-pdf me-1"></i> PDF
+                </button>
+            </div>
+            
             <div id="hfForm">
                 <h6 class="section-title">1. Demographics & Entry Info</h6>
                 <div class="row g-2">
@@ -121,27 +131,9 @@
                     <div class="col-4 col-md-2"><label>Height (cm)</label><input type="number" class="form-control" id="Height" oninput="calcBMI()"></div>
                     <div class="col-4 col-md-2"><label>Weight (kg)</label><input type="number" class="form-control" id="Weight" oninput="calcBMI()"></div>
                     <div class="col-4 col-md-2"><label>BMI (Auto)</label><input type="text" class="form-control bg-light" id="BMI" readonly></div>
-                    <div class="col-4 col-md-2"><label>NYHA Visit</label><select class="form-select" id="NYHA" onchange="calcMAGGIC()"><option value="">Select...</option><option>I</option><option>II</option><option>III</option><option>IV</option></select></div>
+                    <div class="col-4 col-md-2"><label>NYHA</label><select class="form-select" id="NYHA" onchange="calcMAGGIC()"><option value="">Select...</option><option>I</option><option>II</option><option>III</option><option>IV</option></select></div>
                     <div class="col-4 col-md-2"><label>BP</label><input type="text" class="form-control" id="BP" placeholder="120/80" oninput="calcMAGGIC()"></div>
                     <div class="col-4 col-md-2"><label>Smoker</label><select class="form-select" id="Smoker" onchange="calcMAGGIC()"><option>No</option><option>Current</option><option>Former</option></select></div>
-                </div>
-
-                <h6 class="section-title">4. Comorbidities</h6>
-                <div class="row g-2">
-                    <div class="col-4 col-md-2"><label>DM</label><select class="form-select" id="DM" onchange="calcMAGGIC()"><option>No</option><option>Yes</option></select></div>
-                    <div class="col-4 col-md-2"><label>HTN</label><select class="form-select" id="HTN"><option>No</option><option>Yes</option></select></div>
-                    <div class="col-4 col-md-2"><label>Lung Disease</label><select class="form-select" id="Lung_Dz" onchange="calcMAGGIC()"><option>No</option><option>Yes</option></select></div>
-                    <div class="col-4 col-md-2"><label>HF Duration >18m</label><select class="form-select" id="HF_Dur" onchange="calcMAGGIC()"><option>No</option><option>Yes</option></select></div>
-                    <div class="col-4 col-md-2"><label>Creat (µmol/L)</label><input type="number" class="form-control" id="Lab_Creat" oninput="calcMAGGIC()"></div>
-                </div>
-
-                <h6 class="section-title">5. Baseline Medications</h6>
-                <div class="row g-2">
-                    <div class="col-6 col-md-3"><label>ARNI (Entresto)</label><select class="form-select" id="Med_ARNI" onchange="calcMAGGIC()"><option>No</option><option>Yes</option></select></div>
-                    <div class="col-6 col-md-3"><label>B-Blockers</label><select class="form-select" id="Med_BB" onchange="calcMAGGIC()"><option>None</option><option>Concor</option><option>Dilatrend</option><option>Betaloc</option></select></div>
-                    <div class="col-6 col-md-3"><label>ACEi/ARB</label><select class="form-select" id="Med_ACEiARB" onchange="calcMAGGIC()"><option>None</option><option>Zestril</option><option>Diovan</option></select></div>
-                    <div class="col-6 col-md-3"><label>SGLT2i</label><select class="form-select" id="Med_SGLT2i"><option>None</option><option>Forxiga</option><option>Jardiance</option></select></div>
-                    <div class="col-6 col-md-3"><label>MRA</label><select class="form-select" id="Med_MRA"><option>None</option><option>Aldactone</option><option>Inspra</option></select></div>
                 </div>
 
                 <div class="mt-4 p-3 bg-light rounded border">
@@ -153,70 +145,99 @@
                 </div>
 
                 <div class="mt-4">
-                    <button class="btn-medical mb-2" id="submitBtn" onclick="savePatient()">Save Patient Record</button>
-                    <button class="btn btn-secondary w-100 d-none" id="cancelEditBtn" onclick="resetForm()">Cancel Editing</button>
+                    <button class="btn btn-danger w-100 fw-bold p-3" id="submitBtn" onclick="savePatient()">Save Patient Record</button>
+                    <button class="btn btn-secondary w-100 mt-2 d-none" id="cancelEditBtn" onclick="resetForm()">Cancel Edit</button>
                 </div>
             </div>
-        </div>
 
-        <div id="visitsContainer" style="display:none" class="mt-4">
-             <h5 class="fw-bold mb-3"><i class="fa fa-calendar-check me-2"></i>Clinical Visits</h5>
-             <div id="visitList"></div>
-             <button class="btn btn-info w-100 mt-2" onclick="showVisitModal()">+ Add New Visit</button>
+            <div id="visitsContainer" style="display:none" class="mt-4">
+                 <h5 class="fw-bold mb-3 d-flex justify-content-between align-items-center">
+                    <span><i class="fa fa-calendar-check me-2 text-primary"></i>Patient Visits</span>
+                    <button class="btn btn-primary btn-sm" onclick="showVisitModal()">+ New Visit</button>
+                 </h5>
+                 <div id="visitList"></div>
+            </div>
         </div>
     </div>
 </div>
 
 <div id="pageAnalytics" class="page">
     <div class="clinic-header text-center bg-gradient-dark">
-        <button class="btn btn-outline-light btn-sm position-absolute top-0 start-0 m-2" onclick="goToMain()"><i class="fa fa-arrow-left me-1"></i> Back</button>
+        <button class="btn btn-outline-light btn-sm position-absolute top-0 start-0 m-2" onclick="goToMain()">
+            <i class="fa fa-arrow-left me-1"></i> Back
+        </button>
         <div class="position-absolute top-0 end-0 m-2">
-            <button class="btn btn-success btn-sm" onclick="exportAnalyticsExcel()"><i class="fa fa-file-excel me-1"></i> Export Excel</button>
+            <button class="btn btn-success btn-sm" onclick="exportAnalyticsExcel()">
+                <i class="fa fa-file-excel me-1"></i> Excel Export
+            </button>
         </div>
         <i class="fa-solid fa-microscope fa-3x mb-1"></i>
-        <h2 class="fw-bold mb-0">Clinical Analytics Dashboard</h2>
-        <p class="mb-0">Registry Data Insights</p>
+        <h2 class="fw-bold mb-0">Clinical Analytics</h2>
+        <p class="mb-0 text-white-50">Mubarak Al-Kabeer Registry Stats</p>
     </div>
 
     <div class="container mt-4 mb-5">
         <div class="row g-3 mb-4">
-            <div class="col-md-3 col-6"><div class="card p-3 text-center border-0 shadow-sm bg-primary text-white stat-card"><h2 class="fw-bold" id="anTotal">0</h2><small class="text-uppercase fw-bold">Total Patients</small></div></div>
-            <div class="col-md-3 col-6"><div class="card p-3 text-center border-0 shadow-sm bg-success text-white stat-card"><h2 class="fw-bold" id="anGDMT">0%</h2><small class="text-uppercase fw-bold">Quadruple GDMT</small></div></div>
-            <div class="col-md-3 col-6"><div class="card p-3 text-center border-0 shadow-sm bg-warning text-dark stat-card"><h2 class="fw-bold" id="anHighRisk">0</h2><small class="text-uppercase fw-bold">High Risk (MAGGIC)</small></div></div>
-            <div class="col-md-3 col-6"><div class="card p-3 text-center border-0 shadow-sm bg-info text-white stat-card"><h2 class="fw-bold" id="anAvgEF">0%</h2><small class="text-uppercase fw-bold">Mean LVEF</small></div></div>
+            <div class="col-md-3 col-6"><div class="card p-3 text-center stat-card shadow-sm"><h2 class="fw-bold text-primary" id="anTotal">0</h2><small class="text-muted fw-bold">TOTAL PATIENTS</small></div></div>
+            <div class="col-md-3 col-6"><div class="card p-3 text-center stat-card shadow-sm"><h2 class="fw-bold text-success" id="anGDMT">0%</h2><small class="text-muted fw-bold">QUADRUPLE THERAPY</small></div></div>
+            <div class="col-md-3 col-6"><div class="card p-3 text-center stat-card shadow-sm"><h2 class="fw-bold text-danger" id="anHighRisk">0</h2><small class="text-muted fw-bold">HIGH RISK (MAGGIC)</small></div></div>
+            <div class="col-md-3 col-6"><div class="card p-3 text-center stat-card shadow-sm"><h2 class="fw-bold text-info" id="anAvgEF">0%</h2><small class="text-muted fw-bold">MEAN LVEF</small></div></div>
         </div>
 
         <div class="row g-3">
-            <div class="col-lg-4"><div class="card p-3 shadow-sm h-100"><h6 class="fw-bold border-bottom pb-2">HF Phenotypes</h6><div class="chart-wrapper"><canvas id="chartHFType"></canvas></div></div></div>
-            <div class="col-lg-4"><div class="card p-3 shadow-sm h-100"><h6 class="fw-bold border-bottom pb-2">GDMT Adherence</h6><div class="chart-wrapper"><canvas id="chartGDMT"></canvas></div></div></div>
-            <div class="col-lg-4"><div class="card p-3 shadow-sm h-100"><h6 class="fw-bold border-bottom pb-2">Functional Class (NYHA)</h6><div class="chart-wrapper"><canvas id="chartNYHA"></canvas></div></div></div>
-        </div>
-
-        <div class="row g-3 mt-1">
-            <div class="col-lg-8"><div class="card p-3 shadow-sm h-100"><h6 class="fw-bold border-bottom pb-2">Comorbidity Profile</h6><div class="chart-wrapper" style="height:350px;"><canvas id="chartComorbidities"></canvas></div></div></div>
-            <div class="col-lg-4"><div class="card p-3 shadow-sm h-100"><h6 class="fw-bold border-bottom pb-2">MAGGIC Stratification</h6><div class="chart-wrapper" style="height:350px;"><canvas id="chartMAGGIC"></canvas></div></div></div>
+            <div class="col-lg-6">
+                <div class="card p-3 shadow-sm h-100">
+                    <h6 class="fw-bold border-bottom pb-2">HF Type Distribution</h6>
+                    <div class="analytics-chart-container"><canvas id="chartHFType"></canvas></div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card p-3 shadow-sm h-100">
+                    <h6 class="fw-bold border-bottom pb-2">GDMT Adherence Rates</h6>
+                    <div class="analytics-chart-container"><canvas id="chartGDMT"></canvas></div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card p-3 shadow-sm h-100">
+                    <h6 class="fw-bold border-bottom pb-2">Functional Class (NYHA)</h6>
+                    <div class="analytics-chart-container"><canvas id="chartNYHA"></canvas></div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="card p-3 shadow-sm h-100">
+                    <h6 class="fw-bold border-bottom pb-2">Comorbidities Overview</h6>
+                    <div class="analytics-chart-container"><canvas id="chartComorb"></canvas></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <div id="pageAdmin" class="page">
     <div class="clinic-header text-center">
-        <button class="btn btn-outline-light btn-sm position-absolute top-0 start-0 m-2" onclick="goToMain()"><i class="fa fa-arrow-left me-1"></i> Back</button>
+        <button class="btn btn-outline-light btn-sm position-absolute top-0 start-0 m-2" onclick="goToMain()">
+            <i class="fa fa-arrow-left me-1"></i> Back
+        </button>
         <h2 class="fw-bold mb-0">Registry Administration</h2>
     </div>
     <div class="container mt-3">
-        <div class="row g-3 mb-4">
-             <div class="col-6 col-md-3 text-center"><div class="card p-2"><h3 id="totalPatients">0</h3><small>Total Registry</small></div></div>
-        </div>
-        <table class="table table-sm table-striped">
-            <thead><tr><th>Patient</th><th>Civil ID</th><th>HF Type</th><th>Actions</th></tr></thead>
+        <div class="card p-3 text-center mb-4"><h3 class="fw-bold" id="totalPatients">0</h3><small>Total Registry Count</small></div>
+        <table class="table table-striped">
+            <thead><tr><th>Patient</th><th>File</th><th>Type</th><th>Actions</th></tr></thead>
             <tbody id="adminTableBody"></tbody>
         </table>
     </div>
 </div>
 
+<div id="chartModal" class="modal-overlay d-none">
+    <div class="modal-box" style="max-width:800px;">
+        <div class="d-flex justify-content-between mb-2"><h5><i class="fa fa-chart-line me-2"></i>Trends</h5><button class="btn-close" onclick="document.getElementById('chartModal').classList.add('d-none')"></button></div>
+        <div style="height:200px;"><canvas id="weightChart"></canvas></div>
+        <div style="height:200px;"><canvas id="bnpChart"></canvas></div>
+    </div>
+</div>
+
 <script>
-// ===== FIREBASE CONFIG =====
 firebase.initializeApp({
     apiKey:"AIzaSyAQ8wAh0gLV7-_lVEXXdIzZ7LmkMnshOiE",
     authDomain:"hf-clinic-registry.firebaseapp.com",
@@ -227,15 +248,17 @@ firebase.initializeApp({
 });
 var db = firebase.firestore();
 var auth = firebase.auth();
-var editingDocId = null, PC = {}, charts = {};
+var PC = {}, editingDocId = null, currentPatientId = null;
+var analyticalCharts = {};
 
-// ===== AUTH STATE =====
+// AUTH STATE
 auth.onAuthStateChanged(function(user) {
     document.getElementById('pageLoading').style.display = 'none';
     if (user) {
         document.getElementById('pageLogin').style.display = 'none';
         document.getElementById('pageMain').classList.add('active');
-        // Pre-fetch everything for Analytics background processing
+        document.getElementById('userBadge').textContent = user.email.split('@')[0];
+        // Background sync for Analytics
         db.collection("patients").onSnapshot(snapshot => {
             snapshot.forEach(doc => { PC[doc.id] = doc.data(); });
         });
@@ -245,21 +268,17 @@ auth.onAuthStateChanged(function(user) {
     }
 });
 
-// ===== CORE APP FUNCTIONS =====
+// LOGIN/LOGOUT
 function doLogin() {
-    const e = document.getElementById('loginEmail').value, p = document.getElementById('loginPassword').value;
+    var e = document.getElementById('loginEmail').value, p = document.getElementById('loginPassword').value;
     auth.signInWithEmailAndPassword(e, p).catch(err => {
         document.getElementById('loginError').innerText = "Access Denied";
         document.getElementById('loginError').style.display = "block";
     });
 }
-function doLogout() { auth.signOut(); location.reload(); }
+function doLogout() { auth.signOut(); }
 
-function calcBMI() {
-    const h = document.getElementById('Height').value / 100, w = document.getElementById('Weight').value;
-    if(h && w) document.getElementById('BMI').value = (w / (h * h)).toFixed(1);
-}
-
+// ORIGINAL MAGGIC LOGIC
 function calcMAGGIC() {
     let pts = 0;
     const age = parseInt(document.getElementById('Age').value) || 0;
@@ -268,31 +287,28 @@ function calcMAGGIC() {
     const ef = parseInt(document.getElementById('EF_Diagnosis').value) || 0;
     if(ef < 20) pts+=7; else if(ef < 30) pts+=5; else if(ef < 40) pts+=3;
 
-    const creat = parseInt(document.getElementById('Lab_Creat').value) || 0;
-    if(creat > 150) pts+=6; else if(creat > 110) pts+=3;
-
     if(document.getElementById('DM').value === 'Yes') pts+=3;
     if(document.getElementById('Smoker').value === 'Current') pts+=1;
-    if(document.getElementById('Med_BB').value === 'None') pts+=3;
-
-    const nyha = document.getElementById('NYHA').value;
-    if(nyha === 'IV') pts+=8; else if(nyha === 'III') pts+=6; else if(nyha === 'II') pts+=2;
+    if(document.getElementById('NYHA').value === 'IV') pts+=8;
 
     document.getElementById('MAGGIC_Score').value = pts;
-    document.getElementById('MAGGIC_Risk').value = pts > 30 ? ">30% | >60%" : "<10% | <20%";
+    document.getElementById('MAGGIC_Risk').value = pts > 30 ? "~30% | ~60%" : "<10% | <20%";
 }
 
+function calcBMI() {
+    const h = document.getElementById('Height').value / 100, w = document.getElementById('Weight').value;
+    if(h && w) document.getElementById('BMI').value = (w / (h * h)).toFixed(1);
+}
+
+// PATIENT MANAGEMENT
 function savePatient() {
-    const data = {};
+    var data = {};
     document.querySelectorAll('#hfForm input, #hfForm select').forEach(el => { if(el.id) data[el.id] = el.value; });
     data.timestamp = firebase.firestore.FieldValue.serverTimestamp();
     
-    const btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    
-    const docRef = editingDocId ? db.collection("patients").doc(editingDocId) : db.collection("patients").doc();
+    var docRef = editingDocId ? db.collection("patients").doc(editingDocId) : db.collection("patients").doc();
     docRef.set(data, {merge: true}).then(() => {
-        alert("Saved successfully");
+        alert("Patient Data Saved Successfully");
         resetForm();
     }).catch(e => alert(e.message));
 }
@@ -300,114 +316,129 @@ function savePatient() {
 function resetForm() {
     editingDocId = null;
     document.querySelectorAll('#hfForm input, #hfForm select').forEach(el => el.value = "");
-    document.getElementById('submitBtn').innerText = "Save Patient Record";
     document.getElementById('formTitle').innerText = "New Patient Entry";
     document.getElementById('cancelEditBtn').classList.add('d-none');
+    document.getElementById('visitsContainer').style.display = "none";
 }
 
-// ===== SEARCH & ADMIN =====
 function searchPatient() {
-    const q = document.getElementById('searchInput').value.toLowerCase();
-    const results = document.getElementById('searchResults');
-    results.innerHTML = "";
+    var q = document.getElementById('searchInput').value.toLowerCase();
+    var res = document.getElementById('searchResults'); res.innerHTML = "";
     Object.keys(PC).forEach(id => {
-        const p = PC[id];
-        if(p.Patient_Name.toLowerCase().includes(q) || p.Civil_ID.includes(q)) {
-            results.innerHTML += `<div class="alert alert-light border d-flex justify-content-between">
-                <span>${p.Patient_Name} (${p.File_No})</span>
-                <button class="btn btn-sm btn-primary" onclick="editPt('${id}')">Edit</button>
+        var p = PC[id];
+        if(p.Patient_Name.toLowerCase().includes(q) || p.File_No.includes(q)) {
+            res.innerHTML += `<div class="alert alert-light border d-flex justify-content-between align-items-center">
+                <span><b>${p.Patient_Name}</b> (${p.File_No})</span>
+                <button class="btn btn-sm btn-primary" onclick="editPt('${id}')">Open File</button>
             </div>`;
         }
     });
 }
 
 function editPt(id) {
-    editingDocId = id;
-    const p = PC[id];
+    editingDocId = id; currentPatientId = id;
+    var p = PC[id];
     Object.keys(p).forEach(k => { if(document.getElementById(k)) document.getElementById(k).value = p[k]; });
     document.getElementById('formTitle').innerText = "Editing: " + p.Patient_Name;
-    document.getElementById('submitBtn').innerText = "Update Patient";
     document.getElementById('cancelEditBtn').classList.remove('d-none');
-    window.scrollTo(0,0);
+    document.getElementById('pdfBtn').style.display = 'block';
+    loadVisits(id);
+    document.getElementById('visitsContainer').style.display = "block";
+    window.scrollTo({top:0, behavior:"smooth"});
 }
 
-function showAdminLogin() { if(prompt("PIN")==="1234") { document.getElementById('pageMain').classList.remove('active'); document.getElementById('pageAdmin').classList.add('active'); loadAdmin(); } }
-function goToMain() { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById('pageMain').classList.add('active'); }
-
-function loadAdmin() {
-    const tb = document.getElementById('adminTableBody');
-    tb.innerHTML = "";
-    Object.keys(PC).forEach(id => {
-        const p = PC[id];
-        tb.innerHTML += `<tr><td>${p.Patient_Name}</td><td>${p.Civil_ID}</td><td>${p.HF_Type}</td><td><button class="btn btn-sm btn-danger" onclick="deletePt('${id}')">Del</button></td></tr>`;
+// ORIGINAL VISITS LOGIC
+function loadVisits(id) {
+    var list = document.getElementById('visitList'); list.innerHTML = "Loading visits...";
+    db.collection("patients").doc(id).collection("visits").orderBy("visitDate", "desc").get().then(snap => {
+        list.innerHTML = snap.empty ? "No visits recorded." : "";
+        snap.forEach(doc => {
+            var v = doc.data();
+            list.innerHTML += `<div class="visit-section">
+                <div class="fw-bold text-primary">${v.visitDate}</div>
+                <div>Status: ${v.V_NYHA || 'N/A'} | Weight: ${v.V_Weight || 'N/A'} kg</div>
+            </div>`;
+        });
     });
 }
 
-// ===== CLINICAL ANALYTICS LOGIC =====
+// ANALYTICS DASHBOARD LOGIC
 function showAnalytics() {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('pageAnalytics').classList.add('active');
     renderClinicalAnalytics();
 }
 
+function goToMain() {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('pageMain').classList.add('active');
+}
+
 function renderClinicalAnalytics() {
-    const patients = Object.values(PC);
-    if (patients.length === 0) return;
+    const pts = Object.values(PC);
+    if (!pts.length) return;
 
     let stats = {
-        hfType: { HFrEF: 0, HFmrEF: 0, HFpEF: 0 },
-        gdmt: { ACE_ARNI: 0, BB: 0, MRA: 0, SGLT2i: 0, Quad: 0 },
-        nyha: { I: 0, II: 0, III: 0, IV: 0 },
-        comorb: { DM: 0, HTN: 0, AF: 0, CKD: 0, Lung: 0 },
-        maggic: { Low: 0, Mid: 0, High: 0 },
-        sumEF: 0, countEF: 0
+        hf: { HFrEF:0, HFmrEF:0, HFpEF:0 },
+        gdmt: { RASi:0, BB:0, MRA:0, SGLT2i:0, Quad:0 },
+        nyha: { I:0, II:0, III:0, IV:0 },
+        comorb: { DM:0, HTN:0, AF:0, CKD:0 },
+        highRisk:0, sumEF:0, countEF:0
     };
 
-    patients.forEach(p => {
-        if(p.HF_Type) stats.hfType[p.HF_Type]++;
+    pts.forEach(p => {
+        if(p.HF_Type) stats.hf[p.HF_Type]++;
         let meds = 0;
-        if(p.Med_ARNI === 'Yes' || (p.Med_ACEiARB && p.Med_ACEiARB !== 'None')) { stats.gdmt.ACE_ARNI++; meds++; }
+        if(p.Med_ARNI === 'Yes' || (p.Med_ACEiARB && p.Med_ACEiARB !== 'None')) { stats.gdmt.RASi++; meds++; }
         if(p.Med_BB && p.Med_BB !== 'None') { stats.gdmt.BB++; meds++; }
         if(p.Med_MRA && p.Med_MRA !== 'None') { stats.gdmt.MRA++; meds++; }
         if(p.Med_SGLT2i && p.Med_SGLT2i !== 'None') { stats.gdmt.SGLT2i++; meds++; }
         if(meds === 4) stats.gdmt.Quad++;
-
         if(p.NYHA) stats.nyha[p.NYHA]++;
         if(p.DM === 'Yes') stats.comorb.DM++;
         if(p.HTN === 'Yes') stats.comorb.HTN++;
-        if(p.Lung_Dz === 'Yes') stats.comorb.Lung++;
-
-        let m = parseInt(p.MAGGIC_Score) || 0;
-        if(m < 15) stats.maggic.Low++; else if(m <= 30) stats.maggic.Mid++; else stats.maggic.High++;
+        if(parseInt(p.MAGGIC_Score) > 30) stats.highRisk++;
         if(p.EF_Diagnosis) { stats.sumEF += parseInt(p.EF_Diagnosis); stats.countEF++; }
     });
 
-    document.getElementById('anTotal').innerText = patients.length;
-    document.getElementById('anGDMT').innerText = Math.round((stats.gdmt.Quad / patients.length) * 100) + '%';
-    document.getElementById('anHighRisk').innerText = stats.maggic.High;
+    document.getElementById('anTotal').innerText = pts.length;
+    document.getElementById('anGDMT').innerText = Math.round((stats.gdmt.Quad/pts.length)*100) + '%';
+    document.getElementById('anHighRisk').innerText = stats.highRisk;
     document.getElementById('anAvgEF').innerText = stats.countEF ? Math.round(stats.sumEF/stats.countEF) + '%' : '0%';
 
-    createChart('chartHFType', 'doughnut', ['HFrEF', 'HFmrEF', 'HFpEF'], [stats.hfType.HFrEF, stats.hfType.HFmrEF, stats.hfType.HFpEF], ['#dc3545', '#ffc107', '#198754']);
-    createChart('chartGDMT', 'bar', ['RASi', 'BB', 'MRA', 'SGLT2i'], [stats.gdmt.ACE_ARNI, stats.gdmt.BB, stats.gdmt.MRA, stats.gdmt.SGLT2i], '#0d6efd');
-    createChart('chartNYHA', 'pie', ['I', 'II', 'III', 'IV'], [stats.nyha.I, stats.nyha.II, stats.nyha.III, stats.nyha.IV], ['#e0e0e0','#b3e5fc','#4fc3f7','#0288d1']);
-    createChart('chartComorbidities', 'bar', Object.keys(stats.comorb), Object.values(stats.comorb), '#6c757d', 'y');
-    createChart('chartMAGGIC', 'doughnut', ['Low (<15)', 'Mid (15-30)', 'High (>30)'], [stats.maggic.Low, stats.maggic.Mid, stats.maggic.High], ['#198754', '#ffc107', '#dc3545']);
-}
+    const draw = (id, type, labels, data, colors, axis='x') => {
+        if(analyticalCharts[id]) analyticalCharts[id].destroy();
+        analyticalCharts[id] = new Chart(document.getElementById(id), {
+            type: type,
+            data: { labels, datasets: [{ data, backgroundColor: colors }] },
+            options: { responsive: true, maintainAspectRatio: false, indexAxis: axis, plugins: { legend: { position:'bottom', display: type!=='bar' } } }
+        });
+    };
 
-function createChart(id, type, labels, data, colors, axis = 'x') {
-    if (charts[id]) charts[id].destroy();
-    charts[id] = new Chart(document.getElementById(id), {
-        type: type,
-        data: { labels: labels, datasets: [{ data: data, backgroundColor: colors }] },
-        options: { responsive: true, maintainAspectRatio: false, indexAxis: axis, plugins: { legend: { position: 'bottom', display: type !== 'bar' } } }
-    });
+    draw('chartHFType', 'pie', ['HFrEF', 'HFmrEF', 'HFpEF'], [stats.hf.HFrEF, stats.hf.HFmrEF, stats.hf.HFpEF], ['#dc3545','#ffc107','#198754']);
+    draw('chartGDMT', 'bar', ['RASi','BB','MRA','SGLT2i'], [stats.gdmt.RASi, stats.gdmt.BB, stats.gdmt.MRA, stats.gdmt.SGLT2i], '#0d6efd');
+    draw('chartNYHA', 'doughnut', ['I','II','III','IV'], [stats.nyha.I, stats.nyha.II, stats.nyha.III, stats.nyha.IV], ['#e0e0e0','#64b5f6','#1e88e5','#0d47a1']);
+    draw('chartComorb', 'bar', ['DM','HTN'], [stats.comorb.DM, stats.comorb.HTN], '#6c757d', 'y');
 }
 
 function exportAnalyticsExcel() {
     const ws = XLSX.utils.json_to_sheet(Object.values(PC));
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Patients");
-    XLSX.writeFile(wb, "HF_Registry_Export_" + new Date().toISOString().split('T')[0] + ".xlsx");
+    XLSX.utils.book_append_sheet(wb, ws, "Registry");
+    XLSX.writeFile(wb, "Clinical_Registry_" + new Date().toISOString().split('T')[0] + ".xlsx");
+}
+
+function showAdminLogin() {
+    if(prompt("Admin PIN:")==="1234"){
+        document.getElementById('pageMain').classList.remove('active');
+        document.getElementById('pageAdmin').classList.add('active');
+        document.getElementById('totalPatients').innerText = Object.keys(PC).length;
+        var tb = document.getElementById('adminTableBody'); tb.innerHTML = "";
+        Object.keys(PC).forEach(id => {
+            var p = PC[id];
+            tb.innerHTML += `<tr><td>${p.Patient_Name}</td><td>${p.File_No}</td><td>${p.HF_Type}</td><td><button class="btn btn-sm btn-outline-danger" onclick="alert('Admin removal logic')">Delete</button></td></tr>`;
+        });
+    }
 }
 </script>
 </body>
