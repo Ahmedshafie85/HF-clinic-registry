@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>HF Registry</title>
-    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%20%22HF%20Registry%22%2C%20%22short_name%22%3A%20%22HF%20Registry%22%2C%20%22start_url%22%3A%20%22./%22%2C%20%22display%22%3A%20%22standalone%22%2C%20%22background_color%22%3A%20%22%238b0000%22%2C%20%22theme_color%22%3A%20%22%238b0000%22%2C%20%22icons%22%3A%20%5B%7B%22src%22%3A%20%22./icon.png%22%2C%20%22sizes%22%3A%20%22192x192%22%2C%20%22type%22%3A%20%22image/png%22%7D%2C%20%7B%22src%22%3A%20%22./icon.png%22%2C%20%22sizes%22%3A%20%22512x512%22%2C%20%22type%22%3A%20%22image/png%22%7D%5D%7D">
+    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%20%22HF%20Registry%22%2C%20%short_name%22%3A%20%22HF%20Registry%22%2C%20%22start_url%22%3A%20%22./%22%2C%20%22display%22%3A%20%22standalone%22%2C%20%22background_color%22%3A%20%22%238b0000%22%2C%20%22theme_color%22%3A%20%22%238b0000%22%2C%20%22icons%22%3A%20%5B%7B%22src%22%3A%20%22./icon.png%22%2C%20%22sizes%22%3A%20%22192x192%22%2C%20%22type%22%3A%20%22image/png%22%7D%2C%20%7B%22src%22%3A%20%22./icon.png%22%2C%20%22sizes%22%3A%20%22512x512%22%2C%20%22type%22%3A%20%22image/png%22%7D%5D%7D">
     <link rel="apple-touch-icon" href="./icon.png">
     <link rel="icon" type="image/png" href="./icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -26,202 +25,221 @@
         body{background:#f4f6f9;font-family:'DM Sans',sans-serif;font-size:0.85rem}
         body.login-active{background:#8b0000!important;}
 
-```
-    /* ===== LOGIN SCREEN ===== */
-    #pageLogin{display:none;position:fixed;top:0;left:0;right:0;bottom:0;min-height:100vh;width:100%;z-index:9999;background:linear-gradient(160deg,#1a0000 0%,#3d0000 40%,#8b0000 100%);overflow:hidden;}
-    #pageLogin::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at center,rgba(139,0,0,0.15) 0%,transparent 60%);animation:pulse-bg 4s ease-in-out infinite;}
-    @keyframes pulse-bg{0%,100%{transform:scale(1);opacity:0.5}50%{transform:scale(1.1);opacity:1}}
-    .login-container{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:30px 20px;}
-    .login-logo{text-align:center;margin-bottom:40px;animation:fadeDown 0.8s ease forwards;}
-    @keyframes fadeDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
-    .login-logo .heart-icon{font-size:3rem;color:#ff6b6b;filter:drop-shadow(0 0 20px rgba(255,107,107,0.5));animation:heartbeat 1.5s ease-in-out infinite;}
-    @keyframes heartbeat{0%,100%{transform:scale(1)}15%{transform:scale(1.15)}30%{transform:scale(1)}45%{transform:scale(1.08)}}
-    .login-logo h1{font-family:'Crimson Pro',serif;color:#fff;font-size:1.6rem;font-weight:700;margin:12px 0 4px;letter-spacing:0.02em;}
-    .login-logo p{color:rgba(255,255,255,0.6);font-size:0.8rem;font-weight:300;letter-spacing:0.08em;text-transform:uppercase;}
-    .login-card{background:rgba(255,255,255,0.07);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:35px 28px;width:100%;max-width:380px;animation:fadeUp 0.8s ease 0.2s forwards;opacity:1;}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-    .login-card h2{font-family:'Crimson Pro',serif;color:#fff;font-size:1.4rem;font-weight:600;margin-bottom:6px;}
-    .login-card .subtitle{color:rgba(255,255,255,0.5);font-size:0.78rem;margin-bottom:28px;}
-    .login-field{margin-bottom:16px;}
-    .login-field label{color:rgba(255,255,255,0.7);font-size:0.72rem;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;display:block;margin-bottom:6px;}
-    .login-field .input-wrap{position:relative;}
-    .login-field .input-wrap i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.4);font-size:0.85rem;}
-    .login-field input{width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:12px 14px 12px 38px;color:#fff;font-size:0.9rem;font-family:'DM Sans',sans-serif;transition:all 0.2s;outline:none;}
-    .login-field input:focus{border-color:rgba(255,107,107,0.6);background:rgba(255,255,255,0.12);box-shadow:0 0 0 3px rgba(255,107,107,0.15);}
-    .login-field input::placeholder{color:rgba(255,255,255,0.3);}
-    .btn-login{width:100%;padding:13px;background:linear-gradient(135deg,#c0392b,#8b0000);border:none;border-radius:10px;color:#fff;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:600;letter-spacing:0.05em;cursor:pointer;transition:all 0.2s;margin-top:8px;box-shadow:0 4px 20px rgba(139,0,0,0.4);}
-    .btn-login:hover{transform:translateY(-1px);box-shadow:0 6px 25px rgba(139,0,0,0.5);}
-    .btn-login:active{transform:translateY(0);}
-    .btn-login:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
-    .login-error{background:rgba(220,53,69,0.2);border:1px solid rgba(220,53,69,0.4);border-radius:8px;color:#ff8a8a;font-size:0.8rem;padding:10px 14px;margin-top:14px;display:none;text-align:center;}
-    .login-footer{margin-top:28px;text-align:center;color:rgba(255,255,255,0.3);font-size:0.72rem;}
+        /* ===== LOGIN SCREEN ===== */
+        #pageLogin{display:none;position:fixed;top:0;left:0;right:0;bottom:0;min-height:100vh;width:100%;z-index:9999;background:linear-gradient(160deg,#1a0000 0%,#3d0000 40%,#8b0000 100%);overflow:hidden;}
+        #pageLogin::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at center,rgba(139,0,0,0.15) 0%,transparent 60%);animation:pulse-bg 4s ease-in-out infinite;}
+        @keyframes pulse-bg{0%,100%{transform:scale(1);opacity:0.5}50%{transform:scale(1.1);opacity:1}}
+        .login-container{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:30px 20px;}
+        .login-logo{text-align:center;margin-bottom:40px;animation:fadeDown 0.8s ease forwards;}
+        @keyframes fadeDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+        .login-logo .heart-icon{font-size:3rem;color:#ff6b6b;filter:drop-shadow(0 0 20px rgba(255,107,107,0.5));animation:heartbeat 1.5s ease-in-out infinite;}
+        @keyframes heartbeat{0%,100%{transform:scale(1)}15%{transform:scale(1.15)}30%{transform:scale(1)}45%{transform:scale(1.08)}}
+        .login-logo h1{font-family:'Crimson Pro',serif;color:#fff;font-size:1.6rem;font-weight:700;margin:12px 0 4px;letter-spacing:0.02em;}
+        .login-logo p{color:rgba(255,255,255,0.6);font-size:0.8rem;font-weight:300;letter-spacing:0.08em;text-transform:uppercase;}
+        .login-card{background:rgba(255,255,255,0.07);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:35px 28px;width:100%;max-width:380px;animation:fadeUp 0.8s ease 0.2s forwards;opacity:1;}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        .login-card h2{font-family:'Crimson Pro',serif;color:#fff;font-size:1.4rem;font-weight:600;margin-bottom:6px;}
+        .login-card .subtitle{color:rgba(255,255,255,0.5);font-size:0.78rem;margin-bottom:28px;}
+        .login-field{margin-bottom:16px;}
+        .login-field label{color:rgba(255,255,255,0.7);font-size:0.72rem;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;display:block;margin-bottom:6px;}
+        .login-field .input-wrap{position:relative;}
+        .login-field .input-wrap i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.4);font-size:0.85rem;}
+        .login-field input{width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:12px 14px 12px 38px;color:#fff;font-size:0.9rem;font-family:'DM Sans',sans-serif;transition:all 0.2s;outline:none;}
+        .login-field input:focus{border-color:rgba(255,107,107,0.6);background:rgba(255,255,255,0.12);box-shadow:0 0 0 3px rgba(255,107,107,0.15);}
+        .login-field input::placeholder{color:rgba(255,255,255,0.3);}
+        .btn-login{width:100%;padding:13px;background:linear-gradient(135deg,#c0392b,#8b0000);border:none;border-radius:10px;color:#fff;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:600;letter-spacing:0.05em;cursor:pointer;transition:all 0.2s;margin-top:8px;box-shadow:0 4px 20px rgba(139,0,0,0.4);}
+        .btn-login:hover{transform:translateY(-1px);box-shadow:0 6px 25px rgba(139,0,0,0.5);}
+        .btn-login:active{transform:translateY(0);}
+        .btn-login:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+        .login-error{background:rgba(220,53,69,0.2);border:1px solid rgba(220,53,69,0.4);border-radius:8px;color:#ff8a8a;font-size:0.8rem;padding:10px 14px;margin-top:14px;display:none;text-align:center;}
+        .login-footer{margin-top:28px;text-align:center;color:rgba(255,255,255,0.3);font-size:0.72rem;}
 
-    /* ===== LOADING SCREEN ===== */
-    #pageLoading{display:flex;min-height:100vh;background:linear-gradient(160deg,#1a0000 0%,#8b0000 100%);align-items:center;justify-content:center;flex-direction:column;gap:16px;}
-    .loading-heart{font-size:2.5rem;animation:heartbeat 1.2s ease-in-out infinite;}
-    .loading-text{color:rgba(255,255,255,0.6);font-size:0.85rem;letter-spacing:0.06em;}
+        /* ===== LOADING SCREEN ===== */
+        #pageLoading{display:flex;min-height:100vh;background:linear-gradient(160deg,#1a0000 0%,#8b0000 100%);align-items:center;justify-content:center;flex-direction:column;gap:16px;}
+        .loading-heart{font-size:2.5rem;animation:heartbeat 1.2s ease-in-out infinite;}
+        .loading-text{color:rgba(255,255,255,0.6);font-size:0.85rem;letter-spacing:0.06em;}
 
-    /* ===== MAIN APP ===== */
-    .clinic-header{background:linear-gradient(135deg,var(--primary),#b30000);color:#fff;padding:25px 0;border-radius:0 0 15px 15px;position:relative}
-    .card{border:none;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:20px}
-    .section-title{color:var(--primary);font-weight:bold;border-bottom:2px solid #e9ecef;padding-bottom:5px;margin-top:20px;margin-bottom:12px}
-    .visit-section{background:#fff;border-left:4px solid var(--primary);padding:15px;margin-bottom:15px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
-    label{font-weight:600;font-size:.75rem;color:#495057;display:block;margin-bottom:2px}
-    .form-control,.form-select{border-radius:6px;font-size:.85rem;padding:4px 8px}
-    .btn-medical{background:var(--primary);color:#fff;font-weight:bold;width:100%;padding:12px;border:none;border-radius:8px}
-    .btn-visit{background:#17a2b8;color:#fff;font-weight:bold}
-    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;display:flex;justify-content:center;align-items:center}
-    .modal-box{background:#fff;border-radius:16px;padding:30px 20px;max-width:500px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.4);animation:pop .3s ease;max-height:90vh;overflow-y:auto;}
-    @keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
-    .page{display:none}.page.active{display:block}
-    .loading{opacity:0.6;pointer-events:none}
-    .patient-card{font-size:0.8rem;margin-bottom:15px;}
-    .patient-card th{background:#f8f9fa;width:40%;font-weight:600}
-    .patient-card td{background:#fff}
-    .empty-field{color:#adb5bd;font-style:italic}
-    .visit-history{border-left:3px solid #17a2b8;padding-left:10px;margin:10px 0}
-    .input-error{border:2px solid #dc3545!important}
-    .error-msg{color:#dc3545;font-size:0.7rem;display:none}
-    .chart-container{position:relative;height:22vh;width:100%;margin-bottom:15px;}
-    .clickable-tab{cursor:pointer;padding:10px;background-color:#e9ecef;border-radius:5px;border-left:5px solid var(--primary);transition:0.2s;}
-    .clickable-tab:hover{background-color:#dee2e6;}
-    #pdfContainer{position:fixed;top:0;left:0;width:100%;min-height:100%;overflow:auto;z-index:99998;background:#fff;display:none;}
-    #pdfContainer.active{display:block;}
-    .btn-logout{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;font-size:0.75rem;padding:5px 12px;border-radius:20px;cursor:pointer;transition:all 0.2s;}
-    .btn-logout:hover{background:rgba(255,255,255,0.25);}
-    .user-badge{font-size:0.7rem;color:rgba(255,255,255,0.7);margin-bottom:4px;}
+        /* ===== MAIN APP ===== */
+        .clinic-header{background:linear-gradient(135deg,var(--primary),#b30000);color:#fff;padding:25px 0;border-radius:0 0 15px 15px;position:relative}
+        .card{border:none;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:20px}
+        .section-title{color:var(--primary);font-weight:bold;border-bottom:2px solid #e9ecef;padding-bottom:5px;margin-top:20px;margin-bottom:12px}
+        .visit-section{background:#fff;border-left:4px solid var(--primary);padding:15px;margin-bottom:15px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+        label{font-weight:600;font-size:.75rem;color:#495057;display:block;margin-bottom:2px}
+        .form-control,.form-select{border-radius:6px;font-size:.85rem;padding:4px 8px}
+        .btn-medical{background:var(--primary);color:#fff;font-weight:bold;width:100%;padding:12px;border:none;border-radius:8px}
+        .btn-visit{background:#17a2b8;color:#fff;font-weight:bold}
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;display:flex;justify-content:center;align-items:center}
+        .modal-box{background:#fff;border-radius:16px;padding:30px 20px;max-width:500px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.4);animation:pop .3s ease;max-height:90vh;overflow-y:auto;}
+        @keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+        .page{display:none}.page.active{display:block}
+        .loading{opacity:0.6;pointer-events:none}
+        .patient-card{font-size:0.8rem;margin-bottom:15px;}
+        .patient-card th{background:#f8f9fa;width:40%;font-weight:600}
+        .patient-card td{background:#fff}
+        .empty-field{color:#adb5bd;font-style:italic}
+        .visit-history{border-left:3px solid #17a2b8;padding-left:10px;margin:10px 0;cursor:pointer;transition:all 0.2s;}
+        .visit-history:hover{background:#f8f9fa;padding:8px;border-radius:6px;}
+        .visit-details{display:none;padding:15px;background:#f8f9fa;border-radius:8px;margin-top:10px;}
+        .visit-details.expanded{display:block;animation:fadeUp 0.3s ease;}
+        .input-error{border:2px solid #dc3545!important}
+        .error-msg{color:#dc3545;font-size:0.7rem;display:none}
+        .chart-container{position:relative;height:22vh;width:100%;margin-bottom:15px;}
+        .clickable-tab{cursor:pointer;padding:10px;background-color:#e9ecef;border-radius:5px;border-left:5px solid var(--primary);transition:0.2s;}
+        .clickable-tab:hover{background-color:#dee2e6;}
+        #pdfContainer{position:fixed;top:0;left:0;width:100%;min-height:100%;overflow:auto;z-index:99998;background:#fff;display:none;}
+        #pdfContainer.active{display:block;}
+        .btn-logout{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;font-size:0.75rem;padding:5px 12px;border-radius:20px;cursor:pointer;transition:all 0.2s;}
+        .btn-logout:hover{background:rgba(255,255,255,0.25);}
+        .user-badge{font-size:0.7rem;color:rgba(255,255,255,0.7);margin-bottom:4px;}
 
-    /* ===== WIZARD STEPPER ===== */
-    .wizard-progress{display:flex;justify-content:center;align-items:center;gap:0;margin:12px 0 16px;padding:0 10px;flex-wrap:nowrap;overflow-x:auto;}
-    .wizard-step{display:flex;align-items:center;gap:0;}
-    .wizard-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;border:2px solid #ddd;background:#fff;color:#aaa;cursor:pointer;transition:all 0.3s;flex-shrink:0;}
-    .wizard-dot.active{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 0 0 3px rgba(139,0,0,0.2);}
-    .wizard-dot.done{background:#1d6f42;border-color:#1d6f42;color:#fff;}
-    .wizard-line{width:16px;height:2px;background:#ddd;flex-shrink:0;}
-    .wizard-line.done{background:#1d6f42;}
-    .wizard-nav{display:flex;gap:8px;margin-top:12px;justify-content:space-between;}
-    .wizard-nav .btn{padding:8px 20px;font-weight:600;font-size:0.8rem;border-radius:8px;}
-    .form-step{display:none;animation:fadeUp 0.3s ease;}
-    .form-step.active{display:block;}
+        /* ===== WIZARD STEPPER - NAMES ONLY ===== */
+        .wizard-progress{display:flex;justify-content:center;align-items:center;gap:4px;margin:12px 0 16px;padding:0 10px;flex-wrap:wrap;}
+        .wizard-step{display:flex;align-items:center;gap:4px;}
+        .wizard-name{padding:8px 16px;border-radius:20px;font-size:0.7rem;font-weight:600;border:2px solid #ddd;background:#f8f9fa;color:#888;cursor:pointer;transition:all 0.3s;white-space:nowrap;}
+        .wizard-name.active{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 0 0 3px rgba(139,0,0,0.2);}
+        .wizard-name.done{background:#1d6f42;border-color:#1d6f42;color:#fff;}
+        .wizard-line{width:12px;height:2px;background:#ddd;}
+        .wizard-line.done{background:#1d6f42;}
+        .wizard-nav{display:flex;gap:8px;margin-top:12px;justify-content:space-between;}
+        .wizard-nav .btn{padding:8px 20px;font-weight:600;font-size:0.8rem;border-radius:8px;}
+        .form-step{display:none;animation:fadeUp 0.3s ease;}
+        .form-step.active{display:block;}
 
-    /* ===== STICKY SAVE BAR ===== */
-    .sticky-save-bar{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(180deg,rgba(244,246,249,0),rgba(244,246,249,1) 20%);padding:12px 16px 16px;z-index:999;display:none;}
-    .sticky-save-bar.visible{display:flex;gap:8px;justify-content:center;}
-    .sticky-save-bar .btn{padding:10px 24px;font-weight:700;font-size:0.85rem;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,0.15);}
+        /* ===== STICKY SAVE BAR ===== */
+        .sticky-save-bar{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(180deg,rgba(244,246,249,0),rgba(244,246,249,1) 20%);padding:12px 16px 16px;z-index:999;display:none;}
+        .sticky-save-bar.visible{display:flex;gap:8px;justify-content:center;}
+        .sticky-save-bar .btn{padding:10px 24px;font-weight:700;font-size:0.85rem;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,0.15);}
 
-    /* ===== AUTO-CALC BADGE ===== */
-    .auto-badge{display:inline-flex;align-items:center;gap:3px;font-size:0.6rem;color:#1d6f42;background:#d4edda;padding:1px 6px;border-radius:10px;font-weight:700;vertical-align:middle;margin-left:4px;}
-    .auto-badge i{font-size:0.55rem;}
+        /* ===== AUTO-CALC BADGE ===== */
+        .auto-badge{display:inline-flex;align-items:center;gap:3px;font-size:0.6rem;color:#1d6f42;background:#d4edda;padding:1px 6px;border-radius:10px;font-weight:700;vertical-align:middle;margin-left:4px;}
+        .auto-badge i{font-size:0.55rem;}
 
-    /* ===== PILL TOGGLES (Comorbidities) ===== */
-    .pill-group{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
-    .pill-toggle{padding:6px 14px;border-radius:20px;font-size:0.75rem;font-weight:600;border:2px solid #ddd;background:#f8f9fa;color:#888;cursor:pointer;transition:all 0.2s;user-select:none;}
-    .pill-toggle.active{background:#1d6f42;border-color:#1d6f42;color:#fff;}
-    .pill-toggle:hover{border-color:#aaa;}
-    .pill-toggle.active:hover{border-color:#155724;}
+        /* ===== PILL TOGGLES (Comorbidities) ===== */
+        .pill-group{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+        .pill-toggle{padding:6px 14px;border-radius:20px;font-size:0.75rem;font-weight:600;border:2px solid #ddd;background:#f8f9fa;color:#888;cursor:pointer;transition:all 0.2s;user-select:none;}
+        .pill-toggle.active{background:#1d6f42;border-color:#1d6f42;color:#fff;}
+        .pill-toggle:hover{border-color:#aaa;}
+        .pill-toggle.active:hover{border-color:#155724;}
 
-    /* ===== CLINICAL ALERTS ===== */
-    .clinical-alert{display:none;padding:8px 12px;border-radius:8px;font-size:0.78rem;margin:6px 0;animation:fadeUp 0.3s ease;}
-    .clinical-alert.visible{display:flex;align-items:flex-start;gap:8px;}
-    .clinical-alert i{margin-top:2px;flex-shrink:0;}
-    .alert-warning-soft{background:#fff3cd;border:1px solid #ffc107;color:#856404;}
-    .alert-info-soft{background:#d1ecf1;border:1px solid #17a2b8;color:#0c5460;}
-    .alert-danger-soft{background:#f8d7da;border:1px solid #dc3545;color:#721c24;}
-    .alert-success-soft{background:#d4edda;border:1px solid #28a745;color:#155724;}
+        /* ===== CLINICAL ALERTS ===== */
+        .clinical-alert{display:none;padding:8px 12px;border-radius:8px;font-size:0.78rem;margin:6px 0;animation:fadeUp 0.3s ease;}
+        .clinical-alert.visible{display:flex;align-items:flex-start;gap:8px;}
+        .clinical-alert i{margin-top:2px;flex-shrink:0;}
+        .alert-warning-soft{background:#fff3cd;border:1px solid #ffc107;color:#856404;}
+        .alert-info-soft{background:#d1ecf1;border:1px solid #17a2b8;color:#0c5460;}
+        .alert-danger-soft{background:#f8d7da;border:1px solid #dc3545;color:#721c24;}
+        .alert-success-soft{background:#d4edda;border:1px solid #28a745;color:#155724;}
 
-    /* ===== DOSE/DATE SUB-FIELDS ===== */
-    .med-sub-fields{display:none;margin-top:4px;padding:6px 8px;background:#f8f9fa;border-radius:6px;border:1px solid #e9ecef;animation:fadeUp 0.2s ease;}
-    .med-sub-fields.visible{display:block;}
-    .med-sub-fields label{font-size:0.68rem;color:#6c757d;}
-    .med-sub-fields .form-select,.med-sub-fields .form-control{font-size:0.78rem;padding:3px 6px;}
+        /* ===== DOSE/DATE SUB-FIELDS ===== */
+        .med-sub-fields{display:none;margin-top:4px;padding:6px 8px;background:#f8f9fa;border-radius:6px;border:1px solid #e9ecef;animation:fadeUp 0.2s ease;}
+        .med-sub-fields.visible{display:block;}
+        .med-sub-fields label{font-size:0.68rem;color:#6c757d;}
+        .med-sub-fields .form-select,.med-sub-fields .form-control{font-size:0.78rem;padding:3px 6px;}
 
-    /* ===== HFpEF DIM ===== */
-    .phenotype-dim{opacity:0.45;position:relative;}
-    .phenotype-dim::after{content:'Not primary for this HF phenotype';position:absolute;bottom:-14px;left:0;font-size:0.6rem;color:#999;font-style:italic;}
+        /* ===== HFpEF DIM ===== */
+        .phenotype-dim{opacity:0.45;position:relative;}
+        .phenotype-dim::after{content:'Not primary for this HF phenotype';position:absolute;bottom:-14px;left:0;font-size:0.6rem;color:#999;font-style:italic;}
 
-    /* ===== GDMT RATIONALE ===== */
-    .gdmt-rationale{display:none;margin-top:3px;}
-    .gdmt-rationale.visible{display:block;}
-    .gdmt-rationale select{font-size:0.78rem;padding:3px 6px;border:1px dashed #dc3545;background:#fff5f5;}
+        /* ===== GDMT RATIONALE MODAL ===== */
+        .gdmt-rationale-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:10000;justify-content:center;align-items:center;}
+        .gdmt-rationale-modal.visible{display:flex;}
+        .gdmt-rationale-box{background:#fff;border-radius:16px;padding:24px;max-width:450px;width:90%;animation:pop 0.3s ease;}
+        .gdmt-rationale-box h4{color:var(--primary);margin-bottom:8px;}
+        .gdmt-rationale-box p{color:#666;font-size:0.85rem;margin-bottom:16px;}
+        .rationale-options{display:flex;flex-direction:column;gap:8px;}
+        .rationale-option{padding:12px 16px;border:2px solid #e9ecef;border-radius:10px;cursor:pointer;transition:all 0.2s;font-size:0.85rem;display:flex;align-items:center;gap:10px;}
+        .rationale-option:hover{border-color:var(--primary);background:#fff5f5;}
+        .rationale-option i{color:var(--primary);}
+        .rationale-other-input{margin-top:12px;display:none;}
+        .rationale-other-input.visible{display:block;}
+        .rationale-badge{display:inline-flex;align-items:center;gap:4px;font-size:0.65rem;padding:2px 8px;border-radius:12px;font-weight:700;margin-left:6px;}
+        .rationale-intolerance{background:#fff3cd;color:#856404;}
+        .rationale-contra{background:#f8d7da;color:#721c24;}
+        .rationale-cost{background:#d1ecf1;color:#0c5460;}
+        .rationale-refusal{background:#f0f0f0;color:#666;}
+        .rationale-other{background:#e9ecef;color:#495057;}
 
-    /* ===== NT-proBNP TRAJECTORY FLAG ===== */
-    .trajectory-flag{display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:12px;animation:pulse-flag 1.5s ease-in-out infinite;}
-    .trajectory-flag.rising{background:#f8d7da;color:#721c24;}
-    .trajectory-flag.stable{background:#d4edda;color:#155724;}
-    @keyframes pulse-flag{0%,100%{opacity:1}50%{opacity:0.7}}
+        /* ===== NT-proBNP TRAJECTORY FLAG ===== */
+        .trajectory-flag{display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:12px;animation:pulse-flag 1.5s ease-in-out infinite;}
+        .trajectory-flag.rising{background:#f8d7da;color:#721c24;}
+        .trajectory-flag.stable{background:#d4edda;color:#155724;}
+        @keyframes pulse-flag{0%,100%{opacity:1}50%{opacity:0.7}}
 
-    /* ===== ANALYTICS PAGE ===== */
-    #pageAnalytics{display:none;}
-    #pageAnalytics.active{display:block;}
-    .analytics-header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:22px 0 18px;border-radius:0 0 15px 15px;position:relative;}
-    .analytics-header h2{font-family:'Crimson Pro',serif;letter-spacing:0.03em;}
-    .stat-kpi{background:#fff;border-radius:12px;padding:16px 14px;box-shadow:0 2px 12px rgba(0,0,0,0.07);border-top:4px solid var(--primary);margin-bottom:14px;text-align:center;transition:transform 0.2s;}
-    .stat-kpi:hover{transform:translateY(-2px);}
-    .stat-kpi .kpi-num{font-family:'Crimson Pro',serif;font-size:2.2rem;font-weight:700;color:var(--primary);line-height:1;}
-    .stat-kpi .kpi-label{font-size:0.72rem;color:#6c757d;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-top:4px;}
-    .stat-kpi .kpi-sub{font-size:0.7rem;color:#adb5bd;margin-top:2px;}
-    .analytics-card{background:#fff;border-radius:12px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,0.07);margin-bottom:16px;}
-    .analytics-card-title{font-size:0.8rem;font-weight:700;color:#1a1a2e;text-transform:uppercase;letter-spacing:0.06em;border-bottom:2px solid #f0f0f0;padding-bottom:8px;margin-bottom:14px;display:flex;align-items:center;gap:7px;}
-    .analytics-card-title i{color:var(--primary);}
-    .analytics-chart-wrap{position:relative;height:200px;width:100%;}
-    .analytics-chart-wrap-sm{position:relative;height:160px;width:100%;}
-    .analytics-chart-wrap-lg{position:relative;height:240px;width:100%;}
-    .comorbidity-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:0.78rem;}
-    .comorbidity-bar-row .cb-label{width:70px;font-weight:600;color:#495057;flex-shrink:0;}
-    .comorbidity-bar-row .cb-bar-wrap{flex:1;background:#f0f0f0;border-radius:4px;height:16px;overflow:hidden;}
-    .comorbidity-bar-row .cb-bar{height:100%;border-radius:4px;transition:width 0.8s ease;background:linear-gradient(90deg,#8b0000,#c0392b);}
-    .comorbidity-bar-row .cb-pct{width:38px;text-align:right;font-weight:700;color:var(--primary);flex-shrink:0;}
-    .gdmt-row{display:flex;align-items:center;justify-content:space-between;padding:6px 10px;border-radius:8px;margin-bottom:5px;font-size:0.8rem;background:#f8f9fa;}
-    .gdmt-row .gdmt-name{font-weight:600;color:#333;}
-    .gdmt-row .gdmt-pill{font-weight:700;font-size:0.75rem;padding:3px 10px;border-radius:20px;color:#fff;}
-    .gdmt-pill-high{background:#28a745;}
-    .gdmt-pill-mid{background:#ffc107;color:#333!important;}
-    .gdmt-pill-low{background:#dc3545;}
-    .risk-badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:0.7rem;font-weight:700;}
-    .risk-low{background:#d4edda;color:#155724;}
-    .risk-mid{background:#fff3cd;color:#856404;}
-    .risk-high{background:#f8d7da;color:#721c24;}
-    .analytics-section-divider{font-size:0.7rem;font-weight:700;color:#adb5bd;text-transform:uppercase;letter-spacing:0.1em;margin:8px 0 12px;border-bottom:1px solid #e9ecef;padding-bottom:4px;}
-    .high-risk-item{background:#fff5f5;border-left:3px solid #dc3545;border-radius:6px;padding:8px 10px;margin-bottom:6px;font-size:0.78rem;}
-    .high-risk-item .hr-name{font-weight:700;color:#333;}
-    .high-risk-item .hr-detail{color:#6c757d;}
-    .btn-analytics-export{border:none;border-radius:8px;padding:9px 16px;font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;}
-    .btn-analytics-export:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.15);}
-    .btn-export-pdf{background:linear-gradient(135deg,#8b0000,#c0392b);color:#fff;}
-    .btn-export-excel{background:linear-gradient(135deg,#1d6f42,#2ecc71);color:#fff;}
-    .analytics-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
-    .analytics-tab-btn{padding:6px 13px;border-radius:20px;border:2px solid #e9ecef;background:#fff;font-size:0.75rem;font-weight:600;color:#6c757d;cursor:pointer;transition:all 0.2s;}
-    .analytics-tab-btn.active{background:var(--primary);border-color:var(--primary);color:#fff;}
-    .analytics-panel{display:none;}
-    .analytics-panel.active{display:block;}
-    .spinner-overlay{text-align:center;padding:40px 20px;color:#6c757d;}
-    .spinner-overlay i{font-size:2rem;color:var(--primary);margin-bottom:10px;animation:spin 1s linear infinite;display:block;}
-    @keyframes spin{100%{transform:rotate(360deg);}}
-    .header-nav-btns{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:10px;}
-    .header-nav-btn{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;font-size:0.75rem;padding:5px 14px;border-radius:20px;cursor:pointer;transition:all 0.2s;font-weight:600;}
-    .header-nav-btn:hover,.header-nav-btn.active-nav{background:rgba(255,255,255,0.3);}
+        /* ===== VISIT MEDICATION GROUPS ===== */
+        .med-group{margin-bottom:16px;border:1px solid #e9ecef;border-radius:8px;overflow:hidden;}
+        .med-group-header{background:linear-gradient(135deg,#f8f9fa,#e9ecef);padding:10px 14px;font-weight:700;font-size:0.8rem;color:#495057;display:flex;align-items:center;gap:8px;border-bottom:1px solid #e9ecef;}
+        .med-group-header i{color:var(--primary);}
+        .med-group-body{padding:12px;background:#fff;}
+        .med-group-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;}
 
-    /* ===== GDMT GAP TABLE ===== */
-    .gap-table{font-size:0.72rem;width:100%;}
-    .gap-table th{background:#f0f0f0;font-size:0.68rem;padding:4px 6px;text-align:center;}
-    .gap-table td{padding:4px 6px;text-align:center;border-bottom:1px solid #f0f0f0;}
-    .gap-check{color:#1d6f42;font-weight:700;}
-    .gap-miss{color:#dc3545;font-weight:700;}
-</style>
-```
+        /* ===== ANALYTICS PAGE ===== */
+        #pageAnalytics{display:none;}
+        #pageAnalytics.active{display:block;}
+        .analytics-header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);color:#fff;padding:22px 0 18px;border-radius:0 0 15px 15px;position:relative;}
+        .analytics-header h2{font-family:'Crimson Pro',serif;letter-spacing:0.03em;}
+        .stat-kpi{background:#fff;border-radius:12px;padding:16px 14px;box-shadow:0 2px 12px rgba(0,0,0,0.07);border-top:4px solid var(--primary);margin-bottom:14px;text-align:center;transition:transform 0.2s;}
+        .stat-kpi:hover{transform:translateY(-2px);}
+        .stat-kpi .kpi-num{font-family:'Crimson Pro',serif;font-size:2.2rem;font-weight:700;color:var(--primary);line-height:1;}
+        .stat-kpi .kpi-label{font-size:0.72rem;color:#6c757d;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-top:4px;}
+        .stat-kpi .kpi-sub{font-size:0.7rem;color:#adb5bd;margin-top:2px;}
+        .analytics-card{background:#fff;border-radius:12px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,0.07);margin-bottom:16px;}
+        .analytics-card-title{font-size:0.8rem;font-weight:700;color:#1a1a2e;text-transform:uppercase;letter-spacing:0.06em;border-bottom:2px solid #f0f0f0;padding-bottom:8px;margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+        .analytics-card-title i{color:var(--primary);}
+        .analytics-chart-wrap{position:relative;height:200px;width:100%;}
+        .analytics-chart-wrap-sm{position:relative;height:160px;width:100%;}
+        .analytics-chart-wrap-lg{position:relative;height:240px;width:100%;}
+        .comorbidity-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:0.78rem;}
+        .comorbidity-bar-row .cb-label{width:70px;font-weight:600;color:#495057;flex-shrink:0;}
+        .comorbidity-bar-row .cb-bar-wrap{flex:1;background:#f0f0f0;border-radius:4px;height:16px;overflow:hidden;}
+        .comorbidity-bar-row .cb-bar{height:100%;border-radius:4px;transition:width 0.8s ease;background:linear-gradient(90deg,#8b0000,#c0392b);}
+        .comorbidity-bar-row .cb-pct{width:38px;text-align:right;font-weight:700;color:var(--primary);flex-shrink:0;}
+        .gdmt-row{display:flex;align-items:center;justify-content:space-between;padding:6px 10px;border-radius:8px;margin-bottom:5px;font-size:0.8rem;background:#f8f9fa;}
+        .gdmt-row .gdmt-name{font-weight:600;color:#333;}
+        .gdmt-row .gdmt-pill{font-weight:700;font-size:0.75rem;padding:3px 10px;border-radius:20px;color:#fff;}
+        .gdmt-pill-high{background:#28a745;}
+        .gdmt-pill-mid{background:#ffc107;color:#333!important;}
+        .gdmt-pill-low{background:#dc3545;}
+        .risk-badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:0.7rem;font-weight:700;}
+        .risk-low{background:#d4edda;color:#155724;}
+        .risk-mid{background:#fff3cd;color:#856404;}
+        .risk-high{background:#f8d7da;color:#721c24;}
+        .analytics-section-divider{font-size:0.7rem;font-weight:700;color:#adb5bd;text-transform:uppercase;letter-spacing:0.1em;margin:8px 0 12px;border-bottom:1px solid #e9ecef;padding-bottom:4px;}
+        .high-risk-item{background:#fff5f5;border-left:3px solid #dc3545;border-radius:6px;padding:8px 10px;margin-bottom:6px;font-size:0.78rem;}
+        .high-risk-item .hr-name{font-weight:700;color:#333;}
+        .high-risk-item .hr-detail{color:#6c757d;}
+        .btn-analytics-export{border:none;border-radius:8px;padding:9px 16px;font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;}
+        .btn-analytics-export:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.15);}
+        .btn-export-pdf{background:linear-gradient(135deg,#8b0000,#c0392b);color:#fff;}
+        .btn-export-excel{background:linear-gradient(135deg,#1d6f42,#2ecc71);color:#fff;}
+        .analytics-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+        .analytics-tab-btn{padding:6px 13px;border-radius:20px;border:2px solid #e9ecef;background:#fff;font-size:0.75rem;font-weight:600;color:#6c757d;cursor:pointer;transition:all 0.2s;}
+        .analytics-tab-btn.active{background:var(--primary);border-color:var(--primary);color:#fff;}
+        .analytics-panel{display:none;}
+        .analytics-panel.active{display:block;}
+        .spinner-overlay{text-align:center;padding:40px 20px;color:#6c757d;}
+        .spinner-overlay i{font-size:2rem;color:var(--primary);margin-bottom:10px;animation:spin 1s linear infinite;display:block;}
+        @keyframes spin{100%{transform:rotate(360deg);}}
+        .header-nav-btns{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:10px;}
+        .header-nav-btn{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;font-size:0.75rem;padding:5px 14px;border-radius:20px;cursor:pointer;transition:all 0.2s;font-weight:600;}
+        .header-nav-btn:hover,.header-nav-btn.active-nav{background:rgba(255,255,255,0.3);}
 
+        /* ===== GDMT GAP TABLE ===== */
+        .gap-table{font-size:0.72rem;width:100%;}
+        .gap-table th{background:#f0f0f0;font-size:0.68rem;padding:4px 6px;text-align:center;}
+        .gap-table td{padding:4px 6px;text-align:center;border-bottom:1px solid #f0f0f0;}
+        .gap-check{color:#1d6f42;font-weight:700;}
+        .gap-miss{color:#dc3545;font-weight:700;}
+    </style>
 </head>
 <body>
 
 <!-- LOADING SCREEN -->
-
 <div id="pageLoading">
     <div class="loading-heart">❤️</div>
     <div class="loading-text">Loading Registry...</div>
 </div>
 
 <!-- LOGIN PAGE -->
-
 <div id="pageLogin">
     <div class="login-container">
         <div class="login-logo">
@@ -256,7 +274,6 @@
 </div>
 
 <!-- MAIN PAGE -->
-
 <div id="pageMain" class="page">
     <div class="clinic-header text-center">
         <button class="btn btn-dark btn-sm position-absolute top-0 end-0 m-2" onclick="showAdminLogin()">Admin</button>
@@ -273,296 +290,338 @@
         </div>
     </div>
 
-```
-<div class="container mt-3 mb-5" style="padding-bottom:80px;">
-    <div class="card p-3 border-top border-4 border-danger shadow">
-        <h6 class="text-secondary fw-bold mb-2">Search Patient</h6>
-        <div class="input-group">
-            <input type="text" id="searchInput" class="form-control" placeholder="Name, Civil ID, or File No">
-            <button class="btn btn-primary px-4" onclick="searchPatient()">Search</button>
+    <div class="container mt-3 mb-5" style="padding-bottom:80px;">
+        <div class="card p-3 border-top border-4 border-danger shadow">
+            <h6 class="text-secondary fw-bold mb-2">Search Patient</h6>
+            <div class="input-group">
+                <input type="text" id="searchInput" class="form-control" placeholder="Name, Civil ID, or File No">
+                <button class="btn btn-primary px-4" onclick="searchPatient()">Search</button>
+            </div>
+            <div id="searchResults" class="mt-3"></div>
         </div>
-        <div id="searchResults" class="mt-3"></div>
-    </div>
 
-    <div class="card p-3 border-top border-4 border-danger">
-        <h4 class="mb-1 text-dark fw-bold" id="formTitle">New Patient Entry</h4>
+        <div class="card p-3 border-top border-4 border-danger">
+            <h4 class="mb-1 text-dark fw-bold" id="formTitle">New Patient Entry</h4>
 
-        <!-- WIZARD PROGRESS -->
-        <div class="wizard-progress" id="wizardProgress"></div>
+            <!-- WIZARD PROGRESS - NAMES ONLY -->
+            <div class="wizard-progress" id="wizardProgress"></div>
 
-        <div id="hfForm">
-            <!-- STEP 1: Demographics -->
-            <div class="form-step active" data-step="1">
-                <h6 class="section-title">1. Demographics & Entry Info</h6>
-                <div class="row g-2">
-                    <div class="col-6 col-md-3"><label class="text-primary fw-bold">Entered By *</label><select class="form-select border-primary" id="Doctor_Name"><option value="">Select...</option><option>Dr Farouk</option><option>Dr Badawy</option><option>Dr Ali</option><option>Dr Hamza</option><option>Dr Ahmed</option></select></div>
-                    <div class="col-6 col-md-3"><label>Name *</label><input type="text" class="form-control" id="Patient_Name"></div>
-                    <div class="col-6 col-md-3"><label>Civil ID * (12 digits)</label><input type="text" class="form-control" id="Civil_ID" inputmode="numeric" pattern="[0-9]*" maxlength="12" oninput="validateCivilID(this)" onkeypress="return isNumberKey(event)"><small class="error-msg" id="civilError">Must be exactly 12 digits</small></div>
-                    <div class="col-6 col-md-3"><label>File No * (6 digits)</label><input type="text" class="form-control" id="File_No" inputmode="numeric" pattern="[0-9]*" maxlength="6" oninput="validateFileNo(this)" onkeypress="return isNumberKey(event)"><small class="error-msg" id="fileError">Must be exactly 6 digits</small></div>
-                    <div class="col-4 col-md-2"><label>Age</label><input type="number" class="form-control" id="Age" inputmode="numeric" oninput="calcBaselineEGFR(); calcMAGGIC(); calcEGFR();"></div>
-                    <div class="col-4 col-md-2"><label>Gender</label><select class="form-select" id="Gender" onchange="calcBaselineEGFR(); calcMAGGIC(); calcEGFR();"><option value="">Select...</option><option>Male</option><option>Female</option></select></div>
-                    <div class="col-4 col-md-4"><label>Nationality</label><input type="text" class="form-control" id="Nationality"></div>
-                    <div class="col-12 col-md-4"><label>Mobile</label><input type="tel" class="form-control" id="Mobile" inputmode="tel"></div>
-                </div>
-            </div>
-
-            <!-- STEP 2: HF Diagnosis -->
-            <div class="form-step" data-step="2">
-                <h6 class="section-title">2. HF Diagnosis & Status</h6>
-                <div class="row g-2">
-                    <div class="col-6 col-md-3"><label>Type of HF</label><select class="form-select" id="HF_Type" onchange="applyPhenotypeEmphasis(); updateGDMTRationale();"><option value="">Select...</option><option>HFrEF</option><option>HFmrEF</option><option>HFpEF</option></select></div>
-                    <div class="col-6 col-md-2"><label>EF at Diagnosis (%)</label><input type="number" class="form-control" id="EF_Diagnosis" inputmode="numeric" oninput="calcMAGGIC(); checkCRTIndication();"></div>
-                    <div class="col-6 col-md-2"><label>Advanced HF</label><select class="form-select" id="Advanced_HF"><option>No</option><option>Yes</option></select></div>
-                    <div class="col-6 col-md-5"><label>Other Cardiomyopathies</label><input type="text" class="form-control" id="Other_Cardio"></div>
-                    <div class="col-6 col-md-3"><label>Valvular Disease</label><select class="form-select" id="Valvular_Disease"><option>No</option><option>Yes</option></select></div>
-                    <div class="col-6 col-md-3"><label>Admissions Last Yr</label><input type="number" class="form-control" id="Admissions" inputmode="numeric"></div>
-                    <div class="col-6 col-md-3"><label>Last Admission Date</label><input type="date" class="form-control" id="Last_Admission"></div>
-                    <div class="col-6 col-md-3"><label>Length of Stay (Days)</label><input type="number" class="form-control" id="LOS" inputmode="numeric"></div>
-                </div>
-            </div>
-
-            <!-- STEP 3: Symptoms & Signs -->
-            <div class="form-step" data-step="3">
-                <h6 class="section-title">3. Symptoms & Signs</h6>
-                <div class="row g-2">
-                    <div class="col-4 col-md-2"><label class="text-primary">Height (cm)</label><input type="number" class="form-control border-primary" id="Height" oninput="calcBMI()" inputmode="numeric"></div>
-                    <div class="col-4 col-md-2"><label class="text-primary">Weight (kg)</label><input type="number" class="form-control border-primary" id="Weight" oninput="calcBMI()" inputmode="numeric"></div>
-                    <div class="col-4 col-md-2"><label class="text-success fw-bold">BMI <span class="auto-badge"><i class="fa fa-lock"></i> Auto</span></label><input type="text" class="form-control bg-light text-success fw-bold" id="BMI" readonly></div>
-                    <div class="col-4 col-md-2"><label>Dry Weight (kg)</label><input type="number" class="form-control" id="Dry_Weight" inputmode="numeric"></div>
-                    <div class="col-4 col-md-2"><label>NYHA Visit</label><select class="form-select" id="NYHA" onchange="calcMAGGIC()"><option value="">Select...</option><option>I</option><option>II</option><option>III</option><option>IV</option></select></div>
-                    <div class="col-4 col-md-2"><label>Fatigue</label><select class="form-select" id="Fatigue"><option>No</option><option>Yes</option></select></div>
-                    <div class="col-4 col-md-2"><label>Pulse</label><input type="text" class="form-control" id="Pulse" inputmode="numeric"></div>
-                    <div class="col-4 col-md-2"><label>BP</label><input type="text" class="form-control" id="BP" placeholder="120/80" oninput="calcMAGGIC()"></div>
-                    <div class="col-4 col-md-2"><label>SpO2 (%)</label><input type="number" class="form-control" id="SpO2" inputmode="numeric"></div>
-                    <div class="col-4 col-md-2"><label>Edema</label><select class="form-select" id="Edema"><option>No</option><option>Yes</option></select></div>
-                    <div class="col-4 col-md-2"><label>JVP</label><select class="form-select" id="JVP"><option>Normal</option><option>Raised</option></select></div>
-                    <div class="col-4 col-md-2"><label>Rales</label><select class="form-select" id="Rales"><option>No</option><option>Yes</option></select></div>
-                    <div class="col-4 col-md-3"><label>S3 Gallop</label><select class="form-select" id="S3"><option>No</option><option>Yes</option></select></div>
-                    <div class="col-8 col-md-3"><label>Murmur</label><input type="text" class="form-control" id="Murmur"></div>
-                </div>
-            </div>
-
-            <!-- STEP 4: Investigations -->
-            <div class="form-step" data-step="4">
-                <h6 class="section-title">4. Investigations & Procedures</h6>
-                <div class="row g-2">
-                    <div class="col-12 col-md-6"><label>ECG (LBBB/QRS/Arrhythmia)</label><input type="text" class="form-control" id="ECG"></div>
-                    <div class="col-12 col-md-6"><label>ECHO Details</label><input type="text" class="form-control" id="ECHO"></div>
-                    <div class="col-12 col-md-6"><label>CMR/CT Angio</label><input type="text" class="form-control" id="CMR_CT"></div>
-                    <div class="col-6 col-md-3"><label>6 Min Walk Test</label><input type="text" class="form-control" id="Walk_Test"></div>
-                    <div class="col-6 col-md-3"><label>Device (ICD/CRT)/Date</label><input type="text" class="form-control" id="Device_Info"></div>
-                    <div class="col-12 col-md-6"><label>Right Side Cath</label><input type="text" class="form-control" id="Cath"></div>
-                </div>
-                <!-- CRT/ICD ALERT -->
-                <div class="clinical-alert alert-info-soft" id="alertCRT">
-                    <i class="fa fa-bolt"></i>
-                    <div><strong>CRT/ICD Consideration:</strong> <span id="alertCRTText"></span></div>
-                </div>
-            </div>
-
-            <!-- STEP 5: Comorbidities (Pill Toggles) -->
-            <div class="form-step" data-step="5">
-                <h6 class="section-title">5. Comorbidities</h6>
-                <div class="pill-group" id="pillComorbidities">
-                    <!-- Pills generated by JS -->
-                </div>
-                <!-- Hidden selects for data persistence -->
-                <div style="display:none;">
-                    <select id="DM" onchange="calcMAGGIC()"><option>No</option><option>Yes</option></select>
-                    <select id="HTN"><option>No</option><option>Yes</option></select>
-                    <select id="AF"><option>No</option><option>Yes</option></select>
-                    <select id="IHD"><option>No</option><option>STEMI</option><option>NSTEMI</option></select>
-                    <select id="PCI_CABG"><option>No</option><option>PCI</option><option>CABG</option></select>
-                    <select id="CKD"><option>No</option><option>Yes</option></select>
-                    <select id="CVA"><option>No</option><option>Yes</option></select>
-                    <select id="PVD"><option>No</option><option>Yes</option></select>
-                    <select id="Smoker" onchange="calcMAGGIC()"><option>Never</option><option>Current</option><option>Former</option></select>
-                    <select id="Obese_OSA"><option>No</option><option>Yes</option></select>
-                    <select id="Lung_Dz" onchange="calcMAGGIC()"><option>No</option><option>Yes</option></select>
-                    <select id="Liver_Dz"><option>No</option><option>Yes</option></select>
-                </div>
-                <div class="row g-2 mt-2">
-                    <div class="col-12 col-md-6"><label>IHD Type</label><select class="form-select" id="IHD_Visible" onchange="document.getElementById('IHD').value=this.value"><option>No</option><option>STEMI</option><option>NSTEMI</option></select></div>
-                    <div class="col-12 col-md-6"><label>PCI/CABG</label><select class="form-select" id="PCI_CABG_Visible" onchange="document.getElementById('PCI_CABG').value=this.value"><option>No</option><option>PCI</option><option>CABG</option></select></div>
-                    <div class="col-12 col-md-6"><label>Smoking Status</label><select class="form-select" id="Smoker_Visible" onchange="document.getElementById('Smoker').value=this.value;calcMAGGIC()"><option>Never</option><option>Current</option><option>Former</option></select></div>
-                    <div class="col-12 col-md-6"><label>F.H. Cardio/Genetics</label><input type="text" class="form-control" id="FH_Genetics"></div>
-                </div>
-            </div>
-
-            <!-- STEP 6: Labs -->
-            <div class="form-step" data-step="6">
-                <h6 class="section-title">6. Lab Results (Baseline)</h6>
-                <div class="row g-2">
-                    <div class="col-4 col-md-2"><label>HbA1c</label><input type="text" class="form-control" id="Lab_HbA1c"></div>
-                    <div class="col-4 col-md-2"><label>Gluc</label><input type="text" class="form-control" id="Lab_Gluc"></div>
-                    <div class="col-4 col-md-2"><label>Urea/Creat</label><input type="text" class="form-control" id="Lab_UreaCreat" oninput="calcBaselineEGFR(); calcMAGGIC(); checkGDMTAlerts();" placeholder="e.g. 5/80"></div>
-                    <div class="col-4 col-md-2"><label class="text-success fw-bold">eGFR <span class="auto-badge"><i class="fa fa-lock"></i> Auto</span></label><input type="text" class="form-control bg-light text-success fw-bold" id="Lab_eGFR" readonly></div>
-                    <div class="col-4 col-md-2"><label>Na/K</label><input type="text" class="form-control" id="Lab_NaK" oninput="checkGDMTAlerts()"></div>
-                    <div class="col-4 col-md-2"><label>NT-proBNP</label><input type="text" class="form-control" id="Lab_BNP"></div>
-                    <div class="col-4 col-md-2"><label>Iron/Ferritin</label><input type="text" class="form-control" id="Lab_IronFerritin"></div>
-                    <div class="col-4 col-md-2"><label>Tr Sats</label><input type="text" class="form-control" id="Lab_TrSats"></div>
-                    <div class="col-4 col-md-2"><label>Hb/WBC/Plt</label><input type="text" class="form-control" id="Lab_CBC"></div>
-                    <div class="col-4 col-md-2"><label>TSH/Free T4</label><input type="text" class="form-control" id="Lab_Thyroid"></div>
-                    <div class="col-4 col-md-2"><label>LDL/HDL/TG</label><input type="text" class="form-control" id="Lab_Lipids"></div>
-                    <div class="col-4 col-md-2"><label>Alb/Creat Ratio</label><input type="text" class="form-control" id="Lab_AlbCreat"></div>
-                </div>
-                <!-- CLINICAL ALERTS FOR LABS -->
-                <div class="clinical-alert alert-warning-soft" id="alertHyperK">
-                    <i class="fa fa-exclamation-triangle"></i>
-                    <div><strong>Caution — Hyperkalemia (K &gt; 5.0):</strong> Review MRA &amp; ARNI dosing. Consider potassium chelator.</div>
-                </div>
-                <div class="clinical-alert alert-warning-soft" id="alertLowGFR">
-                    <i class="fa fa-kidney"></i>
-                    <div><strong>Caution — eGFR &lt; 30:</strong> Review SGLT2i &amp; ARNI dosing. Dose adjustment may be required.</div>
-                </div>
-                <div class="clinical-alert alert-danger-soft" id="alertIronDef">
-                    <i class="fa fa-tint"></i>
-                    <div><strong>Iron Deficiency Flagged (ESC Criteria):</strong> Ferritin &lt;100, or 100–299 with TSAT &lt;20%. Consider IV iron.</div>
-                </div>
-            </div>
-
-            <!-- STEP 7: Medications -->
-            <div class="form-step" data-step="7">
-                <h6 class="section-title">7. Medications</h6>
-                <!-- Phenotype emphasis container -->
-                <div class="clinical-alert alert-info-soft" id="alertPhenotype" style="margin-bottom:10px;">
-                    <i class="fa fa-info-circle"></i>
-                    <div id="alertPhenotypeText">Select HF Type in Step 2 for phenotype-specific guidance.</div>
-                </div>
-                <div class="row g-2" id="medSection7">
-                    <!-- Medications with dynamic dose/date — generated by JS -->
-                </div>
-                <!-- GDMT Rationale Section (HFrEF only) -->
-                <div id="gdmtRationaleSection" style="display:none;margin-top:10px;">
-                    <h6 class="text-danger" style="font-size:0.78rem;"><i class="fa fa-clipboard-question me-1"></i> GDMT Gap Rationale (HFrEF)</h6>
-                    <div class="row g-2" id="gdmtRationaleFields"></div>
-                </div>
-            </div>
-
-            <!-- STEP 8: Outcomes -->
-            <div class="form-step" data-step="8">
-                <h6 class="section-title">8. Outcomes & Management</h6>
-                <div class="row g-2">
-                    <div class="col-6 col-md-3"><label>Quadruple GDMT?</label><select class="form-select" id="Quad_GDMT"><option>No</option><option>Yes</option></select></div>
-                    <div class="col-6 col-md-3"><label>Compliance</label><select class="form-select" id="Compliance"><option>Yes</option><option>No</option></select></div>
-                    <div class="col-6 col-md-3"><label>Mortality</label><select class="form-select" id="Mortality"><option>Alive</option><option>In-hospital</option><option>Out-of-hospital</option></select></div>
-                    <div class="col-6 col-md-3"><label>Cardiac Rehab</label><select class="form-select" id="Rehab"><option>No</option><option>Yes</option></select></div>
-                    <div class="col-12"><hr class="my-2"></div>
-                    <h6 class="col-12 text-secondary m-0"><i class="fa fa-calculator"></i> MAGGIC Risk Calculator</h6>
-                    <div class="col-6 col-md-3"><label>HF Duration > 18 mo</label><select class="form-select" id="HF_Dur" onchange="calcMAGGIC()"><option>No</option><option>Yes</option></select></div>
-                    <div class="col-6 col-md-3"><label class="text-success fw-bold">MAGGIC Points <span class="auto-badge"><i class="fa fa-lock"></i> Auto</span></label><input type="text" class="form-control bg-light text-success fw-bold" id="MAGGIC_Score" readonly></div>
-                    <div class="col-12 col-md-6"><label class="text-danger fw-bold">Est. Mortality (1yr | 3yr)</label><input type="text" class="form-control bg-light text-danger fw-bold" id="MAGGIC_Risk" readonly></div>
-                    <div class="col-12"><hr class="my-2"></div>
-                    <div class="col-12 col-md-12"><label>Management Plan / Notes</label><textarea class="form-control" id="Notes" rows="2"></textarea></div>
-                </div>
-            </div>
-
-            <!-- STEP 9: Visits -->
-            <div class="form-step" data-step="9">
-                <h6 class="section-title">9. Visits & Follow-ups</h6>
-                <div id="visitHistory" class="mb-3"></div>
-                <div class="visit-section">
-                    <h6 class="text-primary mb-3">Add New Visit</h6>
+            <div id="hfForm">
+                <!-- STEP 1: Demographics -->
+                <div class="form-step active" data-step="1">
+                    <h6 class="section-title">1. Demographics & Entry Info</h6>
                     <div class="row g-2">
-                        <div class="col-6 col-md-3"><label>Visit Date *</label><input type="date" class="form-control" id="Visit_Date"></div>
-                        <div class="col-6 col-md-3"><label>Visit Type</label><select class="form-select" id="Visit_Type"><option>Routine</option><option>Urgent</option><option>Post-Discharge</option><option>Telemedicine</option></select></div>
+                        <div class="col-6 col-md-3"><label class="text-primary fw-bold">Entered By *</label><select class="form-select border-primary" id="Doctor_Name"><option value="">Select...</option><option>Dr Farouk</option><option>Dr Badawy</option><option>Dr Ali</option><option>Dr Hamza</option><option>Dr Ahmed</option></select></div>
+                        <div class="col-6 col-md-3"><label>Name *</label><input type="text" class="form-control" id="Patient_Name"></div>
+                        <div class="col-6 col-md-3"><label>Civil ID * (12 digits)</label><input type="text" class="form-control" id="Civil_ID" inputmode="numeric" pattern="[0-9]*" maxlength="12" oninput="validateCivilID(this)" onkeypress="return isNumberKey(event)"><small class="error-msg" id="civilError">Must be exactly 12 digits</small></div>
+                        <div class="col-6 col-md-3"><label>File No * (6 digits)</label><input type="text" class="form-control" id="File_No" inputmode="numeric" pattern="[0-9]*" maxlength="6" oninput="validateFileNo(this)" onkeypress="return isNumberKey(event)"><small class="error-msg" id="fileError">Must be exactly 6 digits</small></div>
+                        <div class="col-4 col-md-2"><label>Age</label><input type="number" class="form-control" id="Age" inputmode="numeric" oninput="calcBaselineEGFR(); calcMAGGIC(); calcEGFR();"></div>
+                        <div class="col-4 col-md-2"><label>Gender</label><select class="form-select" id="Gender" onchange="calcBaselineEGFR(); calcMAGGIC(); calcEGFR();"><option value="">Select...</option><option>Male</option><option>Female</option></select></div>
+                        <div class="col-4 col-md-4"><label>Nationality</label><input type="text" class="form-control" id="Nationality"></div>
+                        <div class="col-12 col-md-4"><label>Mobile</label><input type="tel" class="form-control" id="Mobile" inputmode="tel"></div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: HF Diagnosis -->
+                <div class="form-step" data-step="2">
+                    <h6 class="section-title">2. HF Diagnosis & Status</h6>
+                    <div class="row g-2">
+                        <div class="col-6 col-md-3"><label>Type of HF</label><select class="form-select" id="HF_Type" onchange="applyPhenotypeEmphasis(); updateGDMTRationale();"><option value="">Select...</option><option>HFrEF</option><option>HFmrEF</option><option>HFpEF</option></select></div>
+                        <div class="col-6 col-md-2"><label>EF at Diagnosis (%)</label><input type="number" class="form-control" id="EF_Diagnosis" inputmode="numeric" oninput="calcMAGGIC(); checkCRTIndication();"></div>
+                        <div class="col-6 col-md-2"><label>Advanced HF</label><select class="form-select" id="Advanced_HF"><option>No</option><option>Yes</option></select></div>
+                        <div class="col-6 col-md-5"><label>Other Cardiomyopathies</label><input type="text" class="form-control" id="Other_Cardio"></div>
+                        <div class="col-6 col-md-3"><label>Valvular Disease</label><select class="form-select" id="Valvular_Disease"><option>No</option><option>Yes</option></select></div>
+                        <div class="col-6 col-md-3"><label>Admissions Last Yr</label><input type="number" class="form-control" id="Admissions" inputmode="numeric"></div>
+                        <div class="col-6 col-md-3"><label>Last Admission Date</label><input type="date" class="form-control" id="Last_Admission"></div>
+                        <div class="col-6 col-md-3"><label>Length of Stay (Days)</label><input type="number" class="form-control" id="LOS" inputmode="numeric"></div>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Symptoms & Signs -->
+                <div class="form-step" data-step="3">
+                    <h6 class="section-title">3. Symptoms & Signs</h6>
+                    <div class="row g-2">
+                        <div class="col-4 col-md-2"><label class="text-primary">Height (cm)</label><input type="number" class="form-control border-primary" id="Height" oninput="calcBMI()" inputmode="numeric"></div>
+                        <div class="col-4 col-md-2"><label class="text-primary">Weight (kg)</label><input type="number" class="form-control border-primary" id="Weight" oninput="calcBMI()" inputmode="numeric"></div>
+                        <div class="col-4 col-md-2"><label class="text-success fw-bold">BMI <span class="auto-badge"><i class="fa fa-lock"></i> Auto</span></label><input type="text" class="form-control bg-light text-success fw-bold" id="BMI" readonly></div>
+                        <div class="col-4 col-md-2"><label>Dry Weight (kg)</label><input type="number" class="form-control" id="Dry_Weight" inputmode="numeric"></div>
+                        <div class="col-4 col-md-2"><label>NYHA Visit</label><select class="form-select" id="NYHA" onchange="calcMAGGIC()"><option value="">Select...</option><option>I</option><option>II</option><option>III</option><option>IV</option></select></div>
+                        <div class="col-4 col-md-2"><label>Fatigue</label><select class="form-select" id="Fatigue"><option>No</option><option>Yes</option></select></div>
+                        <div class="col-4 col-md-2"><label>Pulse</label><input type="text" class="form-control" id="Pulse" inputmode="numeric"></div>
+                        <div class="col-4 col-md-2"><label>BP</label><input type="text" class="form-control" id="BP" placeholder="120/80" oninput="calcMAGGIC()"></div>
+                        <div class="col-4 col-md-2"><label>SpO2 (%)</label><input type="number" class="form-control" id="SpO2" inputmode="numeric"></div>
+                        <div class="col-4 col-md-2"><label>Edema</label><select class="form-select" id="Edema"><option>No</option><option>Yes</option></select></div>
+                        <div class="col-4 col-md-2"><label>JVP</label><select class="form-select" id="JVP"><option>Normal</option><option>Raised</option></select></div>
+                        <div class="col-4 col-md-2"><label>Rales</label><select class="form-select" id="Rales"><option>No</option><option>Yes</option></select></div>
+                        <div class="col-4 col-md-3"><label>S3 Gallop</label><select class="form-select" id="S3"><option>No</option><option>Yes</option></select></div>
+                        <div class="col-8 col-md-3"><label>Murmur</label><input type="text" class="form-control" id="Murmur"></div>
+                    </div>
+                </div>
+
+                <!-- STEP 4: Investigations -->
+                <div class="form-step" data-step="4">
+                    <h6 class="section-title">4. Investigations & Procedures</h6>
+                    <div class="row g-2">
+                        <div class="col-12 col-md-6"><label>ECG (LBBB/QRS/Arrhythmia)</label><input type="text" class="form-control" id="ECG"></div>
+                        <div class="col-12 col-md-6"><label>ECHO Details</label><input type="text" class="form-control" id="ECHO"></div>
+                        <div class="col-12 col-md-6"><label>CMR/CT Angio</label><input type="text" class="form-control" id="CMR_CT"></div>
+                        <div class="col-6 col-md-3"><label>6 Min Walk Test</label><input type="text" class="form-control" id="Walk_Test"></div>
+                        <div class="col-6 col-md-3"><label>Device (ICD/CRT)/Date</label><input type="text" class="form-control" id="Device_Info"></div>
+                        <div class="col-12 col-md-6"><label>Right Side Cath</label><input type="text" class="form-control" id="Cath"></div>
+                    </div>
+                    <!-- CRT/ICD ALERT -->
+                    <div class="clinical-alert alert-info-soft" id="alertCRT">
+                        <i class="fa fa-bolt"></i>
+                        <div><strong>CRT/ICD Consideration:</strong> <span id="alertCRTText"></span></div>
+                    </div>
+                </div>
+
+                <!-- STEP 5: Comorbidities (Pill Toggles) -->
+                <div class="form-step" data-step="5">
+                    <h6 class="section-title">5. Comorbidities</h6>
+                    <div class="pill-group" id="pillComorbidities">
+                        <!-- Pills generated by JS -->
+                    </div>
+                    <!-- Hidden selects for data persistence -->
+                    <div style="display:none;">
+                        <select id="DM" onchange="calcMAGGIC()"><option>No</option><option>Yes</option></select>
+                        <select id="HTN"><option>No</option><option>Yes</option></select>
+                        <select id="AF"><option>No</option><option>Yes</option></select>
+                        <select id="IHD"><option>No</option><option>STEMI</option><option>NSTEMI</option></select>
+                        <select id="PCI_CABG"><option>No</option><option>PCI</option><option>CABG</option></select>
+                        <select id="CKD"><option>No</option><option>Yes</option></select>
+                        <select id="CVA"><option>No</option><option>Yes</option></select>
+                        <select id="PVD"><option>No</option><option>Yes</option></select>
+                        <select id="Smoker" onchange="calcMAGGIC()"><option>Never</option><option>Current</option><option>Former</option></select>
+                        <select id="Obese_OSA"><option>No</option><option>Yes</option></select>
+                        <select id="Lung_Dz" onchange="calcMAGGIC()"><option>No</option><option>Yes</option></select>
+                        <select id="Liver_Dz"><option>No</option><option>Yes</option></select>
+                    </div>
+                    <div class="row g-2 mt-2">
+                        <div class="col-12 col-md-6"><label>IHD Type</label><select class="form-select" id="IHD_Visible" onchange="document.getElementById('IHD').value=this.value"><option>No</option><option>STEMI</option><option>NSTEMI</option></select></div>
+                        <div class="col-12 col-md-6"><label>PCI/CABG</label><select class="form-select" id="PCI_CABG_Visible" onchange="document.getElementById('PCI_CABG').value=this.value"><option>No</option><option>PCI</option><option>CABG</option></select></div>
+                        <div class="col-12 col-md-6"><label>Smoking Status</label><select class="form-select" id="Smoker_Visible" onchange="document.getElementById('Smoker').value=this.value;calcMAGGIC()"><option>Never</option><option>Current</option><option>Former</option></select></div>
+                        <div class="col-12 col-md-6"><label>F.H. Cardio/Genetics</label><input type="text" class="form-control" id="FH_Genetics"></div>
+                    </div>
+                </div>
+
+                <!-- STEP 6: Labs -->
+                <div class="form-step" data-step="6">
+                    <h6 class="section-title">6. Lab Results (Baseline)</h6>
+                    <div class="row g-2">
+                        <div class="col-4 col-md-2"><label>HbA1c</label><input type="text" class="form-control" id="Lab_HbA1c"></div>
+                        <div class="col-4 col-md-2"><label>Gluc</label><input type="text" class="form-control" id="Lab_Gluc"></div>
+                        <div class="col-4 col-md-2"><label>Urea/Creat</label><input type="text" class="form-control" id="Lab_UreaCreat" oninput="calcBaselineEGFR(); calcMAGGIC(); checkGDMTAlerts();" placeholder="e.g. 5/80"></div>
+                        <div class="col-4 col-md-2"><label class="text-success fw-bold">eGFR <span class="auto-badge"><i class="fa fa-lock"></i> Auto</span></label><input type="text" class="form-control bg-light text-success fw-bold" id="Lab_eGFR" readonly></div>
+                        <div class="col-4 col-md-2"><label>Na/K</label><input type="text" class="form-control" id="Lab_NaK" oninput="checkGDMTAlerts()"></div>
+                        <div class="col-4 col-md-2"><label>NT-proBNP</label><input type="text" class="form-control" id="Lab_BNP"></div>
+                        <div class="col-4 col-md-2"><label>Iron/Ferritin</label><input type="text" class="form-control" id="Lab_IronFerritin"></div>
+                        <div class="col-4 col-md-2"><label>Tr Sats</label><input type="text" class="form-control" id="Lab_TrSats"></div>
+                        <div class="col-4 col-md-2"><label>Hb/WBC/Plt</label><input type="text" class="form-control" id="Lab_CBC"></div>
+                        <div class="col-4 col-md-2"><label>TSH/Free T4</label><input type="text" class="form-control" id="Lab_Thyroid"></div>
+                        <div class="col-4 col-md-2"><label>LDL/HDL/TG</label><input type="text" class="form-control" id="Lab_Lipids"></div>
+                        <div class="col-4 col-md-2"><label>Alb/Creat Ratio</label><input type="text" class="form-control" id="Lab_AlbCreat"></div>
+                    </div>
+                    <!-- CLINICAL ALERTS FOR LABS -->
+                    <div class="clinical-alert alert-warning-soft" id="alertHyperK">
+                        <i class="fa fa-exclamation-triangle"></i>
+                        <div><strong>Caution — Hyperkalemia (K &gt; 5.0):</strong> Review MRA &amp; ARNI dosing. Consider potassium chelator.</div>
+                    </div>
+                    <div class="clinical-alert alert-warning-soft" id="alertLowGFR">
+                        <i class="fa fa-kidney"></i>
+                        <div><strong>Caution — eGFR &lt; 30:</strong> Review SGLT2i &amp; ARNI dosing. Dose adjustment may be required.</div>
+                    </div>
+                    <div class="clinical-alert alert-danger-soft" id="alertIronDef">
+                        <i class="fa fa-tint"></i>
+                        <div><strong>Iron Deficiency Flagged (ESC Criteria):</strong> Ferritin &lt;100, or 100–299 with TSAT &lt;20%. Consider IV iron.</div>
+                    </div>
+                </div>
+
+                <!-- STEP 7: Medications -->
+                <div class="form-step" data-step="7">
+                    <h6 class="section-title">7. Medications</h6>
+                    <!-- Phenotype emphasis container -->
+                    <div class="clinical-alert alert-info-soft" id="alertPhenotype" style="margin-bottom:10px;">
+                        <i class="fa fa-info-circle"></i>
+                        <div id="alertPhenotypeText">Select HF Type in Step 2 for phenotype-specific guidance.</div>
+                    </div>
+                    <div class="row g-2" id="medSection7">
+                        <!-- Medications with dynamic dose/date — generated by JS -->
+                    </div>
+                    <!-- GDMT Rationale Badges Display -->
+                    <div id="gdmtRationaleBadges" style="margin-top:10px;"></div>
+                </div>
+
+                <!-- STEP 8: Outcomes -->
+                <div class="form-step" data-step="8">
+                    <h6 class="section-title">8. Outcomes & Management</h6>
+                    <div class="row g-2">
+                        <div class="col-6 col-md-3"><label>Quadruple GDMT?</label><select class="form-select" id="Quad_GDMT"><option>No</option><option>Yes</option></select></div>
+                        <div class="col-6 col-md-3"><label>Compliance</label><select class="form-select" id="Compliance"><option>Yes</option><option>No</option></select></div>
+                        <div class="col-6 col-md-3"><label>Mortality</label><select class="form-select" id="Mortality"><option>Alive</option><option>In-hospital</option><option>Out-of-hospital</option></select></div>
+                        <div class="col-6 col-md-3"><label>Cardiac Rehab</label><select class="form-select" id="Rehab"><option>No</option><option>Yes</option></select></div>
                         <div class="col-12"><hr class="my-2"></div>
-                        <h6 class="col-12 text-secondary">Symptoms</h6>
-                        <div class="col-4 col-md-2"><label>Fatigue</label><select class="form-select" id="V_Fatigue"><option>N</option><option>Y</option></select></div>
-                        <div class="col-4 col-md-2"><label>NYHA Class</label><select class="form-select" id="V_NYHA"><option value="">Select</option><option>I</option><option>II</option><option>III</option><option>IV</option></select></div>
-                        <div class="col-4 col-md-3"><label>Edema</label><select class="form-select" id="V_Edema"><option>No</option><option>Mild feet</option><option>Moderate</option><option>Severe</option></select></div>
+                        <h6 class="col-12 text-secondary m-0"><i class="fa fa-calculator"></i> MAGGIC Risk Calculator</h6>
+                        <div class="col-6 col-md-3"><label>HF Duration > 18 mo</label><select class="form-select" id="HF_Dur" onchange="calcMAGGIC()"><option>No</option><option>Yes</option></select></div>
+                        <div class="col-6 col-md-3"><label class="text-success fw-bold">MAGGIC Points <span class="auto-badge"><i class="fa fa-lock"></i> Auto</span></label><input type="text" class="form-control bg-light text-success fw-bold" id="MAGGIC_Score" readonly></div>
+                        <div class="col-12 col-md-6"><label class="text-danger fw-bold">Est. Mortality (1yr | 3yr)</label><input type="text" class="form-control bg-light text-danger fw-bold" id="MAGGIC_Risk" readonly></div>
                         <div class="col-12"><hr class="my-2"></div>
-                        <h6 class="col-12 text-secondary">Signs / Vitals</h6>
-                        <div class="col-4 col-md-2"><label>Pulse</label><input type="text" class="form-control" id="V_Pulse" inputmode="numeric"></div>
-                        <div class="col-4 col-md-2"><label>BP</label><input type="text" class="form-control" id="V_BP" placeholder="120/80"></div>
-                        <div class="col-4 col-md-2"><label>SpO2 %</label><input type="number" class="form-control" id="V_SpO2" inputmode="numeric"></div>
-                        <div class="col-4 col-md-2"><label>Weight (kg)</label><input type="number" class="form-control" id="V_Weight" inputmode="numeric"></div>
-                        <div class="col-4 col-md-2"><label>JVP</label><select class="form-select" id="V_JVP"><option>N</option><option>Raised</option></select></div>
-                        <div class="col-4 col-md-2"><label>Pulm. Rales</label><select class="form-select" id="V_Rales"><option>N</option><option>Y</option></select></div>
-                        <div class="col-4 col-md-2"><label>S3</label><select class="form-select" id="V_S3"><option>N</option><option>Y</option></select></div>
-                        <div class="col-12"><hr class="my-2"></div>
-                        <h6 class="col-12 text-secondary">ECG</h6>
-                        <div class="col-4 col-md-3"><label>LBBB</label><select class="form-select" id="V_LBBB"><option>No</option><option>Yes</option></select></div>
-                        <div class="col-4 col-md-3"><label>QRS Width (ms)</label><input type="text" class="form-control" id="V_QRS" inputmode="numeric"></div>
-                        <div class="col-4 col-md-3"><label>Arrhythmia</label><input type="text" class="form-control" id="V_Arrhythmia"></div>
-                        <div class="col-12"><hr class="my-2"></div>
-                        <h6 class="col-12 text-secondary">Echo</h6>
-                        <div class="col-6 col-md-4"><label>Change in EF</label><input type="text" class="form-control" id="V_EF_Change" placeholder="e.g., Recovered 60%"></div>
-                        <div class="col-6 col-md-4"><label>Other Echo Findings</label><input type="text" class="form-control" id="V_Echo_Other"></div>
-                        <div class="col-12"><hr class="my-2"></div>
-                        <h6 class="col-12 text-secondary">Labs (Auto eGFR)</h6>
-                        <div class="col-3 col-md-2"><label>HbA1c</label><input type="text" class="form-control" id="V_HbA1c" inputmode="decimal"></div>
-                        <div class="col-3 col-md-2"><label>Gluc</label><input type="text" class="form-control" id="V_Gluc" inputmode="decimal"></div>
-                        <div class="col-3 col-md-2"><label>Urea</label><input type="text" class="form-control" id="V_Urea" inputmode="decimal"></div>
-                        <div class="col-3 col-md-2"><label>Creat (µmol/L)</label><input type="text" class="form-control" id="V_Creat" inputmode="decimal" oninput="calcEGFR()" placeholder="e.g. 80"></div>
-                        <div class="col-3 col-md-2"><label class="text-success fw-bold">eGFR <span class="auto-badge"><i class="fa fa-lock"></i> Auto</span></label><input type="text" class="form-control bg-light text-success fw-bold" id="V_eGFR" readonly></div>
-                        <div class="col-3 col-md-2"><label>Na</label><input type="text" class="form-control" id="V_Na" inputmode="decimal"></div>
-                        <div class="col-3 col-md-2"><label>K</label><input type="text" class="form-control" id="V_K" inputmode="decimal" oninput="checkVisitAlerts()"></div>
-                        <div class="col-3 col-md-2"><label>BNP</label><input type="text" class="form-control" id="V_BNP" inputmode="decimal"></div>
-                        <div class="col-3 col-md-2"><label>NT-pro BNP</label><input type="text" class="form-control" id="V_NTproBNP" inputmode="decimal"></div>
-                        <div class="col-3 col-md-2"><label>INR</label><input type="text" class="form-control" id="V_INR" inputmode="decimal"></div>
-                        <div class="col-3 col-md-2"><label>Iron</label><input type="text" class="form-control" id="V_Iron" inputmode="decimal" oninput="checkVisitIronAlert()"></div>
-                        <div class="col-3 col-md-2"><label>Transferrin</label><input type="text" class="form-control" id="V_Transferrin" inputmode="decimal" oninput="checkVisitIronAlert()"></div>
-                        <div class="col-3 col-md-2"><label>Ferritin</label><input type="text" class="form-control" id="V_Ferritin" inputmode="decimal" oninput="checkVisitIronAlert()"></div>
-                        <div class="col-3 col-md-2"><label>WBC</label><input type="text" class="form-control" id="V_WBC" inputmode="decimal"></div>
-                        <div class="col-3 col-md-2"><label>Hb</label><input type="text" class="form-control" id="V_Hb" inputmode="decimal"></div>
-                        <div class="col-3 col-md-2"><label>Plt</label><input type="text" class="form-control" id="V_Plt" inputmode="decimal"></div>
-                        <div class="col-3 col-md-2"><label>TSH</label><input type="text" class="form-control" id="V_TSH" inputmode="decimal"></div>
-                        <div class="col-3 col-md-2"><label>Free T4</label><input type="text" class="form-control" id="V_FreeT4" inputmode="decimal"></div>
-                        <!-- Visit clinical alerts -->
-                        <div class="col-12">
-                            <div class="clinical-alert alert-warning-soft" id="alertVisitHyperK">
-                                <i class="fa fa-exclamation-triangle"></i>
-                                <div><strong>Visit K &gt; 5.0:</strong> Review MRA &amp; ARNI.</div>
+                        <div class="col-12 col-md-12"><label>Management Plan / Notes</label><textarea class="form-control" id="Notes" rows="2"></textarea></div>
+                    </div>
+                </div>
+
+                <!-- STEP 9: Visits -->
+                <div class="form-step" data-step="9">
+                    <h6 class="section-title">9. Visits & Follow-ups</h6>
+                    <div id="visitHistory" class="mb-3"></div>
+                    <div class="visit-section">
+                        <h6 class="text-primary mb-3">Add New Visit</h6>
+                        <div class="row g-2">
+                            <div class="col-6 col-md-3"><label>Visit Date *</label><input type="date" class="form-control" id="Visit_Date"></div>
+                            <div class="col-6 col-md-3"><label>Visit Type</label><select class="form-select" id="Visit_Type"><option>Routine</option><option>Urgent</option><option>Post-Discharge</option><option>Telemedicine</option></select></div>
+                            <div class="col-12"><hr class="my-2"></div>
+                            <h6 class="col-12 text-secondary">Symptoms</h6>
+                            <div class="col-4 col-md-2"><label>Fatigue</label><select class="form-select" id="V_Fatigue"><option>N</option><option>Y</option></select></div>
+                            <div class="col-4 col-md-2"><label>NYHA Class</label><select class="form-select" id="V_NYHA"><option value="">Select</option><option>I</option><option>II</option><option>III</option><option>IV</option></select></div>
+                            <div class="col-4 col-md-3"><label>Edema</label><select class="form-select" id="V_Edema"><option>No</option><option>Mild feet</option><option>Moderate</option><option>Severe</option></select></div>
+                            <div class="col-12"><hr class="my-2"></div>
+                            <h6 class="col-12 text-secondary">Signs / Vitals</h6>
+                            <div class="col-4 col-md-2"><label>Pulse</label><input type="text" class="form-control" id="V_Pulse" inputmode="numeric"></div>
+                            <div class="col-4 col-md-2"><label>BP</label><input type="text" class="form-control" id="V_BP" placeholder="120/80"></div>
+                            <div class="col-4 col-md-2"><label>SpO2 %</label><input type="number" class="form-control" id="V_SpO2" inputmode="numeric"></div>
+                            <div class="col-4 col-md-2"><label>Weight (kg)</label><input type="number" class="form-control" id="V_Weight" inputmode="numeric"></div>
+                            <div class="col-4 col-md-2"><label>JVP</label><select class="form-select" id="V_JVP"><option>N</option><option>Raised</option></select></div>
+                            <div class="col-4 col-md-2"><label>Pulm. Rales</label><select class="form-select" id="V_Rales"><option>N</option><option>Y</option></select></div>
+                            <div class="col-4 col-md-2"><label>S3</label><select class="form-select" id="V_S3"><option>N</option><option>Y</option></select></div>
+                            <div class="col-12"><hr class="my-2"></div>
+                            <h6 class="col-12 text-secondary">ECG</h6>
+                            <div class="col-4 col-md-3"><label>LBBB</label><select class="form-select" id="V_LBBB"><option>No</option><option>Yes</option></select></div>
+                            <div class="col-4 col-md-3"><label>QRS Width (ms)</label><input type="text" class="form-control" id="V_QRS" inputmode="numeric"></div>
+                            <div class="col-4 col-md-3"><label>Arrhythmia</label><input type="text" class="form-control" id="V_Arrhythmia"></div>
+                            <div class="col-12"><hr class="my-2"></div>
+                            <h6 class="col-12 text-secondary">Echo</h6>
+                            <div class="col-6 col-md-4"><label>Change in EF</label><input type="text" class="form-control" id="V_EF_Change" placeholder="e.g., Recovered 60%"></div>
+                            <div class="col-6 col-md-4"><label>Other Echo Findings</label><input type="text" class="form-control" id="V_Echo_Other"></div>
+                            <div class="col-12"><hr class="my-2"></div>
+                            <h6 class="col-12 text-secondary">Labs (Auto eGFR)</h6>
+                            <div class="col-3 col-md-2"><label>HbA1c</label><input type="text" class="form-control" id="V_HbA1c" inputmode="decimal"></div>
+                            <div class="col-3 col-md-2"><label>Gluc</label><input type="text" class="form-control" id="V_Gluc" inputmode="decimal"></div>
+                            <div class="col-3 col-md-2"><label>Urea</label><input type="text" class="form-control" id="V_Urea" inputmode="decimal"></div>
+                            <div class="col-3 col-md-2"><label>Creat (µmol/L)</label><input type="text" class="form-control" id="V_Creat" inputmode="decimal" oninput="calcEGFR()" placeholder="e.g. 80"></div>
+                            <div class="col-3 col-md-2"><label class="text-success fw-bold">eGFR <span class="auto-badge"><i class="fa fa-lock"></i> Auto</span></label><input type="text" class="form-control bg-light text-success fw-bold" id="V_eGFR" readonly></div>
+                            <div class="col-3 col-md-2"><label>Na</label><input type="text" class="form-control" id="V_Na" inputmode="decimal"></div>
+                            <div class="col-3 col-md-2"><label>K</label><input type="text" class="form-control" id="V_K" inputmode="decimal" oninput="checkVisitAlerts()"></div>
+                            <div class="col-3 col-md-2"><label>BNP</label><input type="text" class="form-control" id="V_BNP" inputmode="decimal"></div>
+                            <div class="col-3 col-md-2"><label>NT-pro BNP</label><input type="text" class="form-control" id="V_NTproBNP" inputmode="decimal"></div>
+                            <div class="col-3 col-md-2"><label>INR</label><input type="text" class="form-control" id="V_INR" inputmode="decimal"></div>
+                            <div class="col-3 col-md-2"><label>Iron</label><input type="text" class="form-control" id="V_Iron" inputmode="decimal" oninput="checkVisitIronAlert()"></div>
+                            <div class="col-3 col-md-2"><label>Transferrin</label><input type="text" class="form-control" id="V_Transferrin" inputmode="decimal" oninput="checkVisitIronAlert()"></div>
+                            <div class="col-3 col-md-2"><label>Ferritin</label><input type="text" class="form-control" id="V_Ferritin" inputmode="decimal" oninput="checkVisitIronAlert()"></div>
+                            <div class="col-3 col-md-2"><label>WBC</label><input type="text" class="form-control" id="V_WBC" inputmode="decimal"></div>
+                            <div class="col-3 col-md-2"><label>Hb</label><input type="text" class="form-control" id="V_Hb" inputmode="decimal"></div>
+                            <div class="col-3 col-md-2"><label>Plt</label><input type="text" class="form-control" id="V_Plt" inputmode="decimal"></div>
+                            <div class="col-3 col-md-2"><label>TSH</label><input type="text" class="form-control" id="V_TSH" inputmode="decimal"></div>
+                            <div class="col-3 col-md-2"><label>Free T4</label><input type="text" class="form-control" id="V_FreeT4" inputmode="decimal"></div>
+                            <!-- Visit clinical alerts -->
+                            <div class="col-12">
+                                <div class="clinical-alert alert-warning-soft" id="alertVisitHyperK">
+                                    <i class="fa fa-exclamation-triangle"></i>
+                                    <div><strong>Visit K &gt; 5.0:</strong> Review MRA &amp; ARNI.</div>
+                                </div>
+                                <div class="clinical-alert alert-danger-soft" id="alertVisitIron">
+                                    <i class="fa fa-tint"></i>
+                                    <div><strong>Iron Deficiency (ESC):</strong> Ferritin &lt;100 or 100-299 + TSAT &lt;20%. Consider IV iron.</div>
+                                </div>
                             </div>
-                            <div class="clinical-alert alert-danger-soft" id="alertVisitIron">
-                                <i class="fa fa-tint"></i>
-                                <div><strong>Iron Deficiency (ESC):</strong> Ferritin &lt;100 or 100-299 + TSAT &lt;20%. Consider IV iron.</div>
+                            <div class="col-12"><hr class="my-2"></div>
+                            
+                            <!-- GROUPED MEDICATIONS -->
+                            <h6 class="col-12 text-secondary">Medications (Doses)</h6>
+                            <div id="visitMedDoses" class="col-12">
+                                <!-- Generated by JS with grouped sections -->
                             </div>
-                        </div>
-                        <div class="col-12"><hr class="my-2"></div>
-                        <h6 class="col-12 text-secondary">Medications (Doses)</h6>
-                        <div id="visitMedDoses" class="row g-2">
-                            <!-- Generated by JS with standardized dropdowns -->
-                        </div>
-                        <div class="col-12"><hr class="my-2"></div>
-                        <h6 class="col-12 text-secondary">Assessment & Plan</h6>
-                        <div class="col-12 col-md-6"><label>Adverse Effects / Complaints</label><textarea class="form-control" id="V_Adverse" rows="2"></textarea></div>
-                        <div class="col-12 col-md-6"><label>Plan / Recommendations</label><textarea class="form-control" id="V_Plan" rows="2"></textarea></div>
-                        <div class="col-12"><label>Other Notes</label><textarea class="form-control" id="V_Others" rows="2"></textarea></div>
-                        <div class="col-12 col-md-4 mt-2">
-                            <label class="text-danger fw-bold"><i class="fa fa-calendar-alt"></i> Next Appointment</label>
-                            <input type="date" class="form-control border-danger" id="Next_Appt">
-                        </div>
-                        <div class="col-12 mt-3">
-                            <button type="button" class="btn btn-visit w-100" onclick="saveVisit()">
-                                <i class="fa fa-plus-circle"></i> ADD VISIT TO PATIENT RECORD
-                            </button>
+                            
+                            <div class="col-12"><hr class="my-2"></div>
+                            <h6 class="col-12 text-secondary">Assessment & Plan</h6>
+                            <div class="col-12 col-md-6"><label>Adverse Effects / Complaints</label><textarea class="form-control" id="V_Adverse" rows="2"></textarea></div>
+                            <div class="col-12 col-md-6"><label>Plan / Recommendations</label><textarea class="form-control" id="V_Plan" rows="2"></textarea></div>
+                            <div class="col-12"><label>Other Notes</label><textarea class="form-control" id="V_Others" rows="2"></textarea></div>
+                            <div class="col-12 col-md-4 mt-2">
+                                <label class="text-danger fw-bold"><i class="fa fa-calendar-alt"></i> Next Appointment</label>
+                                <input type="date" class="form-control border-danger" id="Next_Appt">
+                            </div>
+                            <div class="col-12 mt-3">
+                                <button type="button" class="btn btn-visit w-100" onclick="saveVisit()">
+                                    <i class="fa fa-plus-circle"></i> ADD VISIT TO PATIENT RECORD
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- WIZARD NAV -->
-            <div class="wizard-nav">
-                <button class="btn btn-outline-secondary" id="wizPrev" onclick="wizardNav(-1)"><i class="fa fa-chevron-left me-1"></i> Previous</button>
-                <button class="btn btn-primary" id="wizNext" onclick="wizardNav(1)">Next <i class="fa fa-chevron-right ms-1"></i></button>
+                <!-- WIZARD NAV -->
+                <div class="wizard-nav">
+                    <button class="btn btn-outline-secondary" id="wizPrev" onclick="wizardNav(-1)"><i class="fa fa-chevron-left me-1"></i> Previous</button>
+                    <button class="btn btn-primary" id="wizNext" onclick="wizardNav(1)">Next <i class="fa fa-chevron-right ms-1"></i></button>
+                </div>
             </div>
+        </div>
+    </div>
+
+    <!-- STICKY SAVE BAR -->
+    <div class="sticky-save-bar" id="stickySaveBar">
+        <button type="button" class="btn btn-danger" id="submitBtn" onclick="savePatient()"><i class="fa fa-save me-1"></i> SAVE PATIENT</button>
+        <button type="button" class="btn btn-outline-secondary d-none" id="cancelEditBtn" onclick="resetForm()"><i class="fa fa-times me-1"></i> Cancel</button>
+    </div>
+</div>
+
+<!-- GDMT RATIONALE MODAL -->
+<div id="gdmtRationaleModal" class="gdmt-rationale-modal">
+    <div class="gdmt-rationale-box">
+        <h4><i class="fa fa-exclamation-circle text-danger me-2"></i>GDMT Gap Detected</h4>
+        <p id="gdmtRationaleText">A GDMT pillar medication is not prescribed. Please specify the reason:</p>
+        <div class="rationale-options">
+            <div class="rationale-option" onclick="selectRationale('Intolerance')">
+                <i class="fa fa-allergies"></i>
+                <span>Intolerance / Side Effects</span>
+            </div>
+            <div class="rationale-option" onclick="selectRationale('Contraindication')">
+                <i class="fa fa-ban"></i>
+                <span>Contraindication</span>
+            </div>
+            <div class="rationale-option" onclick="selectRationale('Cost')">
+                <i class="fa fa-dollar-sign"></i>
+                <span>Cost / Insurance Issue</span>
+            </div>
+            <div class="rationale-option" onclick="selectRationale('Patient Refusal')">
+                <i class="fa fa-user-times"></i>
+                <span>Patient Refusal</span>
+            </div>
+            <div class="rationale-option" onclick="selectRationale('Not Indicated')">
+                <i class="fa fa-times-circle"></i>
+                <span>Not Clinically Indicated</span>
+            </div>
+            <div class="rationale-option" onclick="selectRationale('Pending Uptitration')">
+                <i class="fa fa-clock"></i>
+                <span>Pending Uptitration</span>
+            </div>
+            <div class="rationale-option" onclick="selectRationale('Other')">
+                <i class="fa fa-ellipsis-h"></i>
+                <span>Other Reason</span>
+            </div>
+        </div>
+        <div class="rationale-other-input" id="otherReasonInput">
+            <label class="mt-2">Please specify:</label>
+            <input type="text" class="form-control" id="otherReasonText" placeholder="Enter reason...">
+        </div>
+        <div class="d-flex gap-2 mt-3">
+            <button class="btn btn-secondary flex-fill" onclick="closeRationaleModal()">Cancel</button>
+            <button class="btn btn-primary flex-fill" onclick="confirmRationale()">Confirm</button>
         </div>
     </div>
 </div>
 
-<!-- STICKY SAVE BAR -->
-<div class="sticky-save-bar" id="stickySaveBar">
-    <button type="button" class="btn btn-danger" id="submitBtn" onclick="savePatient()"><i class="fa fa-save me-1"></i> SAVE PATIENT</button>
-    <button type="button" class="btn btn-outline-secondary d-none" id="cancelEditBtn" onclick="resetForm()"><i class="fa fa-times me-1"></i> Cancel</button>
-</div>
-```
-
-</div>
-
 <!-- ADMIN PAGE -->
-
 <div id="pageAdmin" class="page">
     <div class="clinic-header text-center">
         <button class="btn btn-light btn-sm position-absolute top-0 start-0 m-2" onclick="goToMain()">Back</button>
@@ -592,7 +651,6 @@
 </div>
 
 <!-- ANALYTICS PAGE -->
-
 <div id="pageAnalytics" class="page">
     <div class="analytics-header text-center">
         <button class="btn btn-light btn-sm position-absolute top-0 start-0 m-2" onclick="goToMain()"><i class="fa fa-arrow-left me-1"></i>Back</button>
@@ -631,80 +689,76 @@
                 <button class="analytics-tab-btn" onclick="switchAnalyticsTab('enrollment',this)">Enrollment</button>
             </div>
 
-```
-        <!-- OVERVIEW TAB -->
-        <div class="analytics-panel active" id="tab-overview">
-            <div class="row g-3">
-                <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-heart"></i> HF Type Distribution</div><div class="analytics-chart-wrap"><canvas id="chartHFType"></canvas></div></div></div>
-                <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-user-group"></i> NYHA Class Distribution</div><div class="analytics-chart-wrap"><canvas id="chartNYHA"></canvas></div></div></div>
-                <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-venus-mars"></i> Gender Distribution</div><div class="analytics-chart-wrap-sm"><canvas id="chartGender"></canvas></div></div></div>
-                <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-users"></i> Age Group Distribution</div><div class="analytics-chart-wrap-sm"><canvas id="chartAge"></canvas></div></div></div>
+            <!-- OVERVIEW TAB -->
+            <div class="analytics-panel active" id="tab-overview">
+                <div class="row g-3">
+                    <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-heart"></i> HF Type Distribution</div><div class="analytics-chart-wrap"><canvas id="chartHFType"></canvas></div></div></div>
+                    <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-user-group"></i> NYHA Class Distribution</div><div class="analytics-chart-wrap"><canvas id="chartNYHA"></canvas></div></div></div>
+                    <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-venus-mars"></i> Gender Distribution</div><div class="analytics-chart-wrap-sm"><canvas id="chartGender"></canvas></div></div></div>
+                    <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-users"></i> Age Group Distribution</div><div class="analytics-chart-wrap-sm"><canvas id="chartAge"></canvas></div></div></div>
+                </div>
             </div>
-        </div>
-        <!-- GDMT TAB -->
-        <div class="analytics-panel" id="tab-gdmt">
-            <div class="analytics-card mb-3"><div class="analytics-card-title"><i class="fa fa-pills"></i> GDMT Component Uptake</div><div id="gdmtBars"></div></div>
-            <div class="row g-3">
-                <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-check-circle"></i> Quadruple Therapy Rate</div><div class="analytics-chart-wrap-sm"><canvas id="chartQuad"></canvas></div></div></div>
-                <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-hand-holding-medical"></i> Treatment Compliance</div><div class="analytics-chart-wrap-sm"><canvas id="chartCompliance"></canvas></div></div></div>
+            <!-- GDMT TAB -->
+            <div class="analytics-panel" id="tab-gdmt">
+                <div class="analytics-card mb-3"><div class="analytics-card-title"><i class="fa fa-pills"></i> GDMT Component Uptake</div><div id="gdmtBars"></div></div>
+                <div class="row g-3">
+                    <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-check-circle"></i> Quadruple Therapy Rate</div><div class="analytics-chart-wrap-sm"><canvas id="chartQuad"></canvas></div></div></div>
+                    <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-hand-holding-medical"></i> Treatment Compliance</div><div class="analytics-chart-wrap-sm"><canvas id="chartCompliance"></canvas></div></div></div>
+                </div>
             </div>
-        </div>
-        <!-- RISK TAB -->
-        <div class="analytics-panel" id="tab-risk">
-            <div class="row g-3">
-                <div class="col-12"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-chart-bar"></i> MAGGIC Risk Score Distribution</div><div class="analytics-chart-wrap-lg"><canvas id="chartMAGGIC"></canvas></div></div></div>
-                <div class="col-12 col-md-5"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-exclamation-triangle"></i> Risk Stratification</div><div class="analytics-chart-wrap-sm"><canvas id="chartRiskStrat"></canvas></div></div></div>
-                <div class="col-12 col-md-7"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-fire"></i> High-Risk Patients <span class="badge bg-danger ms-1" id="highRiskCount">0</span></div><div id="highRiskList" style="max-height:220px;overflow-y:auto;"></div></div></div>
+            <!-- RISK TAB -->
+            <div class="analytics-panel" id="tab-risk">
+                <div class="row g-3">
+                    <div class="col-12"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-chart-bar"></i> MAGGIC Risk Score Distribution</div><div class="analytics-chart-wrap-lg"><canvas id="chartMAGGIC"></canvas></div></div></div>
+                    <div class="col-12 col-md-5"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-exclamation-triangle"></i> Risk Stratification</div><div class="analytics-chart-wrap-sm"><canvas id="chartRiskStrat"></canvas></div></div></div>
+                    <div class="col-12 col-md-7"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-fire"></i> High-Risk Patients <span class="badge bg-danger ms-1" id="highRiskCount">0</span></div><div id="highRiskList" style="max-height:220px;overflow-y:auto;"></div></div></div>
+                </div>
             </div>
-        </div>
-        <!-- DEMOGRAPHICS TAB -->
-        <div class="analytics-panel" id="tab-demographics">
-            <div class="row g-3">
-                <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-globe"></i> Nationality Breakdown</div><div id="nationalityBars"></div></div></div>
-                <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-user-md"></i> Cases by Physician</div><div class="analytics-chart-wrap"><canvas id="chartDoctors"></canvas></div></div></div>
-                <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-medkit"></i> Device Therapy</div><div id="deviceStats"></div></div></div>
-                <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-heartbeat"></i> EF Distribution</div><div class="analytics-chart-wrap"><canvas id="chartEF"></canvas></div></div></div>
+            <!-- DEMOGRAPHICS TAB -->
+            <div class="analytics-panel" id="tab-demographics">
+                <div class="row g-3">
+                    <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-globe"></i> Nationality Breakdown</div><div id="nationalityBars"></div></div></div>
+                    <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-user-md"></i> Cases by Physician</div><div class="analytics-chart-wrap"><canvas id="chartDoctors"></canvas></div></div></div>
+                    <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-medkit"></i> Device Therapy</div><div id="deviceStats"></div></div></div>
+                    <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-heartbeat"></i> EF Distribution</div><div class="analytics-chart-wrap"><canvas id="chartEF"></canvas></div></div></div>
+                </div>
             </div>
-        </div>
-        <!-- COMORBIDITIES TAB -->
-        <div class="analytics-panel" id="tab-comorbidities">
-            <div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-stethoscope"></i> Comorbidity Prevalence</div><div id="comorbiditiesBars"></div></div>
-            <div class="row g-3">
-                <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-smoking"></i> Smoking Status</div><div class="analytics-chart-wrap-sm"><canvas id="chartSmoking"></canvas></div></div></div>
-                <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-heart-broken"></i> Advanced HF & Valvular</div><div id="advancedStats"></div></div></div>
+            <!-- COMORBIDITIES TAB -->
+            <div class="analytics-panel" id="tab-comorbidities">
+                <div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-stethoscope"></i> Comorbidity Prevalence</div><div id="comorbiditiesBars"></div></div>
+                <div class="row g-3">
+                    <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-smoking"></i> Smoking Status</div><div class="analytics-chart-wrap-sm"><canvas id="chartSmoking"></canvas></div></div></div>
+                    <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-heart-broken"></i> Advanced HF & Valvular</div><div id="advancedStats"></div></div></div>
+                </div>
             </div>
-        </div>
-        <!-- OUTCOMES TAB -->
-        <div class="analytics-panel" id="tab-outcomes">
-            <div class="row g-3">
-                <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-skull-crossbones"></i> Mortality Overview</div><div class="analytics-chart-wrap"><canvas id="chartMortality"></canvas></div></div></div>
-                <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-hospital"></i> Admission Frequency</div><div class="analytics-chart-wrap"><canvas id="chartAdmissions"></canvas></div></div></div>
-                <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-running"></i> Cardiac Rehab Enrollment</div><div class="analytics-chart-wrap-sm"><canvas id="chartRehab"></canvas></div></div></div>
-                <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-calendar-check"></i> Avg Length of Stay</div><div id="losStats" style="padding:10px 0;"></div></div></div>
+            <!-- OUTCOMES TAB -->
+            <div class="analytics-panel" id="tab-outcomes">
+                <div class="row g-3">
+                    <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-skull-crossbones"></i> Mortality Overview</div><div class="analytics-chart-wrap"><canvas id="chartMortality"></canvas></div></div></div>
+                    <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-hospital"></i> Admission Frequency</div><div class="analytics-chart-wrap"><canvas id="chartAdmissions"></canvas></div></div></div>
+                    <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-running"></i> Cardiac Rehab Enrollment</div><div class="analytics-chart-wrap-sm"><canvas id="chartRehab"></canvas></div></div></div>
+                    <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-calendar-check"></i> Avg Length of Stay</div><div id="losStats" style="padding:10px 0;"></div></div></div>
+                </div>
             </div>
-        </div>
-        <!-- GDMT GAP TAB (NEW) -->
-        <div class="analytics-panel" id="tab-gdmtgap">
-            <div class="analytics-card">
-                <div class="analytics-card-title"><i class="fa fa-clipboard-list"></i> GDMT Gap Analysis — HFrEF Patients</div>
-                <div style="overflow-x:auto;" id="gdmtGapTableWrap"></div>
+            <!-- GDMT GAP TAB (NEW) -->
+            <div class="analytics-panel" id="tab-gdmtgap">
+                <div class="analytics-card">
+                    <div class="analytics-card-title"><i class="fa fa-clipboard-list"></i> GDMT Gap Analysis — HFrEF Patients</div>
+                    <div style="overflow-x:auto;" id="gdmtGapTableWrap"></div>
+                </div>
             </div>
-        </div>
-        <!-- ENROLLMENT TAB (NEW) -->
-        <div class="analytics-panel" id="tab-enrollment">
-            <div class="analytics-card">
-                <div class="analytics-card-title"><i class="fa fa-chart-line"></i> Monthly New Patient Enrollment</div>
-                <div class="analytics-chart-wrap-lg"><canvas id="chartEnrollment"></canvas></div>
+            <!-- ENROLLMENT TAB (NEW) -->
+            <div class="analytics-panel" id="tab-enrollment">
+                <div class="analytics-card">
+                    <div class="analytics-card-title"><i class="fa fa-chart-line"></i> Monthly New Patient Enrollment</div>
+                    <div class="analytics-chart-wrap-lg"><canvas id="chartEnrollment"></canvas></div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-```
-
-</div>
 
 <!-- CHART MODAL (patient trends) -->
-
 <div id="chartModal" class="modal-overlay d-none">
     <div class="modal-box" style="text-align:left;max-width:600px;">
         <div class="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2">
@@ -738,8 +792,10 @@ var analyticsCharts = {};
 var allPatientsData = [];
 var currentWizardStep = 1;
 var TOTAL_STEPS = 9;
+var pendingRationaleMed = null;
+var gdmtRationales = {};
 
-// ===== MEDICATION FORMULARY (Kuwait-available) =====
+// ===== MEDICATION FORMULARY (Kuwait-available) - SEPARATED PROCORALAN & CCB =====
 var MED_FORMULARY = {
     Med_ARNI: {label:'ARNI (Entresto)', options:['No','Yes'], doses:{'Yes':['24/26 mg BID','49/51 mg BID','97/103 mg BID']}},
     Med_SGLT2i: {label:'SGLT2i', options:['None','Forxiga','Jardiance'], doses:{'Forxiga':['5 mg OD','10 mg OD'],'Jardiance':['10 mg OD','25 mg OD']}},
@@ -753,59 +809,78 @@ var MED_FORMULARY = {
     Med_Antiplat: {label:'Antiplatelets', options:['None','ASA','Plavix','Brilinta'], doses:{'ASA':['81 mg OD','100 mg OD'],'Plavix':['75 mg OD'],'Brilinta':['60 mg BID','90 mg BID']}},
     Med_OAC: {label:'OAC', options:['None','Warfarin','Eliquis','Xarelto'], doses:{'Warfarin':['1 mg','2 mg','3 mg','5 mg','7.5 mg','10 mg'],'Eliquis':['2.5 mg BID','5 mg BID'],'Xarelto':['10 mg OD','15 mg OD','20 mg OD']}},
     Med_Arrhythmia: {label:'Anti-arrhythmics', options:['None','Cordarone','Flecainide','Sotalol','Propafenone'], doses:{'Cordarone':['100 mg OD','200 mg OD','400 mg OD'],'Flecainide':['50 mg BID','100 mg BID','150 mg BID'],'Sotalol':['40 mg BID','80 mg BID','160 mg BID'],'Propafenone':['150 mg TID','225 mg TID','300 mg TID']}},
-    Med_Misc: {label:'Procorolan/CCB', options:['No','Yes'], doses:{'Yes':['Procoralan 5mg BID','Procoralan 7.5mg BID','Amlodipine 5mg','Amlodipine 10mg']}},
+    Med_Procoralan: {label:'Procoralan (Ivabradine)', options:['None','Yes'], doses:{'Yes':['5 mg BID','7.5 mg BID']}},
+    Med_CCB: {label:'CCB (Amlodipine)', options:['None','Yes'], doses:{'Yes':['5 mg OD','10 mg OD']}},
     Med_K_Chelator: {label:'K Chelators', options:['None','Veltassa','Lokelma'], doses:{'Veltassa':['8.4 g OD','16.8 g OD','25.2 g OD'],'Lokelma':['5 g TID (loading)','5 g OD','10 g OD']}}
 };
 
 // GDMT pillars for rationale tracking
 var GDMT_PILLARS = ['Med_ARNI','Med_SGLT2i','Med_BB','Med_MRA'];
-var GDMT_RATIONALE_OPTIONS = ['','Intolerance','Contraindication','Cost','Patient Refusal','Not Indicated','Pending Uptitration','Other'];
+var GDMT_RATIONALE_OPTIONS = ['Intolerance','Contraindication','Cost','Patient Refusal','Not Indicated','Pending Uptitration','Other'];
 
-// ===== VISIT MEDICATION DOSE OPTIONS =====
-var VISIT_MED_LIST = [
-    {id:'V_Concor',label:'Concor',doses:['','1.25 mg','2.5 mg','5 mg','10 mg']},
-    {id:'V_Betaloc',label:'Betaloc',doses:['','12.5 mg','25 mg','50 mg','100 mg','200 mg']},
-    {id:'V_Dilatrend',label:'Dilatrend',doses:['','3.125 mg','6.25 mg','12.5 mg','25 mg']},
-    {id:'V_Lopressor',label:'Lopressor',doses:['','12.5 mg','25 mg','50 mg','100 mg']},
-    {id:'V_Zestril',label:'Zestril',doses:['','2.5 mg','5 mg','10 mg','20 mg','40 mg']},
-    {id:'V_Tritace',label:'Tritace',doses:['','1.25 mg','2.5 mg','5 mg','10 mg']},
-    {id:'V_Capoten',label:'Capoten',doses:['','6.25 mg','12.5 mg','25 mg','50 mg']},
-    {id:'V_Diovan',label:'Diovan',doses:['','40 mg','80 mg','160 mg']},
-    {id:'V_Atacand',label:'Atacand',doses:['','4 mg','8 mg','16 mg','32 mg']},
-    {id:'V_Entresto',label:'Entresto',doses:['','24/26 mg','49/51 mg','97/103 mg']},
-    {id:'V_Aldactone',label:'Aldactone',doses:['','12.5 mg','25 mg','50 mg']},
-    {id:'V_Eplerenone',label:'Eplerenone',doses:['','25 mg','50 mg']},
-    {id:'V_Finerenone',label:'Finerenone',doses:['','10 mg','20 mg']},
-    {id:'V_Forxiga',label:'Forxiga',doses:['','5 mg','10 mg']},
-    {id:'V_Jardiance',label:'Jardiance',doses:['','10 mg','25 mg']},
-    {id:'V_Hydralazine',label:'Hydralazine',doses:['','25 mg','50 mg','75 mg']},
-    {id:'V_Nitrates',label:'Nitrates',doses:['','20 mg','40 mg']},
-    {id:'V_Furosemide',label:'Furosemide',doses:['','20 mg','40 mg','80 mg','120 mg','160 mg']},
-    {id:'V_Metolazone',label:'Metolazone',doses:['','2.5 mg','5 mg','10 mg']},
-    {id:'V_Mounjaro',label:'Mounjaro',doses:['','2.5 mg','5 mg','7.5 mg','10 mg','12.5 mg','15 mg']},
-    {id:'V_Ozempic',label:'Ozempic',doses:['','0.25 mg','0.5 mg','1 mg','2 mg']},
-    {id:'V_Warfarin',label:'Warfarin',doses:['','1 mg','2 mg','3 mg','5 mg','7.5 mg','10 mg']},
-    {id:'V_Xarelto',label:'Xarelto',doses:['','10 mg','15 mg','20 mg']},
-    {id:'V_Eliquis',label:'Eliquis',doses:['','2.5 mg','5 mg']},
-    {id:'V_Zocor',label:'Zocor',doses:['','10 mg','20 mg','40 mg']},
-    {id:'V_Lipitor',label:'Lipitor',doses:['','10 mg','20 mg','40 mg','80 mg']},
-    {id:'V_Crestor',label:'Crestor',doses:['','5 mg','10 mg','20 mg','40 mg']},
-    {id:'V_Ezetrol',label:'Ezetrol',doses:['','10 mg']},
-    {id:'V_Repatha',label:'Repatha',doses:['','140 mg','420 mg']},
-    {id:'V_Praluent',label:'Praluent',doses:['','75 mg','150 mg']},
-    {id:'V_Atozet',label:'Atozet',doses:['','10/10 mg','10/20 mg','10/40 mg','10/80 mg']},
-    {id:'V_Vytorin',label:'Vytorin',doses:['','10/10 mg','10/20 mg','10/40 mg']},
-    {id:'V_Zympass',label:'Zympass',doses:['','5/10 mg','10/10 mg','10/20 mg','20/10 mg']},
-    {id:'V_Fibrates',label:'Fibrates',doses:['','145 mg','160 mg']},
-    {id:'V_Omacor',label:'Omacor',doses:['','1 g','2 g']},
-    {id:'V_Veltassa',label:'Veltassa',doses:['','8.4 g','16.8 g','25.2 g']},
-    {id:'V_Lokelma',label:'Lokelma',doses:['','5 g','10 g']},
-    {id:'V_Cordarone',label:'Cordarone',doses:['','100 mg','200 mg','400 mg']},
-    {id:'V_Flecainide',label:'Flecainide',doses:['','50 mg','100 mg','150 mg']},
-    {id:'V_Sotalol',label:'Sotalol',doses:['','40 mg','80 mg','160 mg']},
-    {id:'V_Propafenone',label:'Propafenone',doses:['','150 mg','225 mg','300 mg']},
-    {id:'V_Procorolan',label:'Procorolan',doses:['','5 mg','7.5 mg']}
-];
+// ===== VISIT MEDICATION GROUPS =====
+var VISIT_MED_GROUPS = {
+    'Beta Blockers': [
+        {id:'V_Concor',label:'Concor',doses:['','1.25 mg','2.5 mg','5 mg','10 mg']},
+        {id:'V_Betaloc',label:'Betaloc',doses:['','12.5 mg','25 mg','50 mg','100 mg','200 mg']},
+        {id:'V_Dilatrend',label:'Dilatrend',doses:['','3.125 mg','6.25 mg','12.5 mg','25 mg']},
+        {id:'V_Lopressor',label:'Lopressor',doses:['','12.5 mg','25 mg','50 mg','100 mg']}
+    ],
+    'ACEi/ARB': [
+        {id:'V_Zestril',label:'Zestril',doses:['','2.5 mg','5 mg','10 mg','20 mg','40 mg']},
+        {id:'V_Tritace',label:'Tritace',doses:['','1.25 mg','2.5 mg','5 mg','10 mg']},
+        {id:'V_Capoten',label:'Capoten',doses:['','6.25 mg','12.5 mg','25 mg','50 mg']},
+        {id:'V_Diovan',label:'Diovan',doses:['','40 mg','80 mg','160 mg']},
+        {id:'V_Atacand',label:'Atacand',doses:['','4 mg','8 mg','16 mg','32 mg']}
+    ],
+    'ARNI & MRA': [
+        {id:'V_Entresto',label:'Entresto',doses:['','24/26 mg','49/51 mg','97/103 mg']},
+        {id:'V_Aldactone',label:'Aldactone',doses:['','12.5 mg','25 mg','50 mg']},
+        {id:'V_Eplerenone',label:'Eplerenone',doses:['','25 mg','50 mg']},
+        {id:'V_Finerenone',label:'Finerenone',doses:['','10 mg','20 mg']}
+    ],
+    'SGLT2i': [
+        {id:'V_Forxiga',label:'Forxiga',doses:['','5 mg','10 mg']},
+        {id:'V_Jardiance',label:'Jardiance',doses:['','10 mg','25 mg']}
+    ],
+    'Diuretics': [
+        {id:'V_Furosemide',label:'Furosemide',doses:['','20 mg','40 mg','80 mg','120 mg','160 mg']},
+        {id:'V_Metolazone',label:'Metolazone',doses:['','2.5 mg','5 mg','10 mg']}
+    ],
+    'OAC': [
+        {id:'V_Warfarin',label:'Warfarin',doses:['','1 mg','2 mg','3 mg','5 mg','7.5 mg','10 mg']},
+        {id:'V_Xarelto',label:'Xarelto',doses:['','10 mg','15 mg','20 mg']},
+        {id:'V_Eliquis',label:'Eliquis',doses:['','2.5 mg','5 mg']}
+    ],
+    'Lipid Lowering': [
+        {id:'V_Zocor',label:'Zocor',doses:['','10 mg','20 mg','40 mg']},
+        {id:'V_Lipitor',label:'Lipitor',doses:['','10 mg','20 mg','40 mg','80 mg']},
+        {id:'V_Crestor',label:'Crestor',doses:['','5 mg','10 mg','20 mg','40 mg']},
+        {id:'V_Ezetrol',label:'Ezetrol',doses:['','10 mg']},
+        {id:'V_Repatha',label:'Repatha',doses:['','140 mg','420 mg']},
+        {id:'V_Praluent',label:'Praluent',doses:['','75 mg','150 mg']},
+        {id:'V_Atozet',label:'Atozet',doses:['','10/10 mg','10/20 mg','10/40 mg','10/80 mg']},
+        {id:'V_Vytorin',label:'Vytorin',doses:['','10/10 mg','10/20 mg','10/40 mg']},
+        {id:'V_Zympass',label:'Zympass',doses:['','5/10 mg','10/10 mg','10/20 mg','20/10 mg']},
+        {id:'V_Fibrates',label:'Fibrates',doses:['','145 mg','160 mg']},
+        {id:'V_Omacor',label:'Omacor',doses:['','1 g','2 g']}
+    ],
+    'Anti-arrhythmics': [
+        {id:'V_Cordarone',label:'Cordarone',doses:['','100 mg','200 mg','400 mg']},
+        {id:'V_Flecainide',label:'Flecainide',doses:['','50 mg','100 mg','150 mg']},
+        {id:'V_Sotalol',label:'Sotalol',doses:['','40 mg','80 mg','160 mg']},
+        {id:'V_Propafenone',label:'Propafenone',doses:['','150 mg','225 mg','300 mg']}
+    ],
+    'Other': [
+        {id:'V_Hydralazine',label:'Hydralazine',doses:['','25 mg','50 mg','75 mg']},
+        {id:'V_Nitrates',label:'Nitrates',doses:['','20 mg','40 mg']},
+        {id:'V_Mounjaro',label:'Mounjaro',doses:['','2.5 mg','5 mg','7.5 mg','10 mg','12.5 mg','15 mg']},
+        {id:'V_Ozempic',label:'Ozempic',doses:['','0.25 mg','0.5 mg','1 mg','2 mg']},
+        {id:'V_Veltassa',label:'Veltassa',doses:['','8.4 g','16.8 g','25.2 g']},
+        {id:'V_Lokelma',label:'Lokelma',doses:['','5 g','10 g']},
+        {id:'V_Procorolan',label:'Procorolan',doses:['','5 mg','7.5 mg']}
+    ]
+};
 
 // ===== COMORBIDITY PILLS =====
 var PILL_COMORBIDITIES = [
@@ -859,13 +934,14 @@ function initFormUI(){
     goToWizardStep(1);
 }
 
-// ===== WIZARD =====
+// ===== WIZARD - NAMES ONLY =====
 function buildWizardProgress(){
     var html='';
-    var labels=['Demo','HF Dx','Signs','Ix','Comorb','Labs','Meds','Outcomes','Visits'];
-    for(var i=1;i<=TOTAL_STEPS;i++){
-        html+='<div class="wizard-step"><div class="wizard-dot'+(i===1?' active':'')+'" id="wdot'+i+'" onclick="goToWizardStep('+i+')">'+i+'</div>';
-        if(i<TOTAL_STEPS) html+='<div class="wizard-line" id="wline'+i+'"></div>';
+    var labels=['Demographics','HF Diagnosis','Symptoms & Signs','Investigations','Comorbidities','Baseline Labs','Medications','Outcomes','Visits'];
+    for(var i=0;i<TOTAL_STEPS;i++){
+        html+='<div class="wizard-step">';
+        html+='<div class="wizard-name'+(i===0?' active':'')+'" id="wdot'+(i+1)+'" onclick="goToWizardStep('+(i+1)+')">'+labels[i]+'</div>';
+        if(i<TOTAL_STEPS-1) html+='<div class="wizard-line" id="wline'+(i+1)+'"></div>';
         html+='</div>';
     }
     document.getElementById('wizardProgress').innerHTML=html;
@@ -876,7 +952,7 @@ function goToWizardStep(step){
     document.querySelector('.form-step[data-step="'+step+'"]').classList.add('active');
     for(var i=1;i<=TOTAL_STEPS;i++){
         var dot=document.getElementById('wdot'+i);
-        dot.className='wizard-dot'+(i===step?' active':(i<step?' done':''));
+        dot.className='wizard-name'+(i===step?' active':(i<step?' done':''));
         if(i<TOTAL_STEPS){var line=document.getElementById('wline'+i);line.className='wizard-line'+(i<step?' done':'');}
     }
     document.getElementById('wizPrev').style.visibility=step===1?'hidden':'visible';
@@ -928,7 +1004,7 @@ function buildMedSection7(){
         var isGDMTPillar=GDMT_PILLARS.indexOf(medId)>=0;
         html+='<div class="col-6 col-md-3" id="medWrap_'+medId+'">';
         html+='<label>'+med.label+(isGDMTPillar?' <i class="fa fa-star text-warning" style="font-size:0.6rem;" title="GDMT Pillar"></i>':'')+'</label>';
-        html+='<select class="form-select" id="'+medId+'" onchange="onMedChange(\''+medId+'\');calcMAGGIC();checkGDMTAlerts();updateGDMTRationale();">';
+        html+='<select class="form-select" id="'+medId+'" onchange="onMedChange(\''+medId+'\');calcMAGGIC();checkGDMTAlerts();checkGDMTGapImmediate(\''+medId+'\');">';
         med.options.forEach(function(o){html+='<option>'+o+'</option>';});
         html+='</select>';
         html+='<div class="med-sub-fields" id="sub_'+medId+'">';
@@ -957,25 +1033,93 @@ function onMedChange(medId){
     }
 }
 
-// ===== GDMT RATIONALE =====
-function updateGDMTRationale(){
-    var hfType=document.getElementById('HF_Type').value;
-    var section=document.getElementById('gdmtRationaleSection');
-    var fields=document.getElementById('gdmtRationaleFields');
-    if(hfType!=='HFrEF'){section.style.display='none';return;}
-    var html='';var anyMissing=false;
-    GDMT_PILLARS.forEach(function(medId){
-        var val=document.getElementById(medId).value;
-        var isMissing=(val==='None'||val==='No'||val==='');
-        if(isMissing){
-            anyMissing=true;
-            html+='<div class="col-6 col-md-3"><label class="text-danger" style="font-size:0.7rem;">Why no '+MED_FORMULARY[medId].label+'?</label>';
-            html+='<select class="form-select gdmt-rationale-sel" id="Rationale_'+medId+'" style="font-size:0.78rem;padding:3px 6px;border:1px dashed #dc3545;background:#fff5f5;">';
-            GDMT_RATIONALE_OPTIONS.forEach(function(o){html+='<option>'+o+'</option>';});
-            html+='</select></div>';
+// ===== GDMT RATIONALE MODAL - IMMEDIATE POPUP =====
+function checkGDMTGapImmediate(medId){
+    // Only check if it's a GDMT pillar and was just deselected
+    if(GDMT_PILLARS.indexOf(medId)===-1) return;
+    
+    var val=document.getElementById(medId).value;
+    if(val==='None'||val==='No'||val===''){
+        // Check if HFrEF
+        var hfType=document.getElementById('HF_Type').value;
+        if(hfType==='HFrEF'){
+            pendingRationaleMed=medId;
+            showRationaleModal(medId);
         }
+    } else {
+        // Remove rationale if now selected
+        delete gdmtRationales[medId];
+        updateRationaleBadges();
+    }
+}
+
+function showRationaleModal(medId){
+    var medName=MED_FORMULARY[medId].label;
+    document.getElementById('gdmtRationaleText').innerHTML='A GDMT pillar medication is not prescribed. Please specify the reason for <strong>'+medName+'</strong>:';
+    document.getElementById('gdmtRationaleModal').classList.add('visible');
+    document.getElementById('otherReasonInput').classList.remove('visible');
+    document.getElementById('otherReasonText').value='';
+}
+
+function selectRationale(reason){
+    if(reason==='Other'){
+        document.getElementById('otherReasonInput').classList.add('visible');
+    } else {
+        gdmtRationales[pendingRationaleMed]=reason;
+        document.getElementById('gdmtRationaleModal').classList.remove('visible');
+        updateRationaleBadges();
+    }
+}
+
+function confirmRationale(){
+    var reason=document.querySelector('.rationale-option.selected')?.dataset?.reason;
+    if(!reason){
+        // Check if Other is selected
+        if(document.getElementById('otherReasonInput').classList.contains('visible')){
+            var otherText=document.getElementById('otherReasonText').value.trim();
+            if(otherText){
+                gdmtRationales[pendingRationaleMed]='Other: '+otherText;
+                document.getElementById('gdmtRationaleModal').classList.remove('visible');
+                updateRationaleBadges();
+            } else {
+                alert('Please specify the reason');
+                return;
+            }
+        } else {
+            alert('Please select a reason');
+            return;
+        }
+    }
+}
+
+function closeRationaleModal(){
+    document.getElementById('gdmtRationaleModal').classList.remove('visible');
+    pendingRationaleMed=null;
+}
+
+// Add click handler for rationale options
+document.querySelectorAll('.rationale-option').forEach(function(opt){
+    opt.addEventListener('click',function(){
+        document.querySelectorAll('.rationale-option').forEach(function(o){o.classList.remove('selected');o.style.borderColor='';});
+        this.classList.add('selected');
+        this.style.borderColor='var(--primary)';
+        this.style.background='#fff5f5';
     });
-    if(anyMissing){section.style.display='block';fields.innerHTML=html;}else{section.style.display='none';}
+});
+
+function updateRationaleBadges(){
+    var html='';
+    Object.keys(gdmtRationales).forEach(function(medId){
+        var reason=gdmtRationales[medId];
+        var badgeClass='rationale-other';
+        if(reason.includes('Intolerance')) badgeClass='rationale-intolerance';
+        else if(reason.includes('Contraindication')) badgeClass='rationale-contra';
+        else if(reason.includes('Cost')) badgeClass='rationale-cost';
+        else if(reason.includes('Refusal')) badgeClass='rationale-refusal';
+        
+        html+='<span class="rationale-badge '+badgeClass+'">'+MED_FORMULARY[medId].label+': '+reason+'</span>';
+    });
+    document.getElementById('gdmtRationaleBadges').innerHTML=html;
 }
 
 // ===== PHENOTYPE EMPHASIS =====
@@ -1063,15 +1207,27 @@ function checkCRTIndication(){
     }else{alertEl.classList.remove('visible');}
 }
 
-// ===== VISIT MED DOSES (Standardized Dropdowns) =====
+// ===== VISIT MEDICATION DOSES - GROUPED =====
 function buildVisitMedDoses(){
+    var container=document.getElementById('visitMedDoses');
     var html='';
-    VISIT_MED_LIST.forEach(function(m){
-        html+='<div class="col-6 col-md-3"><label>'+m.label+'</label><select class="form-select" id="'+m.id+'" style="font-size:0.78rem;padding:3px 6px;">';
-        m.doses.forEach(function(d){html+='<option value="'+d+'">'+d+'</option>';});
-        html+='</select></div>';
+    
+    Object.keys(VISIT_MED_GROUPS).forEach(function(groupName){
+        var meds=VISIT_MED_GROUPS[groupName];
+        html+='<div class="med-group">';
+        html+='<div class="med-group-header"><i class="fa fa-capsules"></i> '+groupName+'</div>';
+        html+='<div class="med-group-body"><div class="med-group-grid">';
+        
+        meds.forEach(function(m){
+            html+='<div><label style="font-size:0.7rem;margin-bottom:2px;">'+m.label+'</label><select class="form-select" id="'+m.id+'" style="font-size:0.75rem;padding:3px 6px;">';
+            m.doses.forEach(function(d){html+='<option value="'+d+'">'+d+'</option>';});
+            html+='</select></div>';
+        });
+        
+        html+='</div></div></div>';
     });
-    document.getElementById('visitMedDoses').innerHTML=html;
+    
+    container.innerHTML=html;
 }
 
 // ===== FORM HELPERS (unchanged logic) =====
@@ -1086,7 +1242,7 @@ function calcMAGGIC(){var pts=0;var age=parseInt(document.getElementById('Age').
 function clearSearchResults(){document.getElementById("searchInput").value="";document.getElementById("searchResults").innerHTML="";}
 function showPopup(type,title,msg){var old=document.getElementById("popOv");if(old)old.remove();var color=type==="success"?"#28a745":type==="delete"?"#dc3545":"#ffc107",icon=type==="success"?"fa-check-circle":type==="delete"?"fa-trash-alt":"fa-exclamation-triangle";var ov=document.createElement("div");ov.id="popOv";ov.className="modal-overlay";ov.innerHTML="<div class='modal-box'><div class='modal-icon' style='background:"+color+";width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;'><i class='fa-solid "+icon+"' style='color:#fff;font-size:1.2rem;'></i></div><h4 style='color:"+color+"'>"+title+"</h4><p class='text-muted'>"+msg+"</p><button class='btn btn-dark w-100' onclick='this.parentElement.parentElement.remove()'>OK</button></div>";document.body.appendChild(ov);}
 
-// ===== SAVE PATIENT (with duplicate check) =====
+// ===== SAVE PATIENT (with duplicate check and rationales) =====
 function savePatient(){
     var civilID=document.getElementById("Civil_ID").value,fileNo=document.getElementById("File_No").value;
     if(civilID.length!==12){showPopup("error","Invalid Civil ID","Civil ID must be exactly 12 digits");return;}
@@ -1101,9 +1257,8 @@ function savePatient(){
         data[medId+'_Date']=document.getElementById(medId+'_Date')?.value||'';
     });
     // Save GDMT rationales
-    GDMT_PILLARS.forEach(function(medId){
-        var el=document.getElementById('Rationale_'+medId);
-        if(el)data['Rationale_'+medId]=el.value;
+    Object.keys(gdmtRationales).forEach(function(medId){
+        data['Rationale_'+medId]=gdmtRationales[medId];
     });
     if(!data.Doctor_Name||!data.Patient_Name){showPopup("error","Missing Fields","Please fill Name, Doctor Name, Civil ID and File No.");return;}
     var btn=document.getElementById("submitBtn");
@@ -1160,14 +1315,40 @@ function loadVisits(patientId){
         visits=[];var html="";
         if(snapshot.size>0){html="<div class='alert alert-info'><h6>Previous Visits:</h6>";
         snapshot.forEach(function(doc){var v=doc.data();visits.push({id:doc.id,...v});
-        html+="<div class='visit-history'><strong>"+v.visitDate+"</strong> ("+v.visitType+")<br><small>NYHA: "+(v.V_NYHA||'-')+", BP: "+(v.V_BP||'-')+", Weight: "+(v.V_Weight||'-')+"kg</small></div>";});
+        html+="<div class='visit-history' onclick='toggleVisitDetails(\""+doc.id+"\")'>";
+        html+="<div class='d-flex justify-content-between align-items-center'>";
+        html+="<strong>"+v.visitDate+"</strong> <span class='badge bg-info'>"+v.visitType+"</span>";
+        html+="<i class='fa fa-chevron-down text-muted'></i></div>";
+        html+="<small>NYHA: "+(v.V_NYHA||'-')+", BP: "+(v.V_BP||'-')+", Weight: "+(v.V_Weight||'-')+"kg</small>";
+        html+="<div class='visit-details' id='visit-details-"+doc.id+"'>";
+        // Expanded details
+        html+="<div class='row g-2 mt-2'>";
+        html+="<div class='col-6'><strong>Symptoms:</strong> Fatigue: "+(v.V_Fatigue||'-')+", Edema: "+(v.V_Edema||'-')+"</div>";
+        html+="<div class='col-6'><strong>Vitals:</strong> Pulse: "+(v.V_Pulse||'-')+", SpO2: "+(v.V_SpO2||'-')+"</div>";
+        html+="<div class='col-6'><strong>ECG:</strong> LBBB: "+(v.V_LBBB||'-')+", QRS: "+(v.V_QRS||'-')+"</div>";
+        html+="<div class='col-6'><strong>Labs:</strong> eGFR: "+(v.V_eGFR||'-')+", K: "+(v.V_K||'-')+"</div>";
+        if(v.V_Adverse)html+="<div class='col-12'><strong>Adverse Effects:</strong> "+v.V_Adverse+"</div>";
+        if(v.V_Plan)html+="<div class='col-12'><strong>Plan:</strong> "+v.V_Plan+"</div>";
+        html+="</div></div></div>";});
         html+="</div>";}document.getElementById("visitHistory").innerHTML=html;});
+}
+
+function toggleVisitDetails(visitId){
+    var details=document.getElementById('visit-details-'+visitId);
+    if(details){
+        details.classList.toggle('expanded');
+        var icon=details.parentElement.querySelector('.fa-chevron-down');
+        if(icon){
+            icon.classList.toggle('fa-chevron-down');
+            icon.classList.toggle('fa-chevron-up');
+        }
+    }
 }
 
 function resetForm(){
     document.querySelectorAll('#hfForm input, #hfForm select, #hfForm textarea').forEach(function(el){if(el.tagName==='SELECT'){el.selectedIndex=0;}else{el.value="";}});
     document.getElementById("searchInput").value="";document.getElementById("searchResults").innerHTML="";
-    editingDocId=null;currentPatientId=null;visits=[];
+    editingDocId=null;currentPatientId=null;visits=[];gdmtRationales={};
     document.getElementById("visitHistory").innerHTML="";
     document.getElementById("submitBtn").disabled=false;document.getElementById("submitBtn").innerHTML='<i class="fa fa-save me-1"></i> SAVE PATIENT';
     document.getElementById("cancelEditBtn").classList.add("d-none");
@@ -1178,13 +1359,13 @@ function resetForm(){
     document.querySelectorAll('.med-sub-fields').forEach(function(el){el.classList.remove('visible');});
     document.querySelectorAll('.pill-toggle').forEach(function(el){el.classList.remove('active');});
     document.querySelectorAll('#medSection7 .phenotype-dim').forEach(function(el){el.classList.remove('phenotype-dim');});
-    document.getElementById('gdmtRationaleSection').style.display='none';
+    document.getElementById('gdmtRationaleBadges').innerHTML='';
     goToWizardStep(1);
 }
 
 // ===== PATIENT CARD HTML (for search & admin) =====
 function generateCardHTML(data,id){
-    var allFields=[['Patient_Name','Civil_ID','File_No','Age','Gender','Nationality','Mobile','Doctor_Name'],['HF_Type','EF_Diagnosis','Advanced_HF','Other_Cardio','Valvular_Disease','Admissions','Last_Admission','LOS'],['Height','Weight','BMI','Dry_Weight','NYHA','Fatigue','Pulse','BP','SpO2','Edema','JVP','Rales','S3','Murmur'],['ECG','ECHO','CMR_CT','Walk_Test','Device_Info','Cath'],['DM','HTN','AF','IHD','PCI_CABG','CKD','CVA','PVD','Smoker','Obese_OSA','Lung_Dz','Liver_Dz','FH_Genetics'],['Lab_HbA1c','Lab_Gluc','Lab_UreaCreat','Lab_eGFR','Lab_NaK','Lab_BNP','Lab_IronFerritin','Lab_TrSats','Lab_CBC','Lab_Thyroid','Lab_Lipids','Lab_AlbCreat'],['Med_ARNI','Med_ARNI_Dose','Med_ARNI_Date','Med_SGLT2i','Med_SGLT2i_Dose','Med_SGLT2i_Date','Med_GLP1','Med_BB','Med_BB_Dose','Med_BB_Date','Med_MRA','Med_MRA_Dose','Med_MRA_Date','Med_ACEiARB','Med_ACEiARB_Dose','Med_ACEiARB_Date','Med_Vasodilator','Med_Diuretic','Med_Lipid','Med_Antiplat','Med_OAC','Med_Arrhythmia','Med_Misc','Med_K_Chelator'],['Quad_GDMT','Compliance','Mortality','Rehab','HF_Dur','MAGGIC_Score','MAGGIC_Risk','Notes','Next_Appt']];
+    var allFields=[['Patient_Name','Civil_ID','File_No','Age','Gender','Nationality','Mobile','Doctor_Name'],['HF_Type','EF_Diagnosis','Advanced_HF','Other_Cardio','Valvular_Disease','Admissions','Last_Admission','LOS'],['Height','Weight','BMI','Dry_Weight','NYHA','Fatigue','Pulse','BP','SpO2','Edema','JVP','Rales','S3','Murmur'],['ECG','ECHO','CMR_CT','Walk_Test','Device_Info','Cath'],['DM','HTN','AF','IHD','PCI_CABG','CKD','CVA','PVD','Smoker','Obese_OSA','Lung_Dz','Liver_Dz','FH_Genetics'],['Lab_HbA1c','Lab_Gluc','Lab_UreaCreat','Lab_eGFR','Lab_NaK','Lab_BNP','Lab_IronFerritin','Lab_TrSats','Lab_CBC','Lab_Thyroid','Lab_Lipids','Lab_AlbCreat'],['Med_ARNI','Med_ARNI_Dose','Med_ARNI_Date','Med_SGLT2i','Med_SGLT2i_Dose','Med_SGLT2i_Date','Med_GLP1','Med_BB','Med_BB_Dose','Med_BB_Date','Med_MRA','Med_MRA_Dose','Med_MRA_Date','Med_ACEiARB','Med_ACEiARB_Dose','Med_ACEiARB_Date','Med_Vasodilator','Med_Diuretic','Med_Lipid','Med_Antiplat','Med_OAC','Med_Arrhythmia','Med_Procoralan','Med_Procoralan_Dose','Med_Procoralan_Date','Med_CCB','Med_CCB_Dose','Med_CCB_Date','Med_K_Chelator'],['Quad_GDMT','Compliance','Mortality','Rehab','HF_Dur','MAGGIC_Score','MAGGIC_Risk','Notes','Next_Appt']];
     var sn=['Demographics','HF Diagnosis','Symptoms & Signs','Investigations','Comorbidities','Baseline Labs','Medications','Outcomes & Management'];
     var html="<div class='card p-3 border-primary shadow-sm patient-card' id='pdf-"+id+"'><h4 class='text-primary mb-3'>"+(data.Patient_Name||'Unknown')+"</h4><div class='row'>";
     allFields.forEach(function(s,idx){html+="<div class='col-12 mb-3'><h6 class='text-secondary border-bottom pb-1'>"+sn[idx]+"</h6><table class='table table-sm table-bordered'>";
@@ -1257,12 +1438,14 @@ function editPt(id){
         if(dateEl&&d[medId+'_Date'])dateEl.value=d[medId+'_Date'];
     });
     // Sync GDMT rationales
+    gdmtRationales={};
     GDMT_PILLARS.forEach(function(medId){
-        var el=document.getElementById('Rationale_'+medId);
-        if(el&&d['Rationale_'+medId])el.value=d['Rationale_'+medId];
+        if(d['Rationale_'+medId]){
+            gdmtRationales[medId]=d['Rationale_'+medId];
+        }
     });
+    updateRationaleBadges();
     applyPhenotypeEmphasis();
-    updateGDMTRationale();
     checkGDMTAlerts();
     checkCRTIndication();
     document.getElementById("formTitle").innerText="Editing: "+d.Patient_Name;
@@ -1294,21 +1477,21 @@ function loadAdmin(){
     }).catch(function(){tb.innerHTML="<tr><td colspan='4' class='text-danger'>Error loading data</td></tr>";});
 }
 
-// ===== EXCEL EXPORT (unchanged + dose/date fields) =====
+// ===== EXCEL EXPORT =====
 function exportPatientExcel(id){var data=PC[id];if(!data){showPopup("error","Error","Patient data not found");return;}db.collection("patients").doc(id).collection("visits").orderBy("visitDate","desc").get().then(function(vs){var vd=[];vs.forEach(function(doc){vd.push(doc.data());});generateExcel(data,vd,id);}).catch(function(){generateExcel(data,[],id);});}
 
 function generateExcel(data,visitsData,id){
     var wb=XLSX.utils.book_new();var pr=[];
     pr.push(["MUBARAK AL-KABEER HOSPITAL - HEART FAILURE REGISTRY"]);
     pr.push(["Patient Name:",data.Patient_Name||'']);pr.push(["Civil ID:",data.Civil_ID||'']);pr.push(["File No:",data.File_No||'']);pr.push(["Age:",data.Age||'']);pr.push(["Gender:",data.Gender||'']);pr.push(["Nationality:",data.Nationality||'']);pr.push(["Mobile:",data.Mobile||'']);pr.push(["Doctor:",data.Doctor_Name||'']);pr.push([]);
-    var sections=[{name:'HF DIAGNOSIS',fields:['HF_Type','EF_Diagnosis','Advanced_HF','Other_Cardio','Valvular_Disease','Admissions','Last_Admission','LOS']},{name:'SYMPTOMS & SIGNS',fields:['Height','Weight','BMI','Dry_Weight','NYHA','Fatigue','Pulse','BP','SpO2','Edema','JVP','Rales','S3','Murmur']},{name:'INVESTIGATIONS',fields:['ECG','ECHO','CMR_CT','Walk_Test','Device_Info','Cath']},{name:'COMORBIDITIES',fields:['DM','HTN','AF','IHD','PCI_CABG','CKD','CVA','PVD','Smoker','Obese_OSA','Lung_Dz','Liver_Dz','FH_Genetics']},{name:'LABORATORY (BASELINE)',fields:['Lab_HbA1c','Lab_Gluc','Lab_UreaCreat','Lab_eGFR','Lab_NaK','Lab_BNP','Lab_IronFerritin','Lab_TrSats','Lab_CBC','Lab_Thyroid','Lab_Lipids','Lab_AlbCreat']},{name:'MEDICATIONS',fields:['Med_ARNI','Med_ARNI_Dose','Med_ARNI_Date','Med_SGLT2i','Med_SGLT2i_Dose','Med_SGLT2i_Date','Med_GLP1','Med_BB','Med_BB_Dose','Med_BB_Date','Med_MRA','Med_MRA_Dose','Med_MRA_Date','Med_ACEiARB','Med_ACEiARB_Dose','Med_ACEiARB_Date','Med_Vasodilator','Med_Diuretic','Med_Lipid','Med_Antiplat','Med_OAC','Med_Arrhythmia','Med_Misc','Med_K_Chelator']},{name:'OUTCOMES & FOLLOW-UP',fields:['Quad_GDMT','Compliance','Mortality','Rehab','HF_Dur','MAGGIC_Score','MAGGIC_Risk','Notes','Next_Appt']}];
+    var sections=[{name:'HF DIAGNOSIS',fields:['HF_Type','EF_Diagnosis','Advanced_HF','Other_Cardio','Valvular_Disease','Admissions','Last_Admission','LOS']},{name:'SYMPTOMS & SIGNS',fields:['Height','Weight','BMI','Dry_Weight','NYHA','Fatigue','Pulse','BP','SpO2','Edema','JVP','Rales','S3','Murmur']},{name:'INVESTIGATIONS',fields:['ECG','ECHO','CMR_CT','Walk_Test','Device_Info','Cath']},{name:'COMORBIDITIES',fields:['DM','HTN','AF','IHD','PCI_CABG','CKD','CVA','PVD','Smoker','Obese_OSA','Lung_Dz','Liver_Dz','FH_Genetics']},{name:'LABORATORY (BASELINE)',fields:['Lab_HbA1c','Lab_Gluc','Lab_UreaCreat','Lab_eGFR','Lab_NaK','Lab_BNP','Lab_IronFerritin','Lab_TrSats','Lab_CBC','Lab_Thyroid','Lab_Lipids','Lab_AlbCreat']},{name:'MEDICATIONS',fields:['Med_ARNI','Med_ARNI_Dose','Med_ARNI_Date','Med_SGLT2i','Med_SGLT2i_Dose','Med_SGLT2i_Date','Med_GLP1','Med_BB','Med_BB_Dose','Med_BB_Date','Med_MRA','Med_MRA_Dose','Med_MRA_Date','Med_ACEiARB','Med_ACEiARB_Dose','Med_ACEiARB_Date','Med_Vasodilator','Med_Diuretic','Med_Lipid','Med_Antiplat','Med_OAC','Med_Arrhythmia','Med_Procoralan','Med_Procoralan_Dose','Med_Procoralan_Date','Med_CCB','Med_CCB_Dose','Med_CCB_Date','Med_K_Chelator']},{name:'OUTCOMES & FOLLOW-UP',fields:['Quad_GDMT','Compliance','Mortality','Rehab','HF_Dur','MAGGIC_Score','MAGGIC_Risk','Notes','Next_Appt']}];
     sections.forEach(function(sec){pr.push([sec.name]);sec.fields.forEach(function(f){pr.push([f.replace(/_/g," ").replace(/Lab /g,"").replace(/Med /g,""),data[f]||'-']);});pr.push([]);});
     var ws1=XLSX.utils.aoa_to_sheet(pr);XLSX.utils.book_append_sheet(wb,ws1,"Patient Info");
-    if(visitsData.length>0){var vr=[];vr.push(["VISIT HISTORY"]);vr.push([]);visitsData.forEach(function(visit,idx){vr.push(["Visit #"+(visitsData.length-idx),"Date: "+visit.visitDate,"Type: "+visit.visitType]);var vFields=['V_Fatigue','V_NYHA','V_Edema','V_Pulse','V_BP','V_SpO2','V_Weight','V_JVP','V_Rales','V_S3','V_LBBB','V_QRS','V_Arrhythmia','V_EF_Change','V_Echo_Other','V_HbA1c','V_Gluc','V_Urea','V_Creat','V_eGFR','V_Na','V_K','V_BNP','V_NTproBNP','V_INR','V_Iron','V_Transferrin','V_Ferritin','V_WBC','V_Hb','V_Plt','V_TSH','V_FreeT4'];VISIT_MED_LIST.forEach(function(m){vFields.push(m.id);});vFields.push('V_Adverse','V_Plan','V_Others');vFields.forEach(function(f){var val=visit[f];if(val&&val.toString().trim()!=='')vr.push([f.replace('V_','').replace(/_/g,' '),val]);});vr.push([]);});var ws2=XLSX.utils.aoa_to_sheet(vr);XLSX.utils.book_append_sheet(wb,ws2,"Visits");}
+    if(visitsData.length>0){var vr=[];vr.push(["VISIT HISTORY"]);vr.push([]);visitsData.forEach(function(visit,idx){vr.push(["Visit #"+(visitsData.length-idx),"Date: "+visit.visitDate,"Type: "+visit.visitType]);var vFields=[];Object.keys(VISIT_MED_GROUPS).forEach(function(g){VISIT_MED_GROUPS[g].forEach(function(m){vFields.push(m.id);});});vFields=vFields.concat(['V_Fatigue','V_NYHA','V_Edema','V_Pulse','V_BP','V_SpO2','V_Weight','V_JVP','V_Rales','V_S3','V_LBBB','V_QRS','V_Arrhythmia','V_EF_Change','V_Echo_Other','V_HbA1c','V_Gluc','V_Urea','V_Creat','V_eGFR','V_Na','V_K','V_BNP','V_NTproBNP','V_INR','V_Iron','V_Transferrin','V_Ferritin','V_WBC','V_Hb','V_Plt','V_TSH','V_FreeT4']);vFields.push('V_Adverse','V_Plan','V_Others');vFields.forEach(function(f){var val=visit[f];if(val&&val.toString().trim()!=='')vr.push([f.replace('V_','').replace(/_/g,' '),val]);});vr.push([]);});var ws2=XLSX.utils.aoa_to_sheet(vr);XLSX.utils.book_append_sheet(wb,ws2,"Visits");}
     XLSX.writeFile(wb,"HF_Registry_"+(data.File_No||'unknown')+"_"+(data.Patient_Name||'patient')+".xlsx");showPopup("success","Excel Exported!","File downloaded successfully.");
 }
 
-// ===== PDF EXPORT (unchanged structure + dose/date) =====
+// ===== PDF EXPORT =====
 function pdfFromAdmin(id){var data=PC[id];if(!data){showPopup("error","Error","Patient data not found");return;}db.collection("patients").doc(id).collection("visits").orderBy("visitDate","desc").get().then(function(vs){var vd=[];vs.forEach(function(doc){vd.push(doc.data());});generatePDF(data,vd,id);}).catch(function(){generatePDF(data,[],id);});}
 
 function generatePDF(data,visitsData,id){
@@ -1316,12 +1499,14 @@ function generatePDF(data,visitsData,id){
     var html="<div id='pdfContent' style='width:750px;margin:0 auto;background:#fff;padding:20px;font-family:Arial,Helvetica,sans-serif;color:#000;'>";
     html+="<div style='text-align:center;border-bottom:3px solid #8b0000;padding-bottom:10px;margin-bottom:20px;'><h2 style='color:#8b0000;margin:0;'>Mubarak Al-Kabeer Hospital</h2><h3 style='margin:5px 0;color:#333;'>Heart Failure Clinic Registry</h3></div>";
     html+="<h3 style='color:#333;'>Patient: "+(data.Patient_Name||'Unknown')+" | File: "+(data.File_No||'N/A')+"</h3>";
-    var sections=[{name:'Demographics',fields:['Patient_Name','Civil_ID','File_No','Age','Gender','Nationality','Mobile','Doctor_Name']},{name:'HF Diagnosis',fields:['HF_Type','EF_Diagnosis','Advanced_HF','Other_Cardio','Valvular_Disease','Admissions','Last_Admission','LOS']},{name:'Symptoms & Signs',fields:['Height','Weight','BMI','Dry_Weight','NYHA','Fatigue','Pulse','BP','SpO2','Edema','JVP','Rales','S3','Murmur']},{name:'Investigations',fields:['ECG','ECHO','CMR_CT','Walk_Test','Device_Info','Cath']},{name:'Comorbidities',fields:['DM','HTN','AF','IHD','PCI_CABG','CKD','CVA','PVD','Smoker','Obese_OSA','Lung_Dz','Liver_Dz','FH_Genetics']},{name:'Laboratory (Baseline)',fields:['Lab_HbA1c','Lab_Gluc','Lab_UreaCreat','Lab_eGFR','Lab_NaK','Lab_BNP','Lab_IronFerritin','Lab_TrSats','Lab_CBC','Lab_Thyroid','Lab_Lipids','Lab_AlbCreat']},{name:'Medications',fields:['Med_ARNI','Med_ARNI_Dose','Med_ARNI_Date','Med_SGLT2i','Med_SGLT2i_Dose','Med_SGLT2i_Date','Med_GLP1','Med_BB','Med_BB_Dose','Med_BB_Date','Med_MRA','Med_MRA_Dose','Med_MRA_Date','Med_ACEiARB','Med_ACEiARB_Dose','Med_ACEiARB_Date','Med_Vasodilator','Med_Diuretic','Med_Lipid','Med_Antiplat','Med_OAC','Med_Arrhythmia','Med_Misc','Med_K_Chelator']},{name:'Outcomes & Follow-up',fields:['Quad_GDMT','Compliance','Mortality','Rehab','HF_Dur','MAGGIC_Score','MAGGIC_Risk','Notes','Next_Appt']}];
+    var sections=[{name:'Demographics',fields:['Patient_Name','Civil_ID','File_No','Age','Gender','Nationality','Mobile','Doctor_Name']},{name:'HF Diagnosis',fields:['HF_Type','EF_Diagnosis','Advanced_HF','Other_Cardio','Valvular_Disease','Admissions','Last_Admission','LOS']},{name:'Symptoms & Signs',fields:['Height','Weight','BMI','Dry_Weight','NYHA','Fatigue','Pulse','BP','SpO2','Edema','JVP','Rales','S3','Murmur']},{name:'Investigations',fields:['ECG','ECHO','CMR_CT','Walk_Test','Device_Info','Cath']},{name:'Comorbidities',fields:['DM','HTN','AF','IHD','PCI_CABG','CKD','CVA','PVD','Smoker','Obese_OSA','Lung_Dz','Liver_Dz','FH_Genetics']},{name:'Laboratory (Baseline)',fields:['Lab_HbA1c','Lab_Gluc','Lab_UreaCreat','Lab_eGFR','Lab_NaK','Lab_BNP','Lab_IronFerritin','Lab_TrSats','Lab_CBC','Lab_Thyroid','Lab_Lipids','Lab_AlbCreat']},{name:'Medications',fields:['Med_ARNI','Med_ARNI_Dose','Med_ARNI_Date','Med_SGLT2i','Med_SGLT2i_Dose','Med_SGLT2i_Date','Med_GLP1','Med_BB','Med_BB_Dose','Med_BB_Date','Med_MRA','Med_MRA_Dose','Med_MRA_Date','Med_ACEiARB','Med_ACEiARB_Dose','Med_ACEiARB_Date','Med_Vasodilator','Med_Diuretic','Med_Lipid','Med_Antiplat','Med_OAC','Med_Arrhythmia','Med_Procoralan','Med_Procoralan_Dose','Med_Procoralan_Date','Med_CCB','Med_CCB_Dose','Med_CCB_Date','Med_K_Chelator']},{name:'Outcomes & Follow-up',fields:['Quad_GDMT','Compliance','Mortality','Rehab','HF_Dur','MAGGIC_Score','MAGGIC_Risk','Notes','Next_Appt']}];
     sections.forEach(function(sec){html+="<h4 style='background:#f0f0f0;padding:8px;margin-top:15px;color:#8b0000;'>"+sec.name+"</h4><table style='width:100%;border-collapse:collapse;font-size:12px;'>";sec.fields.forEach(function(f){var val=data[f]||'-',label=f.replace(/_/g," ").replace(/Lab /g,"").replace(/Med /g,"");html+="<tr style='border-bottom:1px solid #ddd;'><td style='width:40%;padding:6px;background:#fafafa;font-weight:bold;'>"+label+"</td><td style='padding:6px;'>"+val+"</td></tr>";});html+="</table>";});
     if(visitsData.length>0){html+="<div style='page-break-before:always;'></div><h3 style='color:#8b0000;margin-top:20px;'>Visit History & Follow-ups</h3>";
-    var mf=VISIT_MED_LIST.map(function(m){return m.id;});
     visitsData.forEach(function(visit,idx){html+="<div style='border:2px solid #17a2b8;margin:15px 0;padding:15px;border-radius:8px;'><h4 style='color:#17a2b8;margin-top:0;'>Visit #"+(visitsData.length-idx)+": "+visit.visitDate+" ("+visit.visitType+")</h4>";
-    var vs=[{name:'Symptoms',fields:['V_Fatigue','V_NYHA','V_Edema']},{name:'Signs/Vitals',fields:['V_Pulse','V_BP','V_SpO2','V_Weight','V_JVP','V_Rales','V_S3']},{name:'ECG',fields:['V_LBBB','V_QRS','V_Arrhythmia']},{name:'Echo',fields:['V_EF_Change','V_Echo_Other']},{name:'Labs',fields:['V_HbA1c','V_Gluc','V_Urea','V_Creat','V_eGFR','V_Na','V_K','V_BNP','V_NTproBNP','V_INR','V_Iron','V_Transferrin','V_Ferritin','V_WBC','V_Hb','V_Plt','V_TSH','V_FreeT4']},{name:'Medications',fields:mf},{name:'Plan',fields:['V_Adverse','V_Plan','V_Others']}];
+    var vs=[{name:'Symptoms',fields:['V_Fatigue','V_NYHA','V_Edema']},{name:'Signs/Vitals',fields:['V_Pulse','V_BP','V_SpO2','V_Weight','V_JVP','V_Rales','V_S3']},{name:'ECG',fields:['V_LBBB','V_QRS','V_Arrhythmia']},{name:'Echo',fields:['V_EF_Change','V_Echo_Other']},{name:'Labs',fields:['V_HbA1c','V_Gluc','V_Urea','V_Creat','V_eGFR','V_Na','V_K','V_BNP','V_NTproBNP','V_INR','V_Iron','V_Transferrin','V_Ferritin','V_WBC','V_Hb','V_Plt','V_TSH','V_FreeT4']}];
+    var allMedFields=[];Object.keys(VISIT_MED_GROUPS).forEach(function(g){VISIT_MED_GROUPS[g].forEach(function(m){allMedFields.push(m.id);});});
+    vs.push({name:'Medications',fields:allMedFields});
+    vs.push({name:'Plan',fields:['V_Adverse','V_Plan','V_Others']});
     vs.forEach(function(vsec){var hd=false;vsec.fields.forEach(function(vf){if(visit[vf]&&visit[vf].toString().trim()!=='')hd=true;});if(!hd)return;
     html+="<h5 style='margin:10px 0 5px 0;color:#555;'>"+vsec.name+"</h5><table style='width:100%;border-collapse:collapse;font-size:11px;margin-bottom:10px;'>";
     vsec.fields.forEach(function(vf){var val=visit[vf];if(val&&val.toString().trim()!==''){html+="<tr style='border-bottom:1px solid #eee;'><td style='width:40%;padding:4px;background:#f5f5f5;'>"+vf.replace('V_','').replace(/_/g,' ')+"</td><td style='padding:4px;'>"+val+"</td></tr>";}});html+="</table>";});html+="</div>";});}
