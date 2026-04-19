@@ -61,7 +61,7 @@
 .loading-text{color:rgba(255,255,255,0.6);font-size:0.85rem;letter-spacing:0.06em;}
 
 /* ===== MAIN APP ===== */
-.clinic-header{background:linear-gradient(135deg,var(–primary),#b30000);color:#fff;padding:25px 0;border-radius:0 0 15px 15px;position:relative}
+.clinic-header{background:#8b0000;background:linear-gradient(135deg,#8b0000,#b30000);color:#fff;padding:25px 0;border-radius:0 0 15px 15px;position:relative}
 .card{border:none;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:20px}
 .section-title{color:var(–primary);font-weight:bold;border-bottom:2px solid #e9ecef;padding-bottom:5px;margin-top:20px;margin-bottom:12px}
 .visit-section{background:#fff;border-left:4px solid var(–primary);padding:15px;margin-bottom:15px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
@@ -300,7 +300,6 @@ label{font-weight:600;font-size:.75rem;color:#495057;display:block;margin-bottom
         </div>
     </div>
 
-```
 <div class="container mt-3 mb-5" style="padding-bottom:80px;">
     <div class="card p-3 border-top border-4 border-danger shadow">
         <div class="d-flex justify-content-between align-items-center mb-2">
@@ -314,272 +313,275 @@ label{font-weight:600;font-size:.75rem;color:#495057;display:block;margin-bottom
         <div id="searchResults" class="mt-3"></div>
     </div>
 
-    <div class="card p-3 border-top border-4 border-danger">
-        <h4 class="mb-1 text-dark fw-bold" id="formTitle">New Patient Entry</h4>
+```
+<div class="card p-3 border-top border-4 border-danger">
+    <h4 class="mb-1 text-dark fw-bold" id="formTitle">New Patient Entry</h4>
 
-        <!-- WIZARD PROGRESS — dots with short labels underneath -->
-        <div class="wizard-progress" id="wizardProgress"></div>
+    <!-- WIZARD PROGRESS — dots with short labels underneath -->
+    <div class="wizard-progress" id="wizardProgress"></div>
 
-        <div id="hfForm">
-            <!-- STEP 1: Demographics -->
-            <div class="form-step active" data-step="1">
-                <h6 class="section-title">1. Demographics &amp; Entry Info</h6>
+    <div id="hfForm">
+        <!-- STEP 1: Demographics -->
+        <div class="form-step active" data-step="1">
+            <h6 class="section-title">1. Demographics &amp; Entry Info</h6>
+            <div class="row g-2">
+                <div class="col-6 col-md-3"><label class="text-primary fw-bold">Entered By *</label><select class="form-select border-primary" id="Doctor_Name"><option value="">Select...</option><option>Dr Farouk</option><option>Dr Badawy</option><option>Dr Ali</option><option>Dr Hamza</option><option>Dr Ahmed</option></select></div>
+                <div class="col-6 col-md-3"><label>Name *</label><input type="text" class="form-control" id="Patient_Name"></div>
+                <div class="col-6 col-md-3"><label>Civil ID * (12 digits)</label><input type="text" class="form-control" id="Civil_ID" inputmode="numeric" pattern="[0-9]*" maxlength="12" oninput="validateCivilID(this)" onkeypress="return isNumberKey(event)"><small class="error-msg" id="civilError">Must be exactly 12 digits</small></div>
+                <div class="col-6 col-md-3"><label>File No * (6 digits)</label><input type="text" class="form-control" id="File_No" inputmode="numeric" pattern="[0-9]*" maxlength="6" oninput="validateFileNo(this)" onkeypress="return isNumberKey(event)"><small class="error-msg" id="fileError">Must be exactly 6 digits</small></div>
+                <div class="col-4 col-md-2"><label>Age</label><input type="number" class="form-control" id="Age" inputmode="numeric" oninput="calcBaselineEGFR(); calcMAGGIC(); calcEGFR();"></div>
+                <div class="col-4 col-md-2"><label>Gender</label><select class="form-select" id="Gender" onchange="calcBaselineEGFR(); calcMAGGIC(); calcEGFR();"><option value="">Select...</option><option>Male</option><option>Female</option></select></div>
+                <div class="col-4 col-md-4"><label>Nationality</label><input type="text" class="form-control" id="Nationality"></div>
+                <div class="col-12 col-md-4"><label>Mobile</label><input type="tel" class="form-control" id="Mobile" inputmode="tel"></div>
+            </div>
+        </div>
+
+        <!-- STEP 2: HF Diagnosis -->
+        <div class="form-step" data-step="2">
+            <h6 class="section-title">2. HF Diagnosis &amp; Status</h6>
+            <div class="row g-2">
+                <div class="col-6 col-md-3"><label>Type of HF</label><select class="form-select" id="HF_Type" onchange="applyPhenotypeEmphasis(); updateGDMTRationale();"><option value="">Select...</option><option>HFrEF</option><option>HFmrEF</option><option>HFpEF</option></select></div>
+                <div class="col-6 col-md-2"><label>EF at Diagnosis (%)</label><input type="number" class="form-control" id="EF_Diagnosis" inputmode="numeric" oninput="calcMAGGIC(); checkCRTIndication();"></div>
+                <div class="col-6 col-md-2"><label>Advanced HF</label><select class="form-select" id="Advanced_HF"><option>No</option><option>Yes</option></select></div>
+                <div class="col-6 col-md-5"><label>Other Cardiomyopathies</label><input type="text" class="form-control" id="Other_Cardio"></div>
+                <div class="col-6 col-md-3"><label>Valvular Disease</label><select class="form-select" id="Valvular_Disease"><option>No</option><option>Yes</option></select></div>
+                <div class="col-6 col-md-3"><label>Admissions Last Yr</label><input type="number" class="form-control" id="Admissions" inputmode="numeric"></div>
+                <div class="col-6 col-md-3"><label>Last Admission Date</label><input type="date" class="form-control" id="Last_Admission"></div>
+                <div class="col-6 col-md-3"><label>Length of Stay (Days)</label><input type="number" class="form-control" id="LOS" inputmode="numeric"></div>
+            </div>
+        </div>
+
+        <!-- STEP 3: Symptoms & Signs -->
+        <div class="form-step" data-step="3">
+            <h6 class="section-title">3. Symptoms &amp; Signs</h6>
+            <div class="row g-2">
+                <div class="col-4 col-md-2"><label class="text-primary">Height (cm)</label><input type="number" class="form-control border-primary" id="Height" oninput="calcBMI()" inputmode="numeric"></div>
+                <div class="col-4 col-md-2"><label class="text-primary">Weight (kg)</label><input type="number" class="form-control border-primary" id="Weight" oninput="calcBMI()" inputmode="numeric"></div>
+                <div class="col-4 col-md-2"><label class="text-success fw-bold">BMI <span class="auto-badge"><i class="fa fa-lock"></i> Auto</span></label><input type="text" class="form-control bg-light text-success fw-bold" id="BMI" readonly></div>
+                <div class="col-4 col-md-2"><label>Dry Weight (kg)</label><input type="number" class="form-control" id="Dry_Weight" inputmode="numeric"></div>
+                <div class="col-4 col-md-2"><label>NYHA Visit</label><select class="form-select" id="NYHA" onchange="calcMAGGIC()"><option value="">Select...</option><option>I</option><option>II</option><option>III</option><option>IV</option></select></div>
+                <div class="col-4 col-md-2"><label>KCCQ (0-100)</label><input type="number" class="form-control" id="KCCQ" min="0" max="100" inputmode="numeric" placeholder="0-100"></div>
+                <div class="col-4 col-md-2"><label>Fatigue</label><select class="form-select" id="Fatigue"><option>No</option><option>Yes</option></select></div>
+                <div class="col-4 col-md-2"><label>Pulse</label><input type="text" class="form-control" id="Pulse" inputmode="numeric"></div>
+                <div class="col-4 col-md-2"><label>BP</label><input type="text" class="form-control" id="BP" placeholder="120/80" oninput="calcMAGGIC()"></div>
+                <div class="col-4 col-md-2"><label>SpO2 (%)</label><input type="number" class="form-control" id="SpO2" inputmode="numeric"></div>
+                <div class="col-4 col-md-2"><label>Edema</label><select class="form-select" id="Edema"><option>No</option><option>Yes</option></select></div>
+                <div class="col-4 col-md-2"><label>JVP</label><select class="form-select" id="JVP"><option>Normal</option><option>Raised</option></select></div>
+                <div class="col-4 col-md-2"><label>Rales</label><select class="form-select" id="Rales"><option>No</option><option>Yes</option></select></div>
+                <div class="col-4 col-md-3"><label>S3 Gallop</label><select class="form-select" id="S3"><option>No</option><option>Yes</option></select></div>
+                <div class="col-8 col-md-3"><label>Murmur</label><input type="text" class="form-control" id="Murmur"></div>
+            </div>
+        </div>
+
+        <!-- STEP 4: Investigations -->
+        <div class="form-step" data-step="4">
+            <h6 class="section-title">4. Investigations &amp; Procedures</h6>
+            <div class="row g-2">
+                <div class="col-12 col-md-6"><label>ECG (LBBB/QRS/Arrhythmia)</label><input type="text" class="form-control" id="ECG"></div>
+                <div class="col-12 col-md-6"><label>ECHO Details</label><input type="text" class="form-control" id="ECHO"></div>
+                <div class="col-12 col-md-6"><label>CMR/CT Angio</label><input type="text" class="form-control" id="CMR_CT"></div>
+                <div class="col-6 col-md-3"><label>6 Min Walk Test</label><input type="text" class="form-control" id="Walk_Test"></div>
+                <div class="col-6 col-md-3"><label>Device (ICD/CRT)/Date</label><input type="text" class="form-control" id="Device_Info"></div>
+                <div class="col-12 col-md-6"><label>Right Side Cath</label><input type="text" class="form-control" id="Cath"></div>
+            </div>
+            <div class="clinical-alert alert-info-soft" id="alertCRT">
+                <i class="fa fa-bolt"></i>
+                <div><strong>CRT/ICD Consideration:</strong> <span id="alertCRTText"></span></div>
+            </div>
+        </div>
+
+        <!-- STEP 5: Comorbidities -->
+        <div class="form-step" data-step="5">
+            <h6 class="section-title">5. Comorbidities</h6>
+            <div class="pill-group" id="pillComorbidities"></div>
+            <div style="display:none;">
+                <select id="DM" onchange="calcMAGGIC()"><option>No</option><option>Yes</option></select>
+                <select id="HTN"><option>No</option><option>Yes</option></select>
+                <select id="AF"><option>No</option><option>Yes</option></select>
+                <select id="IHD"><option>No</option><option>STEMI</option><option>NSTEMI</option></select>
+                <select id="PCI_CABG"><option>No</option><option>PCI</option><option>CABG</option></select>
+                <select id="CKD"><option>No</option><option>Yes</option></select>
+                <select id="CVA"><option>No</option><option>Yes</option></select>
+                <select id="PVD"><option>No</option><option>Yes</option></select>
+                <select id="Smoker" onchange="calcMAGGIC()"><option>Never</option><option>Current</option><option>Former</option></select>
+                <select id="Obese_OSA"><option>No</option><option>Yes</option></select>
+                <select id="Lung_Dz" onchange="calcMAGGIC()"><option>No</option><option>Yes</option></select>
+                <select id="Liver_Dz"><option>No</option><option>Yes</option></select>
+            </div>
+            <div class="row g-2 mt-2">
+                <div class="col-12 col-md-6"><label>IHD Type</label><select class="form-select" id="IHD_Visible" onchange="document.getElementById('IHD').value=this.value"><option>No</option><option>STEMI</option><option>NSTEMI</option></select></div>
+                <div class="col-12 col-md-6"><label>PCI/CABG</label><select class="form-select" id="PCI_CABG_Visible" onchange="document.getElementById('PCI_CABG').value=this.value"><option>No</option><option>PCI</option><option>CABG</option></select></div>
+                <div class="col-12 col-md-6"><label>Smoking Status</label><select class="form-select" id="Smoker_Visible" onchange="document.getElementById('Smoker').value=this.value;calcMAGGIC()"><option>Never</option><option>Current</option><option>Former</option></select></div>
+                <div class="col-12 col-md-6"><label>F.H. Cardio/Genetics</label><input type="text" class="form-control" id="FH_Genetics"></div>
+            </div>
+        </div>
+
+        <!-- STEP 6: Labs -->
+        <div class="form-step" data-step="6">
+            <h6 class="section-title">6. Lab Results (Baseline)</h6>
+            <div class="row g-2">
+                <div class="col-4 col-md-2"><label>HbA1c</label><input type="text" class="form-control" id="Lab_HbA1c"></div>
+                <div class="col-4 col-md-2"><label>Gluc</label><input type="text" class="form-control" id="Lab_Gluc"></div>
+                <div class="col-4 col-md-2"><label>Urea/Creat</label><input type="text" class="form-control" id="Lab_UreaCreat" oninput="calcBaselineEGFR(); calcMAGGIC(); checkGDMTAlerts();" placeholder="e.g. 5/80"></div>
+                <div class="col-4 col-md-2"><label class="text-success fw-bold">eGFR <span class="auto-badge"><i class="fa fa-lock"></i> Auto</span></label><input type="text" class="form-control bg-light text-success fw-bold" id="Lab_eGFR" readonly></div>
+                <div class="col-4 col-md-2"><label>Na/K</label><input type="text" class="form-control" id="Lab_NaK" oninput="checkGDMTAlerts()"></div>
+                <div class="col-4 col-md-2"><label>NT-proBNP</label><input type="text" class="form-control" id="Lab_BNP"></div>
+                <div class="col-4 col-md-2"><label>Iron/Ferritin</label><input type="text" class="form-control" id="Lab_IronFerritin"></div>
+                <div class="col-4 col-md-2"><label>Tr Sats</label><input type="text" class="form-control" id="Lab_TrSats"></div>
+                <div class="col-4 col-md-2"><label>Hb/WBC/Plt</label><input type="text" class="form-control" id="Lab_CBC"></div>
+                <div class="col-4 col-md-2"><label>TSH/Free T4</label><input type="text" class="form-control" id="Lab_Thyroid"></div>
+                <div class="col-4 col-md-2"><label>LDL/HDL/TG</label><input type="text" class="form-control" id="Lab_Lipids"></div>
+                <div class="col-4 col-md-2"><label>Alb/Creat Ratio</label><input type="text" class="form-control" id="Lab_AlbCreat"></div>
+            </div>
+            <div class="clinical-alert alert-warning-soft" id="alertHyperK">
+                <i class="fa fa-exclamation-triangle"></i>
+                <div><strong>Caution — Hyperkalemia (K &gt; 5.0):</strong> Review MRA &amp; ARNI dosing. Consider potassium chelator.</div>
+            </div>
+            <div class="clinical-alert alert-warning-soft" id="alertLowGFR">
+                <i class="fa fa-kidney"></i>
+                <div><strong>Caution — eGFR &lt; 30:</strong> Review SGLT2i &amp; ARNI dosing. Dose adjustment may be required.</div>
+            </div>
+            <div class="clinical-alert alert-danger-soft" id="alertIronDef">
+                <i class="fa fa-tint"></i>
+                <div><strong>Iron Deficiency Flagged (ESC Criteria):</strong> Ferritin &lt;100, or 100–299 with TSAT &lt;20%. Consider IV iron.</div>
+            </div>
+        </div>
+
+        <!-- STEP 7: Medications -->
+        <div class="form-step" data-step="7">
+            <h6 class="section-title">7. Medications</h6>
+            <div class="clinical-alert alert-info-soft" id="alertPhenotype" style="margin-bottom:10px;">
+                <i class="fa fa-info-circle"></i>
+                <div id="alertPhenotypeText">Select HF Type in Step 2 for phenotype-specific guidance.</div>
+            </div>
+            <div class="row g-2" id="medSection7"></div>
+            <div id="gdmtRationaleSection" style="display:none;margin-top:10px;">
+                <h6 class="text-danger" style="font-size:0.78rem;"><i class="fa fa-clipboard-question me-1"></i> GDMT Gap Rationale (HFrEF)</h6>
+                <div class="row g-2" id="gdmtRationaleFields"></div>
+            </div>
+        </div>
+
+        <!-- STEP 8: Outcomes -->
+        <div class="form-step" data-step="8">
+            <h6 class="section-title">8. Outcomes &amp; Management</h6>
+            <div class="row g-2">
+                <div class="col-6 col-md-3"><label>Quadruple GDMT?</label><select class="form-select" id="Quad_GDMT"><option>No</option><option>Yes</option></select></div>
+                <div class="col-6 col-md-3"><label>Compliance</label><select class="form-select" id="Compliance"><option>Yes</option><option>No</option></select></div>
+                <div class="col-6 col-md-3"><label>Mortality</label><select class="form-select" id="Mortality"><option>Alive</option><option>In-hospital</option><option>Out-of-hospital</option></select></div>
+                <div class="col-6 col-md-3"><label>Cardiac Rehab</label><select class="form-select" id="Rehab"><option>No</option><option>Yes</option></select></div>
+                <div class="col-12"><hr class="my-2"></div>
+                <h6 class="col-12 text-secondary m-0"><i class="fa fa-calculator"></i> MAGGIC Risk Calculator</h6>
+                <div class="col-6 col-md-3"><label>HF Duration &gt; 18 mo</label><select class="form-select" id="HF_Dur" onchange="calcMAGGIC()"><option>No</option><option>Yes</option></select></div>
+                <div class="col-6 col-md-3"><label class="text-success fw-bold">MAGGIC Points <span class="auto-badge"><i class="fa fa-lock"></i> Auto</span></label><input type="text" class="form-control bg-light text-success fw-bold" id="MAGGIC_Score" readonly></div>
+                <div class="col-12 col-md-6"><label class="text-danger fw-bold">Est. Mortality (1yr | 3yr)</label><input type="text" class="form-control bg-light text-danger fw-bold" id="MAGGIC_Risk" readonly></div>
+                <div class="col-12"><hr class="my-2"></div>
+                <div class="col-12 col-md-12"><label>Management Plan / Notes</label><textarea class="form-control" id="Notes" rows="2"></textarea></div>
+            </div>
+        </div>
+
+        <!-- STEP 9: Visits -->
+        <div class="form-step" data-step="9">
+            <h6 class="section-title">9. Visits &amp; Follow-ups</h6>
+            <!-- Collapsible visit history -->
+            <div id="visitHistory" class="visit-history-list mb-3"></div>
+            <div class="visit-section">
+                <h6 class="text-primary mb-3">Add New Visit</h6>
                 <div class="row g-2">
-                    <div class="col-6 col-md-3"><label class="text-primary fw-bold">Entered By *</label><select class="form-select border-primary" id="Doctor_Name"><option value="">Select...</option><option>Dr Farouk</option><option>Dr Badawy</option><option>Dr Ali</option><option>Dr Hamza</option><option>Dr Ahmed</option></select></div>
-                    <div class="col-6 col-md-3"><label>Name *</label><input type="text" class="form-control" id="Patient_Name"></div>
-                    <div class="col-6 col-md-3"><label>Civil ID * (12 digits)</label><input type="text" class="form-control" id="Civil_ID" inputmode="numeric" pattern="[0-9]*" maxlength="12" oninput="validateCivilID(this)" onkeypress="return isNumberKey(event)"><small class="error-msg" id="civilError">Must be exactly 12 digits</small></div>
-                    <div class="col-6 col-md-3"><label>File No * (6 digits)</label><input type="text" class="form-control" id="File_No" inputmode="numeric" pattern="[0-9]*" maxlength="6" oninput="validateFileNo(this)" onkeypress="return isNumberKey(event)"><small class="error-msg" id="fileError">Must be exactly 6 digits</small></div>
-                    <div class="col-4 col-md-2"><label>Age</label><input type="number" class="form-control" id="Age" inputmode="numeric" oninput="calcBaselineEGFR(); calcMAGGIC(); calcEGFR();"></div>
-                    <div class="col-4 col-md-2"><label>Gender</label><select class="form-select" id="Gender" onchange="calcBaselineEGFR(); calcMAGGIC(); calcEGFR();"><option value="">Select...</option><option>Male</option><option>Female</option></select></div>
-                    <div class="col-4 col-md-4"><label>Nationality</label><input type="text" class="form-control" id="Nationality"></div>
-                    <div class="col-12 col-md-4"><label>Mobile</label><input type="tel" class="form-control" id="Mobile" inputmode="tel"></div>
-                </div>
-            </div>
-
-            <!-- STEP 2: HF Diagnosis -->
-            <div class="form-step" data-step="2">
-                <h6 class="section-title">2. HF Diagnosis &amp; Status</h6>
-                <div class="row g-2">
-                    <div class="col-6 col-md-3"><label>Type of HF</label><select class="form-select" id="HF_Type" onchange="applyPhenotypeEmphasis(); updateGDMTRationale();"><option value="">Select...</option><option>HFrEF</option><option>HFmrEF</option><option>HFpEF</option></select></div>
-                    <div class="col-6 col-md-2"><label>EF at Diagnosis (%)</label><input type="number" class="form-control" id="EF_Diagnosis" inputmode="numeric" oninput="calcMAGGIC(); checkCRTIndication();"></div>
-                    <div class="col-6 col-md-2"><label>Advanced HF</label><select class="form-select" id="Advanced_HF"><option>No</option><option>Yes</option></select></div>
-                    <div class="col-6 col-md-5"><label>Other Cardiomyopathies</label><input type="text" class="form-control" id="Other_Cardio"></div>
-                    <div class="col-6 col-md-3"><label>Valvular Disease</label><select class="form-select" id="Valvular_Disease"><option>No</option><option>Yes</option></select></div>
-                    <div class="col-6 col-md-3"><label>Admissions Last Yr</label><input type="number" class="form-control" id="Admissions" inputmode="numeric"></div>
-                    <div class="col-6 col-md-3"><label>Last Admission Date</label><input type="date" class="form-control" id="Last_Admission"></div>
-                    <div class="col-6 col-md-3"><label>Length of Stay (Days)</label><input type="number" class="form-control" id="LOS" inputmode="numeric"></div>
-                </div>
-            </div>
-
-            <!-- STEP 3: Symptoms & Signs -->
-            <div class="form-step" data-step="3">
-                <h6 class="section-title">3. Symptoms &amp; Signs</h6>
-                <div class="row g-2">
-                    <div class="col-4 col-md-2"><label class="text-primary">Height (cm)</label><input type="number" class="form-control border-primary" id="Height" oninput="calcBMI()" inputmode="numeric"></div>
-                    <div class="col-4 col-md-2"><label class="text-primary">Weight (kg)</label><input type="number" class="form-control border-primary" id="Weight" oninput="calcBMI()" inputmode="numeric"></div>
-                    <div class="col-4 col-md-2"><label class="text-success fw-bold">BMI <span class="auto-badge"><i class="fa fa-lock"></i> Auto</span></label><input type="text" class="form-control bg-light text-success fw-bold" id="BMI" readonly></div>
-                    <div class="col-4 col-md-2"><label>Dry Weight (kg)</label><input type="number" class="form-control" id="Dry_Weight" inputmode="numeric"></div>
-                    <div class="col-4 col-md-2"><label>NYHA Visit</label><select class="form-select" id="NYHA" onchange="calcMAGGIC()"><option value="">Select...</option><option>I</option><option>II</option><option>III</option><option>IV</option></select></div>
-                    <div class="col-4 col-md-2"><label>KCCQ (0-100)</label><input type="number" class="form-control" id="KCCQ" min="0" max="100" inputmode="numeric" placeholder="0-100"></div>
-                    <div class="col-4 col-md-2"><label>Fatigue</label><select class="form-select" id="Fatigue"><option>No</option><option>Yes</option></select></div>
-                    <div class="col-4 col-md-2"><label>Pulse</label><input type="text" class="form-control" id="Pulse" inputmode="numeric"></div>
-                    <div class="col-4 col-md-2"><label>BP</label><input type="text" class="form-control" id="BP" placeholder="120/80" oninput="calcMAGGIC()"></div>
-                    <div class="col-4 col-md-2"><label>SpO2 (%)</label><input type="number" class="form-control" id="SpO2" inputmode="numeric"></div>
-                    <div class="col-4 col-md-2"><label>Edema</label><select class="form-select" id="Edema"><option>No</option><option>Yes</option></select></div>
-                    <div class="col-4 col-md-2"><label>JVP</label><select class="form-select" id="JVP"><option>Normal</option><option>Raised</option></select></div>
-                    <div class="col-4 col-md-2"><label>Rales</label><select class="form-select" id="Rales"><option>No</option><option>Yes</option></select></div>
-                    <div class="col-4 col-md-3"><label>S3 Gallop</label><select class="form-select" id="S3"><option>No</option><option>Yes</option></select></div>
-                    <div class="col-8 col-md-3"><label>Murmur</label><input type="text" class="form-control" id="Murmur"></div>
-                </div>
-            </div>
-
-            <!-- STEP 4: Investigations -->
-            <div class="form-step" data-step="4">
-                <h6 class="section-title">4. Investigations &amp; Procedures</h6>
-                <div class="row g-2">
-                    <div class="col-12 col-md-6"><label>ECG (LBBB/QRS/Arrhythmia)</label><input type="text" class="form-control" id="ECG"></div>
-                    <div class="col-12 col-md-6"><label>ECHO Details</label><input type="text" class="form-control" id="ECHO"></div>
-                    <div class="col-12 col-md-6"><label>CMR/CT Angio</label><input type="text" class="form-control" id="CMR_CT"></div>
-                    <div class="col-6 col-md-3"><label>6 Min Walk Test</label><input type="text" class="form-control" id="Walk_Test"></div>
-                    <div class="col-6 col-md-3"><label>Device (ICD/CRT)/Date</label><input type="text" class="form-control" id="Device_Info"></div>
-                    <div class="col-12 col-md-6"><label>Right Side Cath</label><input type="text" class="form-control" id="Cath"></div>
-                </div>
-                <div class="clinical-alert alert-info-soft" id="alertCRT">
-                    <i class="fa fa-bolt"></i>
-                    <div><strong>CRT/ICD Consideration:</strong> <span id="alertCRTText"></span></div>
-                </div>
-            </div>
-
-            <!-- STEP 5: Comorbidities -->
-            <div class="form-step" data-step="5">
-                <h6 class="section-title">5. Comorbidities</h6>
-                <div class="pill-group" id="pillComorbidities"></div>
-                <div style="display:none;">
-                    <select id="DM" onchange="calcMAGGIC()"><option>No</option><option>Yes</option></select>
-                    <select id="HTN"><option>No</option><option>Yes</option></select>
-                    <select id="AF"><option>No</option><option>Yes</option></select>
-                    <select id="IHD"><option>No</option><option>STEMI</option><option>NSTEMI</option></select>
-                    <select id="PCI_CABG"><option>No</option><option>PCI</option><option>CABG</option></select>
-                    <select id="CKD"><option>No</option><option>Yes</option></select>
-                    <select id="CVA"><option>No</option><option>Yes</option></select>
-                    <select id="PVD"><option>No</option><option>Yes</option></select>
-                    <select id="Smoker" onchange="calcMAGGIC()"><option>Never</option><option>Current</option><option>Former</option></select>
-                    <select id="Obese_OSA"><option>No</option><option>Yes</option></select>
-                    <select id="Lung_Dz" onchange="calcMAGGIC()"><option>No</option><option>Yes</option></select>
-                    <select id="Liver_Dz"><option>No</option><option>Yes</option></select>
-                </div>
-                <div class="row g-2 mt-2">
-                    <div class="col-12 col-md-6"><label>IHD Type</label><select class="form-select" id="IHD_Visible" onchange="document.getElementById('IHD').value=this.value"><option>No</option><option>STEMI</option><option>NSTEMI</option></select></div>
-                    <div class="col-12 col-md-6"><label>PCI/CABG</label><select class="form-select" id="PCI_CABG_Visible" onchange="document.getElementById('PCI_CABG').value=this.value"><option>No</option><option>PCI</option><option>CABG</option></select></div>
-                    <div class="col-12 col-md-6"><label>Smoking Status</label><select class="form-select" id="Smoker_Visible" onchange="document.getElementById('Smoker').value=this.value;calcMAGGIC()"><option>Never</option><option>Current</option><option>Former</option></select></div>
-                    <div class="col-12 col-md-6"><label>F.H. Cardio/Genetics</label><input type="text" class="form-control" id="FH_Genetics"></div>
-                </div>
-            </div>
-
-            <!-- STEP 6: Labs -->
-            <div class="form-step" data-step="6">
-                <h6 class="section-title">6. Lab Results (Baseline)</h6>
-                <div class="row g-2">
-                    <div class="col-4 col-md-2"><label>HbA1c</label><input type="text" class="form-control" id="Lab_HbA1c"></div>
-                    <div class="col-4 col-md-2"><label>Gluc</label><input type="text" class="form-control" id="Lab_Gluc"></div>
-                    <div class="col-4 col-md-2"><label>Urea/Creat</label><input type="text" class="form-control" id="Lab_UreaCreat" oninput="calcBaselineEGFR(); calcMAGGIC(); checkGDMTAlerts();" placeholder="e.g. 5/80"></div>
-                    <div class="col-4 col-md-2"><label class="text-success fw-bold">eGFR <span class="auto-badge"><i class="fa fa-lock"></i> Auto</span></label><input type="text" class="form-control bg-light text-success fw-bold" id="Lab_eGFR" readonly></div>
-                    <div class="col-4 col-md-2"><label>Na/K</label><input type="text" class="form-control" id="Lab_NaK" oninput="checkGDMTAlerts()"></div>
-                    <div class="col-4 col-md-2"><label>NT-proBNP</label><input type="text" class="form-control" id="Lab_BNP"></div>
-                    <div class="col-4 col-md-2"><label>Iron/Ferritin</label><input type="text" class="form-control" id="Lab_IronFerritin"></div>
-                    <div class="col-4 col-md-2"><label>Tr Sats</label><input type="text" class="form-control" id="Lab_TrSats"></div>
-                    <div class="col-4 col-md-2"><label>Hb/WBC/Plt</label><input type="text" class="form-control" id="Lab_CBC"></div>
-                    <div class="col-4 col-md-2"><label>TSH/Free T4</label><input type="text" class="form-control" id="Lab_Thyroid"></div>
-                    <div class="col-4 col-md-2"><label>LDL/HDL/TG</label><input type="text" class="form-control" id="Lab_Lipids"></div>
-                    <div class="col-4 col-md-2"><label>Alb/Creat Ratio</label><input type="text" class="form-control" id="Lab_AlbCreat"></div>
-                </div>
-                <div class="clinical-alert alert-warning-soft" id="alertHyperK">
-                    <i class="fa fa-exclamation-triangle"></i>
-                    <div><strong>Caution — Hyperkalemia (K &gt; 5.0):</strong> Review MRA &amp; ARNI dosing. Consider potassium chelator.</div>
-                </div>
-                <div class="clinical-alert alert-warning-soft" id="alertLowGFR">
-                    <i class="fa fa-kidney"></i>
-                    <div><strong>Caution — eGFR &lt; 30:</strong> Review SGLT2i &amp; ARNI dosing. Dose adjustment may be required.</div>
-                </div>
-                <div class="clinical-alert alert-danger-soft" id="alertIronDef">
-                    <i class="fa fa-tint"></i>
-                    <div><strong>Iron Deficiency Flagged (ESC Criteria):</strong> Ferritin &lt;100, or 100–299 with TSAT &lt;20%. Consider IV iron.</div>
-                </div>
-            </div>
-
-            <!-- STEP 7: Medications -->
-            <div class="form-step" data-step="7">
-                <h6 class="section-title">7. Medications</h6>
-                <div class="clinical-alert alert-info-soft" id="alertPhenotype" style="margin-bottom:10px;">
-                    <i class="fa fa-info-circle"></i>
-                    <div id="alertPhenotypeText">Select HF Type in Step 2 for phenotype-specific guidance.</div>
-                </div>
-                <div class="row g-2" id="medSection7"></div>
-                <div id="gdmtRationaleSection" style="display:none;margin-top:10px;">
-                    <h6 class="text-danger" style="font-size:0.78rem;"><i class="fa fa-clipboard-question me-1"></i> GDMT Gap Rationale (HFrEF)</h6>
-                    <div class="row g-2" id="gdmtRationaleFields"></div>
-                </div>
-            </div>
-
-            <!-- STEP 8: Outcomes -->
-            <div class="form-step" data-step="8">
-                <h6 class="section-title">8. Outcomes &amp; Management</h6>
-                <div class="row g-2">
-                    <div class="col-6 col-md-3"><label>Quadruple GDMT?</label><select class="form-select" id="Quad_GDMT"><option>No</option><option>Yes</option></select></div>
-                    <div class="col-6 col-md-3"><label>Compliance</label><select class="form-select" id="Compliance"><option>Yes</option><option>No</option></select></div>
-                    <div class="col-6 col-md-3"><label>Mortality</label><select class="form-select" id="Mortality"><option>Alive</option><option>In-hospital</option><option>Out-of-hospital</option></select></div>
-                    <div class="col-6 col-md-3"><label>Cardiac Rehab</label><select class="form-select" id="Rehab"><option>No</option><option>Yes</option></select></div>
+                    <div class="col-6 col-md-3"><label>Visit Date *</label><input type="date" class="form-control" id="Visit_Date"></div>
+                    <div class="col-6 col-md-3"><label>Visit Type</label><select class="form-select" id="Visit_Type"><option>Routine</option><option>Urgent</option><option>Post-Discharge</option><option>Telemedicine</option></select></div>
                     <div class="col-12"><hr class="my-2"></div>
-                    <h6 class="col-12 text-secondary m-0"><i class="fa fa-calculator"></i> MAGGIC Risk Calculator</h6>
-                    <div class="col-6 col-md-3"><label>HF Duration &gt; 18 mo</label><select class="form-select" id="HF_Dur" onchange="calcMAGGIC()"><option>No</option><option>Yes</option></select></div>
-                    <div class="col-6 col-md-3"><label class="text-success fw-bold">MAGGIC Points <span class="auto-badge"><i class="fa fa-lock"></i> Auto</span></label><input type="text" class="form-control bg-light text-success fw-bold" id="MAGGIC_Score" readonly></div>
-                    <div class="col-12 col-md-6"><label class="text-danger fw-bold">Est. Mortality (1yr | 3yr)</label><input type="text" class="form-control bg-light text-danger fw-bold" id="MAGGIC_Risk" readonly></div>
+                    <h6 class="col-12 text-secondary">Symptoms</h6>
+                    <div class="col-4 col-md-2"><label>Fatigue</label><select class="form-select" id="V_Fatigue"><option>N</option><option>Y</option></select></div>
+                    <div class="col-4 col-md-2"><label>NYHA Class</label><select class="form-select" id="V_NYHA"><option value="">Select</option><option>I</option><option>II</option><option>III</option><option>IV</option></select></div>
+                    <div class="col-4 col-md-2"><label>KCCQ (0-100)</label><input type="number" class="form-control" id="V_KCCQ" min="0" max="100" inputmode="numeric" placeholder="0-100"></div>
+                    <div class="col-4 col-md-3"><label>Edema</label><select class="form-select" id="V_Edema"><option>No</option><option>Mild feet</option><option>Moderate</option><option>Severe</option></select></div>
                     <div class="col-12"><hr class="my-2"></div>
-                    <div class="col-12 col-md-12"><label>Management Plan / Notes</label><textarea class="form-control" id="Notes" rows="2"></textarea></div>
-                </div>
-            </div>
-
-            <!-- STEP 9: Visits -->
-            <div class="form-step" data-step="9">
-                <h6 class="section-title">9. Visits &amp; Follow-ups</h6>
-                <!-- Collapsible visit history -->
-                <div id="visitHistory" class="visit-history-list mb-3"></div>
-                <div class="visit-section">
-                    <h6 class="text-primary mb-3">Add New Visit</h6>
-                    <div class="row g-2">
-                        <div class="col-6 col-md-3"><label>Visit Date *</label><input type="date" class="form-control" id="Visit_Date"></div>
-                        <div class="col-6 col-md-3"><label>Visit Type</label><select class="form-select" id="Visit_Type"><option>Routine</option><option>Urgent</option><option>Post-Discharge</option><option>Telemedicine</option></select></div>
-                        <div class="col-12"><hr class="my-2"></div>
-                        <h6 class="col-12 text-secondary">Symptoms</h6>
-                        <div class="col-4 col-md-2"><label>Fatigue</label><select class="form-select" id="V_Fatigue"><option>N</option><option>Y</option></select></div>
-                        <div class="col-4 col-md-2"><label>NYHA Class</label><select class="form-select" id="V_NYHA"><option value="">Select</option><option>I</option><option>II</option><option>III</option><option>IV</option></select></div>
-                        <div class="col-4 col-md-2"><label>KCCQ (0-100)</label><input type="number" class="form-control" id="V_KCCQ" min="0" max="100" inputmode="numeric" placeholder="0-100"></div>
-                        <div class="col-4 col-md-3"><label>Edema</label><select class="form-select" id="V_Edema"><option>No</option><option>Mild feet</option><option>Moderate</option><option>Severe</option></select></div>
-                        <div class="col-12"><hr class="my-2"></div>
-                        <h6 class="col-12 text-secondary">Signs / Vitals</h6>
-                        <div class="col-4 col-md-2"><label>Pulse</label><input type="text" class="form-control" id="V_Pulse" inputmode="numeric"></div>
-                        <div class="col-4 col-md-2"><label>BP</label><input type="text" class="form-control" id="V_BP" placeholder="120/80"></div>
-                        <div class="col-4 col-md-2"><label>SpO2 %</label><input type="number" class="form-control" id="V_SpO2" inputmode="numeric"></div>
-                        <div class="col-4 col-md-2"><label>Weight (kg)</label><input type="number" class="form-control" id="V_Weight" inputmode="numeric"></div>
-                        <div class="col-4 col-md-2"><label>JVP</label><select class="form-select" id="V_JVP"><option>N</option><option>Raised</option></select></div>
-                        <div class="col-4 col-md-2"><label>Pulm. Rales</label><select class="form-select" id="V_Rales"><option>N</option><option>Y</option></select></div>
-                        <div class="col-4 col-md-2"><label>S3</label><select class="form-select" id="V_S3"><option>N</option><option>Y</option></select></div>
-                        <div class="col-12"><hr class="my-2"></div>
-                        <h6 class="col-12 text-secondary">ECG</h6>
-                        <div class="col-4 col-md-3"><label>LBBB</label><select class="form-select" id="V_LBBB"><option>No</option><option>Yes</option></select></div>
-                        <div class="col-4 col-md-3"><label>QRS Width (ms)</label><input type="text" class="form-control" id="V_QRS" inputmode="numeric"></div>
-                        <div class="col-4 col-md-3"><label>Arrhythmia</label><input type="text" class="form-control" id="V_Arrhythmia"></div>
-                        <div class="col-12"><hr class="my-2"></div>
-                        <h6 class="col-12 text-secondary">Echo</h6>
-                        <div class="col-6 col-md-4"><label>Change in EF</label><input type="text" class="form-control" id="V_EF_Change" placeholder="e.g., Recovered 60%"></div>
-                        <div class="col-6 col-md-4"><label>Other Echo Findings</label><input type="text" class="form-control" id="V_Echo_Other"></div>
-                        <div class="col-12"><hr class="my-2"></div>
-                        <h6 class="col-12 text-secondary">Labs (Auto eGFR)</h6>
-                        <div class="col-3 col-md-2"><label>HbA1c</label><input type="text" class="form-control" id="V_HbA1c" inputmode="decimal"></div>
-                        <div class="col-3 col-md-2"><label>Gluc</label><input type="text" class="form-control" id="V_Gluc" inputmode="decimal"></div>
-                        <div class="col-3 col-md-2"><label>Urea</label><input type="text" class="form-control" id="V_Urea" inputmode="decimal"></div>
-                        <div class="col-3 col-md-2"><label>Creat (µmol/L)</label><input type="text" class="form-control" id="V_Creat" inputmode="decimal" oninput="calcEGFR()" placeholder="e.g. 80"></div>
-                        <div class="col-3 col-md-2"><label class="text-success fw-bold">eGFR <span class="auto-badge"><i class="fa fa-lock"></i> Auto</span></label><input type="text" class="form-control bg-light text-success fw-bold" id="V_eGFR" readonly></div>
-                        <div class="col-3 col-md-2"><label>Na</label><input type="text" class="form-control" id="V_Na" inputmode="decimal"></div>
-                        <div class="col-3 col-md-2"><label>K</label><input type="text" class="form-control" id="V_K" inputmode="decimal" oninput="checkVisitAlerts()"></div>
-                        <div class="col-3 col-md-2"><label>BNP</label><input type="text" class="form-control" id="V_BNP" inputmode="decimal"></div>
-                        <div class="col-3 col-md-2"><label>NT-pro BNP</label><input type="text" class="form-control" id="V_NTproBNP" inputmode="decimal"></div>
-                        <div class="col-3 col-md-2"><label>INR</label><input type="text" class="form-control" id="V_INR" inputmode="decimal"></div>
-                        <div class="col-3 col-md-2"><label>Iron</label><input type="text" class="form-control" id="V_Iron" inputmode="decimal" oninput="checkVisitIronAlert()"></div>
-                        <div class="col-3 col-md-2"><label>Transferrin</label><input type="text" class="form-control" id="V_Transferrin" inputmode="decimal" oninput="checkVisitIronAlert()"></div>
-                        <div class="col-3 col-md-2"><label>Ferritin</label><input type="text" class="form-control" id="V_Ferritin" inputmode="decimal" oninput="checkVisitIronAlert()"></div>
-                        <div class="col-3 col-md-2"><label>WBC</label><input type="text" class="form-control" id="V_WBC" inputmode="decimal"></div>
-                        <div class="col-3 col-md-2"><label>Hb</label><input type="text" class="form-control" id="V_Hb" inputmode="decimal"></div>
-                        <div class="col-3 col-md-2"><label>Plt</label><input type="text" class="form-control" id="V_Plt" inputmode="decimal"></div>
-                        <div class="col-3 col-md-2"><label>TSH</label><input type="text" class="form-control" id="V_TSH" inputmode="decimal"></div>
-                        <div class="col-3 col-md-2"><label>Free T4</label><input type="text" class="form-control" id="V_FreeT4" inputmode="decimal"></div>
-                        <div class="col-12">
-                            <div class="clinical-alert alert-warning-soft" id="alertVisitHyperK">
-                                <i class="fa fa-exclamation-triangle"></i>
-                                <div><strong>Visit K &gt; 5.0:</strong> Review MRA &amp; ARNI.</div>
-                            </div>
-                            <div class="clinical-alert alert-danger-soft" id="alertVisitIron">
-                                <i class="fa fa-tint"></i>
-                                <div><strong>Iron Deficiency (ESC):</strong> Ferritin &lt;100 or 100-299 + TSAT &lt;20%. Consider IV iron.</div>
-                            </div>
+                    <h6 class="col-12 text-secondary">Signs / Vitals</h6>
+                    <div class="col-4 col-md-2"><label>Pulse</label><input type="text" class="form-control" id="V_Pulse" inputmode="numeric"></div>
+                    <div class="col-4 col-md-2"><label>BP</label><input type="text" class="form-control" id="V_BP" placeholder="120/80"></div>
+                    <div class="col-4 col-md-2"><label>SpO2 %</label><input type="number" class="form-control" id="V_SpO2" inputmode="numeric"></div>
+                    <div class="col-4 col-md-2"><label>Weight (kg)</label><input type="number" class="form-control" id="V_Weight" inputmode="numeric"></div>
+                    <div class="col-4 col-md-2"><label>JVP</label><select class="form-select" id="V_JVP"><option>N</option><option>Raised</option></select></div>
+                    <div class="col-4 col-md-2"><label>Pulm. Rales</label><select class="form-select" id="V_Rales"><option>N</option><option>Y</option></select></div>
+                    <div class="col-4 col-md-2"><label>S3</label><select class="form-select" id="V_S3"><option>N</option><option>Y</option></select></div>
+                    <div class="col-12"><hr class="my-2"></div>
+                    <h6 class="col-12 text-secondary">ECG</h6>
+                    <div class="col-4 col-md-3"><label>LBBB</label><select class="form-select" id="V_LBBB"><option>No</option><option>Yes</option></select></div>
+                    <div class="col-4 col-md-3"><label>QRS Width (ms)</label><input type="text" class="form-control" id="V_QRS" inputmode="numeric"></div>
+                    <div class="col-4 col-md-3"><label>Arrhythmia</label><input type="text" class="form-control" id="V_Arrhythmia"></div>
+                    <div class="col-12"><hr class="my-2"></div>
+                    <h6 class="col-12 text-secondary">Echo</h6>
+                    <div class="col-6 col-md-4"><label>Change in EF</label><input type="text" class="form-control" id="V_EF_Change" placeholder="e.g., Recovered 60%"></div>
+                    <div class="col-6 col-md-4"><label>Other Echo Findings</label><input type="text" class="form-control" id="V_Echo_Other"></div>
+                    <div class="col-12"><hr class="my-2"></div>
+                    <h6 class="col-12 text-secondary">Labs (Auto eGFR)</h6>
+                    <div class="col-3 col-md-2"><label>HbA1c</label><input type="text" class="form-control" id="V_HbA1c" inputmode="decimal"></div>
+                    <div class="col-3 col-md-2"><label>Gluc</label><input type="text" class="form-control" id="V_Gluc" inputmode="decimal"></div>
+                    <div class="col-3 col-md-2"><label>Urea</label><input type="text" class="form-control" id="V_Urea" inputmode="decimal"></div>
+                    <div class="col-3 col-md-2"><label>Creat (µmol/L)</label><input type="text" class="form-control" id="V_Creat" inputmode="decimal" oninput="calcEGFR()" placeholder="e.g. 80"></div>
+                    <div class="col-3 col-md-2"><label class="text-success fw-bold">eGFR <span class="auto-badge"><i class="fa fa-lock"></i> Auto</span></label><input type="text" class="form-control bg-light text-success fw-bold" id="V_eGFR" readonly></div>
+                    <div class="col-3 col-md-2"><label>Na</label><input type="text" class="form-control" id="V_Na" inputmode="decimal"></div>
+                    <div class="col-3 col-md-2"><label>K</label><input type="text" class="form-control" id="V_K" inputmode="decimal" oninput="checkVisitAlerts()"></div>
+                    <div class="col-3 col-md-2"><label>BNP</label><input type="text" class="form-control" id="V_BNP" inputmode="decimal"></div>
+                    <div class="col-3 col-md-2"><label>NT-pro BNP</label><input type="text" class="form-control" id="V_NTproBNP" inputmode="decimal"></div>
+                    <div class="col-3 col-md-2"><label>INR</label><input type="text" class="form-control" id="V_INR" inputmode="decimal"></div>
+                    <div class="col-3 col-md-2"><label>Iron</label><input type="text" class="form-control" id="V_Iron" inputmode="decimal" oninput="checkVisitIronAlert()"></div>
+                    <div class="col-3 col-md-2"><label>Transferrin</label><input type="text" class="form-control" id="V_Transferrin" inputmode="decimal" oninput="checkVisitIronAlert()"></div>
+                    <div class="col-3 col-md-2"><label>Ferritin</label><input type="text" class="form-control" id="V_Ferritin" inputmode="decimal" oninput="checkVisitIronAlert()"></div>
+                    <div class="col-3 col-md-2"><label>WBC</label><input type="text" class="form-control" id="V_WBC" inputmode="decimal"></div>
+                    <div class="col-3 col-md-2"><label>Hb</label><input type="text" class="form-control" id="V_Hb" inputmode="decimal"></div>
+                    <div class="col-3 col-md-2"><label>Plt</label><input type="text" class="form-control" id="V_Plt" inputmode="decimal"></div>
+                    <div class="col-3 col-md-2"><label>TSH</label><input type="text" class="form-control" id="V_TSH" inputmode="decimal"></div>
+                    <div class="col-3 col-md-2"><label>Free T4</label><input type="text" class="form-control" id="V_FreeT4" inputmode="decimal"></div>
+                    <div class="col-12">
+                        <div class="clinical-alert alert-warning-soft" id="alertVisitHyperK">
+                            <i class="fa fa-exclamation-triangle"></i>
+                            <div><strong>Visit K &gt; 5.0:</strong> Review MRA &amp; ARNI.</div>
                         </div>
-                        <div class="col-12"><hr class="my-2"></div>
-                        <!-- GROUPED VISIT MEDICATIONS -->
-                        <h6 class="col-12 text-secondary">Medications (Doses)</h6>
-                        <div id="visitMedDoses" class="col-12"></div>
-                        <div class="col-12"><hr class="my-2"></div>
-                        <h6 class="col-12 text-secondary">Assessment &amp; Plan</h6>
-                        <div class="col-12 col-md-6"><label>Adverse Effects / Complaints</label><textarea class="form-control" id="V_Adverse" rows="2"></textarea></div>
-                        <div class="col-12 col-md-6"><label>Plan / Recommendations</label><textarea class="form-control" id="V_Plan" rows="2"></textarea></div>
-                        <div class="col-12"><label>Other Notes</label><textarea class="form-control" id="V_Others" rows="2"></textarea></div>
-                        <div class="col-12 col-md-4 mt-2">
-                            <label class="text-danger fw-bold"><i class="fa fa-calendar-alt"></i> Next Appointment</label>
-                            <input type="date" class="form-control border-danger" id="Next_Appt">
+                        <div class="clinical-alert alert-danger-soft" id="alertVisitIron">
+                            <i class="fa fa-tint"></i>
+                            <div><strong>Iron Deficiency (ESC):</strong> Ferritin &lt;100 or 100-299 + TSAT &lt;20%. Consider IV iron.</div>
                         </div>
-                        <div class="col-12 mt-3">
-                            <button type="button" class="btn btn-visit w-100" onclick="saveVisit()">
-                                <i class="fa fa-plus-circle"></i> ADD VISIT TO PATIENT RECORD
-                            </button>
-                        </div>
+                    </div>
+                    <div class="col-12"><hr class="my-2"></div>
+                    <!-- GROUPED VISIT MEDICATIONS -->
+                    <h6 class="col-12 text-secondary">Medications (Doses)</h6>
+                    <div id="visitMedDoses" class="col-12"></div>
+                    <div class="col-12"><hr class="my-2"></div>
+                    <h6 class="col-12 text-secondary">Assessment &amp; Plan</h6>
+                    <div class="col-12 col-md-6"><label>Adverse Effects / Complaints</label><textarea class="form-control" id="V_Adverse" rows="2"></textarea></div>
+                    <div class="col-12 col-md-6"><label>Plan / Recommendations</label><textarea class="form-control" id="V_Plan" rows="2"></textarea></div>
+                    <div class="col-12"><label>Other Notes</label><textarea class="form-control" id="V_Others" rows="2"></textarea></div>
+                    <div class="col-12 col-md-4 mt-2">
+                        <label class="text-danger fw-bold"><i class="fa fa-calendar-alt"></i> Next Appointment</label>
+                        <input type="date" class="form-control border-danger" id="Next_Appt">
+                    </div>
+                    <div class="col-12 mt-3">
+                        <button type="button" class="btn btn-visit w-100" onclick="saveVisit()">
+                            <i class="fa fa-plus-circle"></i> ADD VISIT TO PATIENT RECORD
+                        </button>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- WIZARD NAV -->
-            <div class="wizard-nav">
-                <button class="btn btn-outline-secondary" id="wizPrev" onclick="wizardNav(-1)"><i class="fa fa-chevron-left me-1"></i> Previous</button>
-                <button class="btn btn-primary" id="wizNext" onclick="wizardNav(1)">Next <i class="fa fa-chevron-right ms-1"></i></button>
-            </div>
+        <!-- WIZARD NAV -->
+        <div class="wizard-nav">
+            <button class="btn btn-outline-secondary" id="wizPrev" onclick="wizardNav(-1)"><i class="fa fa-chevron-left me-1"></i> Previous</button>
+            <button class="btn btn-primary" id="wizNext" onclick="wizardNav(1)">Next <i class="fa fa-chevron-right ms-1"></i></button>
         </div>
     </div>
 </div>
+```
+
+</div>
 
 <!-- STICKY SAVE BAR -->
+
 <div class="sticky-save-bar" id="stickySaveBar">
     <button type="button" class="btn btn-danger" id="submitBtn" onclick="savePatient()"><i class="fa fa-save me-1"></i> SAVE PATIENT</button>
     <button type="button" class="btn btn-outline-secondary d-none" id="cancelEditBtn" onclick="resetForm()"><i class="fa fa-times me-1"></i> Cancel</button>
 </div>
-```
 
 </div>
 
