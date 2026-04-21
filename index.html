@@ -2849,70 +2849,134 @@ var PP_LABEL_MAP = {
 };
 
 // Med name -> registry medication field
+// f/v: patient-level class field (Med_BB etc.) + selected value
+// vf: per-drug visit field (V_Concor etc.) — drug is considered "active" for the visit if value present
 var PP_MED_MAP = {
-    'concor':{f:'Med_BB', v:'Concor'}, 'betaloc':{f:'Med_BB', v:'Betaloc'},
-    'dilatrend':{f:'Med_BB', v:'Dilatrend'}, 'lopressor':{f:'Med_BB', v:'Lopressor'},
-    'zestril':{f:'Med_ACEiARB', v:'Zestril'}, 'tritace':{f:'Med_ACEiARB', v:'Tritace'},
-    'capoten':{f:'Med_ACEiARB', v:'Capoten'}, 'diovan':{f:'Med_ACEiARB', v:'Diovan'},
-    'atacand':{f:'Med_ACEiARB', v:'Atacand'},
-    'entresto':{f:'Med_ARNI', v:'Yes'},
-    'aldactone':{f:'Med_MRA', v:'Aldactone'}, 'elprenone':{f:'Med_MRA', v:'Eplerenone'},
-    'eplerenone':{f:'Med_MRA', v:'Eplerenone'}, 'finerenone':{f:'Med_MRA', v:'Finerenone'},
-    'inspra':{f:'Med_MRA', v:'Inspra'},
-    'forxiga':{f:'Med_SGLT2i', v:'Forxiga'}, 'jardiance':{f:'Med_SGLT2i', v:'Jardiance'},
-    'maunjaro':{f:'Med_GLP1', v:'Mounjaro'}, 'mounjaro':{f:'Med_GLP1', v:'Mounjaro'},
-    'ozempic':{f:'Med_GLP1', v:'Ozempic'},
-    'hydralazine':{f:'Med_Vasodilator', v:'Hydralazine'}, 'nitrates':{f:'Med_Vasodilator', v:'Nitrates'},
-    'furosemide':{f:'Med_Diuretic', v:'Furosemide'}, 'metolazone':{f:'Med_Diuretic', v:'Metolazone'},
-    'warfarin':{f:'Med_OAC', v:'Warfarin'}, 'xarelto':{f:'Med_OAC', v:'Xarelto'}, 'eliquis':{f:'Med_OAC', v:'Eliquis'},
-    'zocor':{f:'Med_Lipid', v:'Zocor'}, 'lipitor':{f:'Med_Lipid', v:'Lipitor'},
-    'crestor':{f:'Med_Lipid', v:'Crestor'}, 'ezetrol':{f:'Med_Lipid', v:'Ezetrol'}, 'ezetrol 10':{f:'Med_Lipid', v:'Ezetrol'},
-    'repatha':{f:'Med_Lipid', v:'Repatha'}, 'praluent':{f:'Med_Lipid', v:'Praluent'},
-    'atozet':{f:'Med_Lipid', v:'Atozet'}, 'zympass':{f:'Med_Lipid', v:'Zympass'},
-    'fibrates':{f:'Med_Lipid', v:'Fibrates'}, 'omacor':{f:'Med_Lipid', v:'Omacor'},
-    'veltassa':{f:'Med_K_Chelator', v:'Veltassa'}, 'lokelma':{f:'Med_K_Chelator', v:'Lokelma'},
-    'cordarone':{f:'Med_Arrhythmia', v:'Cordarone'}, 'amiodarone':{f:'Med_Arrhythmia', v:'Cordarone'},
-    'flecainide':{f:'Med_Arrhythmia', v:'Flecainide'},
-    'sotalol':{f:'Med_Arrhythmia', v:'Sotalol'}, 'propafenone':{f:'Med_Arrhythmia', v:'Propafenone'},
-    'procorolan':{f:'Med_Procorolan', v:'Procorolan'}, 'ivabradine':{f:'Med_Procorolan', v:'Procorolan'},
-    // Antiplatelets
-    'asa':{f:'Med_Antiplat', v:'ASA'}, 'aspirin':{f:'Med_Antiplat', v:'ASA'},
-    'plavix':{f:'Med_Antiplat', v:'Plavix'}, 'clopidogrel':{f:'Med_Antiplat', v:'Plavix'},
-    'brilinta':{f:'Med_Antiplat', v:'Brilinta'}, 'ticagrelor':{f:'Med_Antiplat', v:'Brilinta'},
-    'effient':{f:'Med_Antiplat', v:'Effient'}, 'prasugrel':{f:'Med_Antiplat', v:'Effient'},
-    // CCBs
-    'amlodipine':{f:'Med_CCB', v:'Amlodipine'}, 'norvasc':{f:'Med_CCB', v:'Amlodipine'},
-    'nifedipine':{f:'Med_CCB', v:'Nifedipine'}, 'adalat':{f:'Med_CCB', v:'Nifedipine'},
-    'diltiazem':{f:'Med_CCB', v:'Diltiazem'}, 'verapamil':{f:'Med_CCB', v:'Verapamil'},
-    'isoptin':{f:'Med_CCB', v:'Verapamil'},
-    // Nitrate/vasodilator variants
-    'imdur':{f:'Med_Vasodilator', v:'Nitrates'}, 'isosorbide':{f:'Med_Vasodilator', v:'Nitrates'},
-    'nitroglycerin':{f:'Med_Vasodilator', v:'Nitrates'},
-    // Diuretic variants
-    'lasix':{f:'Med_Diuretic', v:'Furosemide'}, 'bumex':{f:'Med_Diuretic', v:'Bumetanide'},
-    'bumetanide':{f:'Med_Diuretic', v:'Bumetanide'}, 'torsemide':{f:'Med_Diuretic', v:'Torsemide'},
-    'hctz':{f:'Med_Diuretic', v:'HCTZ'}, 'hydrochlorothiazide':{f:'Med_Diuretic', v:'HCTZ'},
-    // OAC variants
-    'pradaxa':{f:'Med_OAC', v:'Pradaxa'}, 'dabigatran':{f:'Med_OAC', v:'Pradaxa'},
-    'rivaroxaban':{f:'Med_OAC', v:'Xarelto'}, 'apixaban':{f:'Med_OAC', v:'Eliquis'},
-    // Beta-blocker variants
-    'bisoprolol':{f:'Med_BB', v:'Concor'}, 'carvedilol':{f:'Med_BB', v:'Dilatrend'},
-    'metoprolol':{f:'Med_BB', v:'Betaloc'}, 'nebivolol':{f:'Med_BB', v:'Nebilet'},
-    'nebilet':{f:'Med_BB', v:'Nebilet'}, 'bystolic':{f:'Med_BB', v:'Nebilet'},
-    // ACEi/ARB variants
-    'lisinopril':{f:'Med_ACEiARB', v:'Zestril'}, 'ramipril':{f:'Med_ACEiARB', v:'Tritace'},
-    'captopril':{f:'Med_ACEiARB', v:'Capoten'}, 'enalapril':{f:'Med_ACEiARB', v:'Enalapril'},
-    'valsartan':{f:'Med_ACEiARB', v:'Diovan'}, 'candesartan':{f:'Med_ACEiARB', v:'Atacand'},
-    'losartan':{f:'Med_ACEiARB', v:'Cozaar'}, 'cozaar':{f:'Med_ACEiARB', v:'Cozaar'},
-    'telmisartan':{f:'Med_ACEiARB', v:'Micardis'}, 'micardis':{f:'Med_ACEiARB', v:'Micardis'},
-    // MRA / SGLT2i / GLP1 / Lipid variants
-    'spironolactone':{f:'Med_MRA', v:'Aldactone'},
-    'dapagliflozin':{f:'Med_SGLT2i', v:'Forxiga'}, 'empagliflozin':{f:'Med_SGLT2i', v:'Jardiance'},
-    'liraglutide':{f:'Med_GLP1', v:'Victoza'}, 'victoza':{f:'Med_GLP1', v:'Victoza'},
-    'semaglutide':{f:'Med_GLP1', v:'Ozempic'}, 'tirzepatide':{f:'Med_GLP1', v:'Mounjaro'},
-    'simvastatin':{f:'Med_Lipid', v:'Zocor'}, 'atorvastatin':{f:'Med_Lipid', v:'Lipitor'},
-    'rosuvastatin':{f:'Med_Lipid', v:'Crestor'}, 'ezetimibe':{f:'Med_Lipid', v:'Ezetrol'},
-    'evolocumab':{f:'Med_Lipid', v:'Repatha'}, 'alirocumab':{f:'Med_Lipid', v:'Praluent'}
+    // Beta-blockers
+    'concor':     {f:'Med_BB', v:'Concor',    vf:'V_Concor'},
+    'bisoprolol': {f:'Med_BB', v:'Concor',    vf:'V_Concor'},
+    'betaloc':    {f:'Med_BB', v:'Betaloc',   vf:'V_Betaloc'},
+    'metoprolol': {f:'Med_BB', v:'Betaloc',   vf:'V_Betaloc'},
+    'lopressor':  {f:'Med_BB', v:'Lopressor', vf:'V_Lopressor'},
+    'dilatrend':  {f:'Med_BB', v:'Dilatrend', vf:'V_Dilatrend'},
+    'carvedilol': {f:'Med_BB', v:'Dilatrend', vf:'V_Dilatrend'},
+    // ACEi/ARB
+    'zestril':     {f:'Med_ACEiARB', v:'Zestril', vf:'V_Zestril'},
+    'lisinopril':  {f:'Med_ACEiARB', v:'Zestril', vf:'V_Zestril'},
+    'tritace':     {f:'Med_ACEiARB', v:'Tritace', vf:'V_Tritace'},
+    'ramipril':    {f:'Med_ACEiARB', v:'Tritace', vf:'V_Tritace'},
+    'capoten':     {f:'Med_ACEiARB', v:'Capoten', vf:'V_Capoten'},
+    'captopril':   {f:'Med_ACEiARB', v:'Capoten', vf:'V_Capoten'},
+    'diovan':      {f:'Med_ACEiARB', v:'Diovan',  vf:'V_Diovan'},
+    'valsartan':   {f:'Med_ACEiARB', v:'Diovan',  vf:'V_Diovan'},
+    'atacand':     {f:'Med_ACEiARB', v:'Atacand', vf:'V_Atacand'},
+    'candesartan': {f:'Med_ACEiARB', v:'Atacand', vf:'V_Atacand'},
+    // ARNI
+    'entresto':    {f:'Med_ARNI', v:'Yes', vf:'V_Entresto'},
+    'sacubitril':  {f:'Med_ARNI', v:'Yes', vf:'V_Entresto'},
+    // MRA
+    'aldactone':       {f:'Med_MRA', v:'Aldactone',  vf:'V_Aldactone'},
+    'spironolactone':  {f:'Med_MRA', v:'Aldactone',  vf:'V_Aldactone'},
+    'elprenone':       {f:'Med_MRA', v:'Eplerenone', vf:'V_Eplerenone'},
+    'eplerenone':      {f:'Med_MRA', v:'Eplerenone', vf:'V_Eplerenone'},
+    'inspra':          {f:'Med_MRA', v:'Eplerenone', vf:'V_Eplerenone'},
+    'finerenone':      {f:'Med_MRA', v:'Finerenone', vf:'V_Finerenone'},
+    // SGLT2i
+    'forxiga':      {f:'Med_SGLT2i', v:'Forxiga',   vf:'V_Forxiga'},
+    'dapagliflozin':{f:'Med_SGLT2i', v:'Forxiga',   vf:'V_Forxiga'},
+    'jardiance':    {f:'Med_SGLT2i', v:'Jardiance', vf:'V_Jardiance'},
+    'empagliflozin':{f:'Med_SGLT2i', v:'Jardiance', vf:'V_Jardiance'},
+    // GLP-1
+    'maunjaro':     {f:'Med_GLP1', v:'Mounjaro', vf:'V_Mounjaro'},
+    'mounjaro':     {f:'Med_GLP1', v:'Mounjaro', vf:'V_Mounjaro'},
+    'tirzepatide':  {f:'Med_GLP1', v:'Mounjaro', vf:'V_Mounjaro'},
+    'ozempic':      {f:'Med_GLP1', v:'Ozempic',  vf:'V_Ozempic'},
+    'semaglutide':  {f:'Med_GLP1', v:'Ozempic',  vf:'V_Ozempic'},
+    // Vasodilators / rate control
+    'hydralazine':  {f:'Med_Vasodilator', v:'Hydralazine', vf:'V_Hydralazine'},
+    'nitrates':     {f:'Med_Vasodilator', v:'Nitrates',    vf:'V_Nitrates'},
+    'imdur':        {f:'Med_Vasodilator', v:'Nitrates',    vf:'V_Nitrates'},
+    'isosorbide':   {f:'Med_Vasodilator', v:'Nitrates',    vf:'V_Nitrates'},
+    'nitroglycerin':{f:'Med_Vasodilator', v:'Nitrates',    vf:'V_Nitrates'},
+    'procorolan':   {f:'Med_Procorolan',  v:'Procorolan',  vf:'V_Procorolan'},
+    'ivabradine':   {f:'Med_Procorolan',  v:'Procorolan',  vf:'V_Procorolan'},
+    // CCB
+    'amlodipine':   {f:'Med_CCB', v:'Amlodipine', vf:'V_Amlodipine'},
+    'norvasc':      {f:'Med_CCB', v:'Amlodipine', vf:'V_Amlodipine'},
+    // Note: Nifedipine/Diltiazem/Verapamil are NOT in VISIT_MED_GROUPS; captured at patient level only
+    'nifedipine':   {f:'Med_CCB', v:'Nifedipine'},
+    'adalat':       {f:'Med_CCB', v:'Nifedipine'},
+    'diltiazem':    {f:'Med_CCB', v:'Diltiazem'},
+    'verapamil':    {f:'Med_CCB', v:'Verapamil'},
+    'isoptin':      {f:'Med_CCB', v:'Verapamil'},
+    // Diuretics
+    'furosemide':  {f:'Med_Diuretic', v:'Furosemide', vf:'V_Furosemide'},
+    'lasix':       {f:'Med_Diuretic', v:'Furosemide', vf:'V_Furosemide'},
+    'metolazone':  {f:'Med_Diuretic', v:'Metolazone', vf:'V_Metolazone'},
+    // Note: Bumex/Torsemide/HCTZ not in VISIT_MED_GROUPS
+    'bumex':         {f:'Med_Diuretic', v:'Bumetanide'},
+    'bumetanide':    {f:'Med_Diuretic', v:'Bumetanide'},
+    'torsemide':     {f:'Med_Diuretic', v:'Torsemide'},
+    'hctz':          {f:'Med_Diuretic', v:'HCTZ'},
+    'hydrochlorothiazide':{f:'Med_Diuretic', v:'HCTZ'},
+    // OAC
+    'warfarin':    {f:'Med_OAC', v:'Warfarin', vf:'V_Warfarin'},
+    'xarelto':     {f:'Med_OAC', v:'Xarelto',  vf:'V_Xarelto'},
+    'rivaroxaban': {f:'Med_OAC', v:'Xarelto',  vf:'V_Xarelto'},
+    'eliquis':     {f:'Med_OAC', v:'Eliquis',  vf:'V_Eliquis'},
+    'apixaban':    {f:'Med_OAC', v:'Eliquis',  vf:'V_Eliquis'},
+    // Not in VISIT_MED_GROUPS
+    'pradaxa':     {f:'Med_OAC', v:'Pradaxa'},
+    'dabigatran':  {f:'Med_OAC', v:'Pradaxa'},
+    // Lipid
+    'zocor':        {f:'Med_Lipid', v:'Zocor',    vf:'V_Zocor'},
+    'simvastatin':  {f:'Med_Lipid', v:'Zocor',    vf:'V_Zocor'},
+    'lipitor':      {f:'Med_Lipid', v:'Lipitor',  vf:'V_Lipitor'},
+    'atorvastatin': {f:'Med_Lipid', v:'Lipitor',  vf:'V_Lipitor'},
+    'crestor':      {f:'Med_Lipid', v:'Crestor',  vf:'V_Crestor'},
+    'rosuvastatin': {f:'Med_Lipid', v:'Crestor',  vf:'V_Crestor'},
+    'ezetrol':      {f:'Med_Lipid', v:'Ezetrol',  vf:'V_Ezetrol'},
+    'ezetrol 10':   {f:'Med_Lipid', v:'Ezetrol',  vf:'V_Ezetrol'},
+    'ezetimibe':    {f:'Med_Lipid', v:'Ezetrol',  vf:'V_Ezetrol'},
+    'repatha':      {f:'Med_Lipid', v:'Repatha',  vf:'V_Repatha'},
+    'evolocumab':   {f:'Med_Lipid', v:'Repatha',  vf:'V_Repatha'},
+    'praluent':     {f:'Med_Lipid', v:'Praluent', vf:'V_Praluent'},
+    'alirocumab':   {f:'Med_Lipid', v:'Praluent', vf:'V_Praluent'},
+    'atozet':       {f:'Med_Lipid', v:'Atozet',   vf:'V_Atozet'},
+    'zympass':      {f:'Med_Lipid', v:'Zympass',  vf:'V_Zympass'},
+    'fibrates':     {f:'Med_Lipid', v:'Fibrates', vf:'V_Fibrates'},
+    'omacor':       {f:'Med_Lipid', v:'Omacor',   vf:'V_Omacor'},
+    // Anti-arrhythmics
+    'cordarone':   {f:'Med_Arrhythmia', v:'Cordarone',   vf:'V_Cordarone'},
+    'amiodarone':  {f:'Med_Arrhythmia', v:'Cordarone',   vf:'V_Cordarone'},
+    'flecainide':  {f:'Med_Arrhythmia', v:'Flecainide',  vf:'V_Flecainide'},
+    'sotalol':     {f:'Med_Arrhythmia', v:'Sotalol',     vf:'V_Sotalol'},
+    'propafenone': {f:'Med_Arrhythmia', v:'Propafenone', vf:'V_Propafenone'},
+    // K chelators
+    'veltassa':    {f:'Med_K_Chelator', v:'Veltassa', vf:'V_Veltassa'},
+    'lokelma':     {f:'Med_K_Chelator', v:'Lokelma',  vf:'V_Lokelma'},
+    // Antiplatelets — NOT tracked per-visit; patient-level only (app's VISIT_MED_GROUPS has none)
+    'asa':         {f:'Med_Antiplat', v:'ASA'},
+    'aspirin':     {f:'Med_Antiplat', v:'ASA'},
+    'plavix':      {f:'Med_Antiplat', v:'Plavix'},
+    'clopidogrel': {f:'Med_Antiplat', v:'Plavix'},
+    'brilinta':    {f:'Med_Antiplat', v:'Brilinta'},
+    'ticagrelor':  {f:'Med_Antiplat', v:'Brilinta'},
+    'effient':     {f:'Med_Antiplat', v:'Effient'},
+    'prasugrel':   {f:'Med_Antiplat', v:'Effient'},
+    // Other beta-blocker variants not in VISIT_MED_GROUPS
+    'nebivolol': {f:'Med_BB', v:'Nebilet'},
+    'nebilet':   {f:'Med_BB', v:'Nebilet'},
+    'bystolic':  {f:'Med_BB', v:'Nebilet'},
+    // Other ACEi/ARB variants
+    'enalapril':   {f:'Med_ACEiARB', v:'Enalapril'},
+    'losartan':    {f:'Med_ACEiARB', v:'Cozaar'},
+    'cozaar':      {f:'Med_ACEiARB', v:'Cozaar'},
+    'telmisartan': {f:'Med_ACEiARB', v:'Micardis'},
+    'micardis':    {f:'Med_ACEiARB', v:'Micardis'},
+    // Other GLP1
+    'liraglutide': {f:'Med_GLP1', v:'Victoza'},
+    'victoza':     {f:'Med_GLP1', v:'Victoza'}
 };
 
 // Visit-row labels -> visit field IDs (with V_ prefix)
@@ -3303,29 +3367,40 @@ function parsePerPatientWorkbook(wb, fileName){
                     // Check if this is a medication row
                     if(inMedSection && PP_MED_MAP[rowLabel]){
                         var mm = PP_MED_MAP[rowLabel];
-                        // "Stopped" / "N" / "No" → treat as discontinued (don't set med)
+                        // "Stopped" / "N" / "No" → treat as discontinued
                         var lowerVal = valStr.toLowerCase();
                         if(lowerVal === 'stopped' || lowerVal === 'stop' || lowerVal === 'd/c' || lowerVal === 'dc' || lowerVal === 'discontinued' || lowerVal === 'n' || lowerVal === 'no'){
-                            // Record the discontinuation in V_Others but don't set the med as active
                             visit.V_Others = (visit.V_Others ? visit.V_Others + ' | ' : '') + rowLabelRaw + ': ' + valStr;
                             hasData = true;
                             return;
                         }
-                        // Set the medication selection (first occurrence wins)
-                        if(!visitMeds[mm.f]){
-                            visitMeds[mm.f] = mm.v;
-                            // Try to parse dose; "Y"/"Yes" means on-med without a numeric dose
-                            var doseStr = valStr;
-                            if(lowerVal === 'y' || lowerVal === 'yes'){
-                                doseStr = ''; // no numeric dose supplied
-                            } else {
-                                var dn = parseFloat(doseStr);
-                                if(!isNaN(dn) && /^\d+(\.\d+)?$/.test(doseStr)){
-                                    var clean = (dn === Math.floor(dn)) ? String(Math.round(dn)) : String(dn);
-                                    doseStr = clean + ' mg';
-                                }
+                        // Format the dose
+                        var doseStr = valStr;
+                        if(lowerVal === 'y' || lowerVal === 'yes'){
+                            doseStr = 'Active'; // no specific dose supplied; still mark active
+                        } else {
+                            var dn = parseFloat(doseStr);
+                            if(!isNaN(dn) && /^\d+(\.\d+)?$/.test(doseStr)){
+                                var clean = (dn === Math.floor(dn)) ? String(Math.round(dn)) : String(dn);
+                                doseStr = clean + ' mg';
                             }
-                            if(doseStr) visitMeds[mm.f+'_Dose'] = doseStr;
+                            // else keep as-is ("50 BD", "100 BD", "Generic 40/10", etc.)
+                        }
+                        // PER-VISIT: write into the specific drug field (V_Concor etc.)
+                        if(mm.vf){
+                            // Don't overwrite if a later row in same visit has same drug mapped
+                            if(!visit[mm.vf]){
+                                visit[mm.vf] = doseStr;
+                                hasData = true;
+                            }
+                        } else {
+                            // Drug has no visit-level field (e.g. ASA, nifedipine) — log to V_Others
+                            visit.V_Others = (visit.V_Others ? visit.V_Others + ' | ' : '') + rowLabelRaw + ': ' + valStr;
+                            hasData = true;
+                        }
+                        // PATIENT-LEVEL: set class dropdown on first visit only, so the main form picks up baseline state
+                        if(!visitMeds[mm.f]){
+                            visitMeds[mm.f] = {v: mm.v, dose: doseStr};
                         }
                         return;
                     }
@@ -3365,10 +3440,26 @@ function parsePerPatientWorkbook(wb, fileName){
                         hasData = true;
                     }
                 });
-                // Apply collected meds to the visit
-                Object.keys(visitMeds).forEach(function(k){ visit[k] = visitMeds[k]; hasData = true; });
+                // visitMeds is {Med_BB: {v:'Concor', dose:'5 mg'}, ...} — class-level baseline for this visit
+                // Save to visit-scoped metadata so we can use visit #1 as patient baseline
+                visit.__visitMeds = visitMeds;
                 if(hasData) result.visits.push(visit);
             });
+            // Apply EARLIEST visit's class-level meds to the patient record (baseline)
+            // Visits are appended in column order (oldest first in typical format)
+            if(result.visits.length > 0){
+                var baseline = result.visits[0].__visitMeds || {};
+                Object.keys(baseline).forEach(function(classField){
+                    if(!result.record[classField]){
+                        result.record[classField] = baseline[classField].v;
+                        if(baseline[classField].dose && baseline[classField].dose !== 'Active'){
+                            result.record[classField+'_Dose'] = baseline[classField].dose;
+                        }
+                    }
+                });
+                // Clean up the transient prop so it isn't saved to Firestore
+                result.visits.forEach(function(vst){ delete vst.__visitMeds; });
+            }
         }
     }
     // Append unknown-field notes to record.Notes
