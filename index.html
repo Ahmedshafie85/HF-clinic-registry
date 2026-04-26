@@ -193,6 +193,12 @@ label{font-weight:600;font-size:.75rem;color:#495057;display:block;margin-bottom
 .appt-cal-day-list{margin-top:10px;border-top:1px solid #e9ecef;padding-top:8px;}
 .appt-cal-day-list-title{font-size:0.78rem;font-weight:700;color:#8b0000;margin-bottom:6px;}
 .appt-cal-day-list-empty{font-size:0.78rem;color:#6c757d;font-style:italic;text-align:center;padding:8px;}
+.multi-med-wrap{border:1px solid #ced4da;border-radius:6px;padding:6px;background:#fff;max-height:280px;overflow-y:auto;}
+.multi-med-item{padding:3px 0;border-bottom:1px dashed #f0f0f0;}
+.multi-med-item:last-child{border-bottom:none;}
+.multi-med-check{display:flex;align-items:center;gap:6px;font-size:0.82rem;font-weight:500;cursor:pointer;margin-bottom:3px;}
+.multi-med-check input{margin:0;}
+.multi-med-detail{padding-left:22px;background:#fafafa;border-radius:4px;padding:5px;}
 
 /* ===== VISIT MED GROUPS ===== */
 .visit-med-group{margin-bottom:10px;}
@@ -409,6 +415,10 @@ label{font-weight:600;font-size:.75rem;color:#495057;display:block;margin-bottom
                 <div class="col-4 col-md-3"><label>S3 Gallop</label><select class="form-select" id="S3"><option>No</option><option>Yes</option></select></div>
                 <div class="col-8 col-md-3"><label>Murmur</label><input type="text" class="form-control" id="Murmur"></div>
             </div>
+            <div class="clinical-alert alert-warning-soft" id="alertObesity">
+                <i class="fa fa-weight-scale"></i>
+                <div><strong>Obesity Clinic Referral:</strong> BMI &gt; 30 — consider referral to MKH Obesity Clinic for weight-management evaluation. Counsel on weight loss, lifestyle modification, and consider GLP-1 agonist therapy if HFpEF/HFmrEF.</div>
+            </div>
         </div>
 
         <!-- STEP 4: Investigations -->
@@ -470,49 +480,49 @@ label{font-weight:600;font-size:.75rem;color:#495057;display:block;margin-bottom
             <h6 class="section-title">6. Lab Results (Baseline) <small class="text-muted fw-normal">— Kuwait SI units</small></h6>
             <div class="row g-2">
                 <h6 class="col-12 text-secondary m-0"><i class="fa fa-vial"></i> Glycemic</h6>
-                <div class="col-6 col-md-3"><label>HbA1c (%)</label><input type="text" class="form-control" id="Lab_HbA1c" inputmode="decimal" placeholder="e.g. 6.5"></div>
-                <div class="col-6 col-md-3"><label>Fasting Glucose (mmol/L)</label><input type="text" class="form-control" id="Lab_Gluc" inputmode="decimal" placeholder="e.g. 5.5"></div>
+                <div class="col-6 col-md-3"><label>HbA1c (%)</label><input type="text" class="form-control" id="Lab_HbA1c" inputmode="decimal"></div>
+                <div class="col-6 col-md-3"><label>Fasting Glucose (mmol/L)</label><input type="text" class="form-control" id="Lab_Gluc" inputmode="decimal"></div>
 
                 <div class="col-12"><hr class="my-1"></div>
                 <h6 class="col-12 text-secondary m-0"><i class="fa fa-tint"></i> Renal &amp; Electrolytes</h6>
-                <div class="col-6 col-md-3"><label>Urea (mmol/L)</label><input type="text" class="form-control" id="Lab_Urea" inputmode="decimal" placeholder="e.g. 5.0" oninput="syncBaselineUreaCreat();calcBaselineEGFR();"></div>
-                <div class="col-6 col-md-3"><label>Creatinine (µmol/L)</label><input type="text" class="form-control" id="Lab_Creat" inputmode="decimal" placeholder="e.g. 80" oninput="syncBaselineUreaCreat();calcBaselineEGFR();checkGDMTAlerts();"></div>
+                <div class="col-6 col-md-3"><label>Urea (mmol/L)</label><input type="text" class="form-control" id="Lab_Urea" inputmode="decimal" oninput="syncBaselineUreaCreat();calcBaselineEGFR();"></div>
+                <div class="col-6 col-md-3"><label>Creatinine (µmol/L)</label><input type="text" class="form-control" id="Lab_Creat" inputmode="decimal" oninput="syncBaselineUreaCreat();calcBaselineEGFR();checkGDMTAlerts();"></div>
                 <div class="col-6 col-md-3"><label class="text-success fw-bold">eGFR (ml/min/1.73m²) <span class="auto-badge"><i class="fa fa-lock"></i> Auto</span></label><input type="text" class="form-control bg-light text-success fw-bold" id="Lab_eGFR" readonly></div>
-                <div class="col-6 col-md-3"><label>Sodium / Na (mmol/L)</label><input type="text" class="form-control" id="Lab_Na" inputmode="decimal" placeholder="e.g. 138" oninput="syncBaselineNaK();checkGDMTAlerts()"></div>
-                <div class="col-6 col-md-3"><label>Potassium / K (mmol/L)</label><input type="text" class="form-control" id="Lab_K" inputmode="decimal" placeholder="e.g. 4.2" oninput="syncBaselineNaK();checkGDMTAlerts()"></div>
+                <div class="col-6 col-md-3"><label>Sodium / Na (mmol/L)</label><input type="text" class="form-control" id="Lab_Na" inputmode="decimal" oninput="syncBaselineNaK();checkGDMTAlerts()"></div>
+                <div class="col-6 col-md-3"><label>Potassium / K (mmol/L)</label><input type="text" class="form-control" id="Lab_K" inputmode="decimal" oninput="syncBaselineNaK();checkGDMTAlerts()"></div>
 
                 <div class="col-12"><hr class="my-1"></div>
                 <h6 class="col-12 text-secondary m-0"><i class="fa fa-heartbeat"></i> Cardiac Biomarkers</h6>
-                <div class="col-6 col-md-3"><label>BNP (pg/mL)</label><input type="text" class="form-control" id="Lab_BNP_only" inputmode="decimal" placeholder="e.g. 400"></div>
-                <div class="col-6 col-md-3"><label>NT-proBNP (pg/mL)</label><input type="text" class="form-control" id="Lab_BNP" inputmode="decimal" placeholder="e.g. 1500"></div>
+                <div class="col-6 col-md-3"><label>BNP (pg/mL)</label><input type="text" class="form-control" id="Lab_BNP_only" inputmode="decimal"></div>
+                <div class="col-6 col-md-3"><label>NT-proBNP (pg/mL)</label><input type="text" class="form-control" id="Lab_BNP" inputmode="decimal"></div>
 
                 <div class="col-12"><hr class="my-1"></div>
                 <h6 class="col-12 text-secondary m-0"><i class="fa fa-syringe"></i> Iron Studies</h6>
-                <div class="col-6 col-md-3"><label>Serum Iron (µmol/L)</label><input type="text" class="form-control" id="Lab_Iron" inputmode="decimal" placeholder="e.g. 12" oninput="syncBaselineIron()"></div>
-                <div class="col-6 col-md-3"><label>Ferritin (µg/L)</label><input type="text" class="form-control" id="Lab_Ferritin" inputmode="decimal" placeholder="e.g. 100" oninput="syncBaselineIron()"></div>
-                <div class="col-6 col-md-3"><label>Transferrin Sat. / TSAT (%)</label><input type="text" class="form-control" id="Lab_TrSats" inputmode="decimal" placeholder="e.g. 20"></div>
+                <div class="col-6 col-md-3"><label>Serum Iron (µmol/L)</label><input type="text" class="form-control" id="Lab_Iron" inputmode="decimal" oninput="syncBaselineIron()"></div>
+                <div class="col-6 col-md-3"><label>Ferritin (µg/L)</label><input type="text" class="form-control" id="Lab_Ferritin" inputmode="decimal" oninput="syncBaselineIron()"></div>
+                <div class="col-6 col-md-3"><label>Transferrin Sat. / TSAT (%)</label><input type="text" class="form-control" id="Lab_TrSats" inputmode="decimal"></div>
 
                 <div class="col-12"><hr class="my-1"></div>
                 <h6 class="col-12 text-secondary m-0"><i class="fa fa-vials"></i> CBC</h6>
-                <div class="col-4 col-md-2"><label>Hb (g/dL)</label><input type="text" class="form-control" id="Lab_Hb" inputmode="decimal" placeholder="e.g. 12.5" oninput="syncBaselineCBC()"></div>
-                <div class="col-4 col-md-2"><label>WBC (×10⁹/L)</label><input type="text" class="form-control" id="Lab_WBC" inputmode="decimal" placeholder="e.g. 7.5" oninput="syncBaselineCBC()"></div>
-                <div class="col-4 col-md-2"><label>Platelets (×10⁹/L)</label><input type="text" class="form-control" id="Lab_Plt" inputmode="decimal" placeholder="e.g. 250" oninput="syncBaselineCBC()"></div>
+                <div class="col-4 col-md-2"><label>Hb (g/dL)</label><input type="text" class="form-control" id="Lab_Hb" inputmode="decimal" oninput="syncBaselineCBC()"></div>
+                <div class="col-4 col-md-2"><label>WBC (×10⁹/L)</label><input type="text" class="form-control" id="Lab_WBC" inputmode="decimal" oninput="syncBaselineCBC()"></div>
+                <div class="col-4 col-md-2"><label>Platelets (×10⁹/L)</label><input type="text" class="form-control" id="Lab_Plt" inputmode="decimal" oninput="syncBaselineCBC()"></div>
 
                 <div class="col-12"><hr class="my-1"></div>
                 <h6 class="col-12 text-secondary m-0"><i class="fa fa-flask"></i> Thyroid</h6>
-                <div class="col-6 col-md-3"><label>TSH (mIU/L)</label><input type="text" class="form-control" id="Lab_TSH" inputmode="decimal" placeholder="e.g. 2.0" oninput="syncBaselineThyroid()"></div>
-                <div class="col-6 col-md-3"><label>Free T4 (pmol/L)</label><input type="text" class="form-control" id="Lab_FreeT4" inputmode="decimal" placeholder="e.g. 15" oninput="syncBaselineThyroid()"></div>
+                <div class="col-6 col-md-3"><label>TSH (mIU/L)</label><input type="text" class="form-control" id="Lab_TSH" inputmode="decimal" oninput="syncBaselineThyroid()"></div>
+                <div class="col-6 col-md-3"><label>Free T4 (pmol/L)</label><input type="text" class="form-control" id="Lab_FreeT4" inputmode="decimal" oninput="syncBaselineThyroid()"></div>
 
                 <div class="col-12"><hr class="my-1"></div>
                 <h6 class="col-12 text-secondary m-0"><i class="fa fa-chart-line"></i> Lipids (mmol/L)</h6>
-                <div class="col-4 col-md-2"><label>Total Chol.</label><input type="text" class="form-control" id="Lab_TotalChol" inputmode="decimal" placeholder="e.g. 4.5" oninput="syncBaselineLipids()"></div>
-                <div class="col-4 col-md-2"><label>LDL</label><input type="text" class="form-control" id="Lab_LDL" inputmode="decimal" placeholder="e.g. 2.0" oninput="syncBaselineLipids()"></div>
-                <div class="col-4 col-md-2"><label>HDL</label><input type="text" class="form-control" id="Lab_HDL" inputmode="decimal" placeholder="e.g. 1.2" oninput="syncBaselineLipids()"></div>
-                <div class="col-4 col-md-2"><label>Triglycerides</label><input type="text" class="form-control" id="Lab_TG" inputmode="decimal" placeholder="e.g. 1.5" oninput="syncBaselineLipids()"></div>
+                <div class="col-4 col-md-2"><label>Total Chol.</label><input type="text" class="form-control" id="Lab_TotalChol" inputmode="decimal" oninput="syncBaselineLipids()"></div>
+                <div class="col-4 col-md-2"><label>LDL</label><input type="text" class="form-control" id="Lab_LDL" inputmode="decimal" oninput="syncBaselineLipids()"></div>
+                <div class="col-4 col-md-2"><label>HDL</label><input type="text" class="form-control" id="Lab_HDL" inputmode="decimal" oninput="syncBaselineLipids()"></div>
+                <div class="col-4 col-md-2"><label>Triglycerides</label><input type="text" class="form-control" id="Lab_TG" inputmode="decimal" oninput="syncBaselineLipids()"></div>
 
                 <div class="col-12"><hr class="my-1"></div>
                 <h6 class="col-12 text-secondary m-0"><i class="fa fa-droplet"></i> Urine</h6>
-                <div class="col-6 col-md-3"><label>Albumin/Creatinine Ratio (mg/g)</label><input type="text" class="form-control" id="Lab_AlbCreat" inputmode="decimal" placeholder="e.g. 30"></div>
+                <div class="col-6 col-md-3"><label>Albumin/Creatinine Ratio (mg/g)</label><input type="text" class="form-control" id="Lab_AlbCreat" inputmode="decimal"></div>
 
                 <!-- Hidden mirror fields for backward compatibility with existing functions -->
                 <div style="display:none;">
@@ -607,45 +617,45 @@ label{font-weight:600;font-size:.75rem;color:#495057;display:block;margin-bottom
                     <div class="col-4 col-md-3"><label>Arrhythmia</label><input type="text" class="form-control" id="V_Arrhythmia"></div>
                     <div class="col-12"><hr class="my-2"></div>
                     <h6 class="col-12 text-secondary">Echo</h6>
-                    <div class="col-6 col-md-4"><label>Change in EF</label><input type="text" class="form-control" id="V_EF_Change" placeholder="e.g., Recovered 60%"></div>
+                    <div class="col-6 col-md-4"><label>Change in EF</label><input type="text" class="form-control" id="V_EF_Change"></div>
                     <div class="col-6 col-md-4"><label>Other Echo Findings</label><input type="text" class="form-control" id="V_Echo_Other"></div>
                     <div class="col-12"><hr class="my-2"></div>
                     <h6 class="col-12 text-secondary"><i class="fa fa-flask"></i> Visit Labs <small class="text-muted fw-normal">— Kuwait SI units</small></h6>
 
                     <h6 class="col-12 text-secondary m-0" style="font-size:0.78rem;"><i class="fa fa-vial"></i> Glycemic</h6>
-                    <div class="col-6 col-md-3"><label>HbA1c (%)</label><input type="text" class="form-control" id="V_HbA1c" inputmode="decimal" placeholder="e.g. 6.5"></div>
-                    <div class="col-6 col-md-3"><label>Fasting Glucose (mmol/L)</label><input type="text" class="form-control" id="V_Gluc" inputmode="decimal" placeholder="e.g. 5.5"></div>
+                    <div class="col-6 col-md-3"><label>HbA1c (%)</label><input type="text" class="form-control" id="V_HbA1c" inputmode="decimal"></div>
+                    <div class="col-6 col-md-3"><label>Fasting Glucose (mmol/L)</label><input type="text" class="form-control" id="V_Gluc" inputmode="decimal"></div>
 
                     <div class="col-12"><hr class="my-1"></div>
                     <h6 class="col-12 text-secondary m-0" style="font-size:0.78rem;"><i class="fa fa-tint"></i> Renal &amp; Electrolytes</h6>
-                    <div class="col-6 col-md-3"><label>Urea (mmol/L)</label><input type="text" class="form-control" id="V_Urea" inputmode="decimal" placeholder="e.g. 5.0"></div>
-                    <div class="col-6 col-md-3"><label>Creatinine (µmol/L)</label><input type="text" class="form-control" id="V_Creat" inputmode="decimal" oninput="calcEGFR()" placeholder="e.g. 80"></div>
+                    <div class="col-6 col-md-3"><label>Urea (mmol/L)</label><input type="text" class="form-control" id="V_Urea" inputmode="decimal"></div>
+                    <div class="col-6 col-md-3"><label>Creatinine (µmol/L)</label><input type="text" class="form-control" id="V_Creat" inputmode="decimal" oninput="calcEGFR()"></div>
                     <div class="col-6 col-md-3"><label class="text-success fw-bold">eGFR (ml/min/1.73m²) <span class="auto-badge"><i class="fa fa-lock"></i> Auto</span></label><input type="text" class="form-control bg-light text-success fw-bold" id="V_eGFR" readonly></div>
-                    <div class="col-6 col-md-3"><label>Sodium / Na (mmol/L)</label><input type="text" class="form-control" id="V_Na" inputmode="decimal" placeholder="e.g. 138"></div>
-                    <div class="col-6 col-md-3"><label>Potassium / K (mmol/L)</label><input type="text" class="form-control" id="V_K" inputmode="decimal" oninput="checkVisitAlerts()" placeholder="e.g. 4.2"></div>
+                    <div class="col-6 col-md-3"><label>Sodium / Na (mmol/L)</label><input type="text" class="form-control" id="V_Na" inputmode="decimal"></div>
+                    <div class="col-6 col-md-3"><label>Potassium / K (mmol/L)</label><input type="text" class="form-control" id="V_K" inputmode="decimal" oninput="checkVisitAlerts()"></div>
 
                     <div class="col-12"><hr class="my-1"></div>
                     <h6 class="col-12 text-secondary m-0" style="font-size:0.78rem;"><i class="fa fa-heartbeat"></i> Cardiac Biomarkers</h6>
-                    <div class="col-6 col-md-3"><label>BNP (pg/mL)</label><input type="text" class="form-control" id="V_BNP" inputmode="decimal" placeholder="e.g. 400"></div>
-                    <div class="col-6 col-md-3"><label>NT-proBNP (pg/mL)</label><input type="text" class="form-control" id="V_NTproBNP" inputmode="decimal" placeholder="e.g. 1500"></div>
+                    <div class="col-6 col-md-3"><label>BNP (pg/mL)</label><input type="text" class="form-control" id="V_BNP" inputmode="decimal"></div>
+                    <div class="col-6 col-md-3"><label>NT-proBNP (pg/mL)</label><input type="text" class="form-control" id="V_NTproBNP" inputmode="decimal"></div>
 
                     <div class="col-12"><hr class="my-1"></div>
                     <h6 class="col-12 text-secondary m-0" style="font-size:0.78rem;"><i class="fa fa-syringe"></i> Iron Studies</h6>
-                    <div class="col-6 col-md-3"><label>Serum Iron (µmol/L)</label><input type="text" class="form-control" id="V_Iron" inputmode="decimal" oninput="checkVisitIronAlert()" placeholder="e.g. 12"></div>
-                    <div class="col-6 col-md-3"><label>Ferritin (µg/L)</label><input type="text" class="form-control" id="V_Ferritin" inputmode="decimal" oninput="checkVisitIronAlert()" placeholder="e.g. 100"></div>
-                    <div class="col-6 col-md-3"><label>Transferrin Sat. / TSAT (%)</label><input type="text" class="form-control" id="V_Transferrin" inputmode="decimal" oninput="checkVisitIronAlert()" placeholder="e.g. 20"></div>
+                    <div class="col-6 col-md-3"><label>Serum Iron (µmol/L)</label><input type="text" class="form-control" id="V_Iron" inputmode="decimal" oninput="checkVisitIronAlert()"></div>
+                    <div class="col-6 col-md-3"><label>Ferritin (µg/L)</label><input type="text" class="form-control" id="V_Ferritin" inputmode="decimal" oninput="checkVisitIronAlert()"></div>
+                    <div class="col-6 col-md-3"><label>Transferrin Sat. / TSAT (%)</label><input type="text" class="form-control" id="V_Transferrin" inputmode="decimal" oninput="checkVisitIronAlert()"></div>
 
                     <div class="col-12"><hr class="my-1"></div>
                     <h6 class="col-12 text-secondary m-0" style="font-size:0.78rem;"><i class="fa fa-vials"></i> CBC</h6>
-                    <div class="col-4 col-md-2"><label>Hb (g/dL)</label><input type="text" class="form-control" id="V_Hb" inputmode="decimal" placeholder="e.g. 12.5"></div>
-                    <div class="col-4 col-md-2"><label>WBC (×10⁹/L)</label><input type="text" class="form-control" id="V_WBC" inputmode="decimal" placeholder="e.g. 7.5"></div>
-                    <div class="col-4 col-md-2"><label>Platelets (×10⁹/L)</label><input type="text" class="form-control" id="V_Plt" inputmode="decimal" placeholder="e.g. 250"></div>
+                    <div class="col-4 col-md-2"><label>Hb (g/dL)</label><input type="text" class="form-control" id="V_Hb" inputmode="decimal"></div>
+                    <div class="col-4 col-md-2"><label>WBC (×10⁹/L)</label><input type="text" class="form-control" id="V_WBC" inputmode="decimal"></div>
+                    <div class="col-4 col-md-2"><label>Platelets (×10⁹/L)</label><input type="text" class="form-control" id="V_Plt" inputmode="decimal"></div>
 
                     <div class="col-12"><hr class="my-1"></div>
                     <h6 class="col-12 text-secondary m-0" style="font-size:0.78rem;"><i class="fa fa-flask"></i> Thyroid &amp; Coagulation</h6>
-                    <div class="col-6 col-md-3"><label>TSH (mIU/L)</label><input type="text" class="form-control" id="V_TSH" inputmode="decimal" placeholder="e.g. 2.0"></div>
-                    <div class="col-6 col-md-3"><label>Free T4 (pmol/L)</label><input type="text" class="form-control" id="V_FreeT4" inputmode="decimal" placeholder="e.g. 15"></div>
-                    <div class="col-6 col-md-3"><label>INR</label><input type="text" class="form-control" id="V_INR" inputmode="decimal" placeholder="e.g. 2.5"></div>
+                    <div class="col-6 col-md-3"><label>TSH (mIU/L)</label><input type="text" class="form-control" id="V_TSH" inputmode="decimal"></div>
+                    <div class="col-6 col-md-3"><label>Free T4 (pmol/L)</label><input type="text" class="form-control" id="V_FreeT4" inputmode="decimal"></div>
+                    <div class="col-6 col-md-3"><label>INR</label><input type="text" class="form-control" id="V_INR" inputmode="decimal"></div>
                     <div class="col-12">
                         <div class="clinical-alert alert-warning-soft" id="alertVisitHyperK">
                             <i class="fa fa-exclamation-triangle"></i>
@@ -1416,25 +1426,87 @@ function syncPillsFromData(){
     if(smokerV&&smokerH)smokerV.value=smokerH.value;
 }
 
+var MULTI_SELECT_MEDS = ['Med_Diuretic','Med_Lipid'];
+
 function buildMedSection7(){
     var html='';
     Object.keys(MED_FORMULARY).forEach(function(medId){
         var med=MED_FORMULARY[medId];
         var isGDMTPillar=GDMT_PILLARS.indexOf(medId)>=0;
+        var isMulti=MULTI_SELECT_MEDS.indexOf(medId)>=0;
         html+='<div class="col-6 col-md-3" id="medWrap_'+medId+'">';
-        html+='<label>'+med.label+(isGDMTPillar?' <i class="fa fa-star text-warning" style="font-size:0.6rem;" title="GDMT Pillar"></i>':'')+'</label>';
-        html+='<select class="form-select" id="'+medId+'" onchange="onMedChange(\''+medId+'\');calcMAGGIC();checkGDMTAlerts();updateGDMTRationale();">';
-        med.options.forEach(function(o){html+='<option>'+o+'</option>';});
-        html+='</select>';
-        html+='<div class="med-sub-fields" id="sub_'+medId+'">';
-        html+='<label>Dose (preset)</label><select class="form-select" id="'+medId+'_Dose"><option value="">Select dose...</option></select>';
-        html+='<label class="mt-1" style="font-size:0.7rem;">Custom Dose <small class="text-muted">(if not in list)</small></label><input type="text" class="form-control form-control-sm" id="'+medId+'_DoseCustom" placeholder="e.g. 12.5 mg">';
-        html+='<label class="mt-1" style="font-size:0.7rem;">Frequency</label><input type="text" class="form-control form-control-sm" id="'+medId+'_Freq" placeholder="e.g. OD, BID, TID, QHS">';
-        html+='<label class="mt-1">Start Date</label><input type="date" class="form-control" id="'+medId+'_Date">';
-        html+='</div>';
+        html+='<label>'+med.label+(isGDMTPillar?' <i class="fa fa-star text-warning" style="font-size:0.6rem;" title="GDMT Pillar"></i>':'')+(isMulti?' <small class="text-muted" style="font-size:0.6rem;">(multi)</small>':'')+'</label>';
+        if(isMulti){
+            // Multi-select: render as checkbox pills + per-option dose/frequency block
+            html+='<div class="multi-med-wrap" id="multi_'+medId+'">';
+            med.options.forEach(function(o){
+                if(o==='None'||o==='No')return;
+                var safeId=medId+'_opt_'+o.replace(/[^a-zA-Z0-9]/g,'');
+                html+='<div class="multi-med-item">';
+                html+='<label class="multi-med-check"><input type="checkbox" class="form-check-input" id="'+safeId+'_chk" data-med="'+medId+'" data-opt="'+o+'" onchange="onMultiMedToggle(\''+medId+'\',\''+o+'\')"> <span>'+o+'</span></label>';
+                html+='<div class="multi-med-detail" id="'+safeId+'_detail" style="display:none;">';
+                html+='<select class="form-select form-select-sm" id="'+safeId+'_Dose"><option value="">Dose...</option></select>';
+                html+='<input type="text" class="form-control form-control-sm mt-1" id="'+safeId+'_DoseCustom" placeholder="Custom dose">';
+                html+='<input type="text" class="form-control form-control-sm mt-1" id="'+safeId+'_Freq" placeholder="Frequency (OD/BID/TID)">';
+                html+='</div>';
+                html+='</div>';
+            });
+            html+='</div>';
+            // Hidden field that mirrors selected options (comma-separated) for backward compat
+            html+='<input type="hidden" id="'+medId+'">';
+        }else{
+            html+='<select class="form-select" id="'+medId+'" onchange="onMedChange(\''+medId+'\');calcMAGGIC();checkGDMTAlerts();updateGDMTRationale();">';
+            med.options.forEach(function(o){html+='<option>'+o+'</option>';});
+            html+='</select>';
+            html+='<div class="med-sub-fields" id="sub_'+medId+'">';
+            html+='<label>Dose (preset)</label><select class="form-select" id="'+medId+'_Dose"><option value="">Select dose...</option></select>';
+            html+='<label class="mt-1" style="font-size:0.7rem;">Custom Dose <small class="text-muted">(if not in list)</small></label><input type="text" class="form-control form-control-sm" id="'+medId+'_DoseCustom" placeholder="">';
+            html+='<label class="mt-1" style="font-size:0.7rem;">Frequency</label><input type="text" class="form-control form-control-sm" id="'+medId+'_Freq" placeholder="">';
+            html+='<label class="mt-1">Start Date</label><input type="date" class="form-control" id="'+medId+'_Date">';
+            html+='</div>';
+        }
         html+='</div>';
     });
     document.getElementById('medSection7').innerHTML=html;
+}
+
+function onMultiMedToggle(medId,opt){
+    var safeId=medId+'_opt_'+opt.replace(/[^a-zA-Z0-9]/g,'');
+    var chk=document.getElementById(safeId+'_chk');
+    var detail=document.getElementById(safeId+'_detail');
+    var doseSel=document.getElementById(safeId+'_Dose');
+    if(!chk||!detail)return;
+    if(chk.checked){
+        detail.style.display='block';
+        // Populate dose dropdown for this option
+        var doses=(MED_FORMULARY[medId].doses&&MED_FORMULARY[medId].doses[opt])||[];
+        var current=doseSel.value;
+        doseSel.innerHTML='<option value="">Dose...</option>';
+        doses.forEach(function(d){doseSel.innerHTML+='<option value="'+d+'">'+d+'</option>';});
+        if(current)doseSel.value=current;
+    }else{
+        detail.style.display='none';
+        doseSel.value='';
+        var dc=document.getElementById(safeId+'_DoseCustom');if(dc)dc.value='';
+        var fq=document.getElementById(safeId+'_Freq');if(fq)fq.value='';
+    }
+    syncMultiMedField(medId);
+}
+
+function syncMultiMedField(medId){
+    // Build comma-separated list of checked options into the legacy hidden field
+    var parts=[];
+    var med=MED_FORMULARY[medId];
+    med.options.forEach(function(o){
+        if(o==='None'||o==='No')return;
+        var safeId=medId+'_opt_'+o.replace(/[^a-zA-Z0-9]/g,'');
+        var chk=document.getElementById(safeId+'_chk');
+        if(chk&&chk.checked)parts.push(o);
+    });
+    var legacy=document.getElementById(medId);
+    if(legacy)legacy.value=parts.length?parts.join(', '):'None';
+    if(typeof checkGDMTAlerts==='function')checkGDMTAlerts();
+    if(typeof updateGDMTRationale==='function')updateGDMTRationale();
 }
 
 function onMedChange(medId){
@@ -1617,7 +1689,18 @@ function onVisitMedStatusChange(medId){
 function isNumberKey(evt){var c=(evt.which)?evt.which:evt.keyCode;if(c>31&&(c<48||c>57))return false;return true;}
 function validateCivilID(input){var e=document.getElementById('civilError');if(input.value.length!==12&&input.value.length>0){input.classList.add('input-error');e.style.display='block';}else{input.classList.remove('input-error');e.style.display='none';}}
 function validateFileNo(input){var e=document.getElementById('fileError');if(input.value.length!==6&&input.value.length>0){input.classList.add('input-error');e.style.display='block';}else{input.classList.remove('input-error');e.style.display='none';}}
-function calcBMI(){var w=parseFloat(document.getElementById("Weight").value),h=parseFloat(document.getElementById("Height").value);document.getElementById("BMI").value=(w&&h)?(w/((h/100)**2)).toFixed(1):"";calcMAGGIC();}
+function calcBMI(){
+    var w=parseFloat(document.getElementById("Weight").value),h=parseFloat(document.getElementById("Height").value);
+    var bmi=(w&&h)?(w/((h/100)**2)).toFixed(1):"";
+    document.getElementById("BMI").value=bmi;
+    // Obesity clinic referral alarm (BMI > 30)
+    var alertObesity=document.getElementById('alertObesity');
+    if(alertObesity){
+        if(bmi&&parseFloat(bmi)>30){alertObesity.classList.add('visible');}
+        else{alertObesity.classList.remove('visible');}
+    }
+    calcMAGGIC();
+}
 // Sync new individual baseline lab fields back to the legacy combined fields used elsewhere
 function syncBaselineUreaCreat(){var u=document.getElementById('Lab_Urea').value.trim(),c=document.getElementById('Lab_Creat').value.trim();var combo=(u||c)?(u+'/'+c):'';var t=document.getElementById('Lab_UreaCreat');if(t)t.value=combo;}
 function syncBaselineNaK(){var n=document.getElementById('Lab_Na').value.trim(),k=document.getElementById('Lab_K').value.trim();var combo=(n||k)?(n+'/'+k):'';var t=document.getElementById('Lab_NaK');if(t)t.value=combo;}
@@ -1947,6 +2030,11 @@ function generateCardHTML(data,id){
     if(missingVacc.length>0){
         html+="<div class='alert alert-warning py-2 px-3 mb-3 d-flex align-items-center' style='font-size:0.85rem;border-left:4px solid #f39c12;'><i class='fa fa-syringe me-2 text-warning'></i><div><strong>Vaccinations Due:</strong> "+missingVacc.join(', ')+" <small class='text-muted d-block'>(checked against year "+thisYear+")</small></div></div>";
     }
+    // Obesity clinic referral alert (BMI > 30)
+    var bmiVal=parseFloat(data.BMI||0);
+    if(bmiVal>30){
+        html+="<div class='alert alert-warning py-2 px-3 mb-3 d-flex align-items-center' style='font-size:0.85rem;border-left:4px solid #d97706;'><i class='fa fa-weight-scale me-2 text-warning'></i><div><strong>Obesity Clinic Referral:</strong> BMI = "+bmiVal.toFixed(1)+" — consider referral to MKH Obesity Clinic.</div></div>";
+    }
     // Overdue follow-up alert (>2 months since last visit, based on Next_Appt being in the past or missing)
     var today=new Date();
     var twoMonthsAgo=new Date(today.getTime()-60*24*60*60*1000);
@@ -2045,21 +2133,46 @@ function editPt(id){
     // Restore PCI/CABG details panel
     if(typeof togglePCICABGDetails==='function')togglePCICABGDetails();
     Object.keys(MED_FORMULARY).forEach(function(medId){
-        onMedChange(medId);
-        var doseEl=document.getElementById(medId+'_Dose');
-        if(doseEl&&d[medId+'_Dose'])doseEl.value=d[medId+'_Dose'];
-        var dateEl=document.getElementById(medId+'_Date');
-        if(dateEl&&d[medId+'_Date'])dateEl.value=d[medId+'_Date'];
-        var dcEl=document.getElementById(medId+'_DoseCustom');
-        if(dcEl&&d[medId+'_DoseCustom'])dcEl.value=d[medId+'_DoseCustom'];
-        var fqEl=document.getElementById(medId+'_Freq');
-        if(fqEl&&d[medId+'_Freq'])fqEl.value=d[medId+'_Freq'];
+        var isMulti=MULTI_SELECT_MEDS.indexOf(medId)>=0;
+        if(isMulti){
+            // Restore checked options + per-option fields
+            var med=MED_FORMULARY[medId];
+            med.options.forEach(function(o){
+                if(o==='None'||o==='No')return;
+                var safeId=medId+'_opt_'+o.replace(/[^a-zA-Z0-9]/g,'');
+                var chk=document.getElementById(safeId+'_chk');
+                if(!chk)return;
+                // Field was checked if any of its sub-fields has data, OR if mirror legacy field includes this option
+                var hasDose=d[safeId+'_Dose']&&d[safeId+'_Dose']!=='';
+                var hasCustom=d[safeId+'_DoseCustom']&&d[safeId+'_DoseCustom']!=='';
+                var hasFreq=d[safeId+'_Freq']&&d[safeId+'_Freq']!=='';
+                var inLegacy=(d[medId]||'').split(',').map(function(x){return x.trim();}).indexOf(o)>=0;
+                if(hasDose||hasCustom||hasFreq||inLegacy){
+                    chk.checked=true;
+                    onMultiMedToggle(medId,o);
+                    if(hasDose)document.getElementById(safeId+'_Dose').value=d[safeId+'_Dose'];
+                    if(hasCustom)document.getElementById(safeId+'_DoseCustom').value=d[safeId+'_DoseCustom'];
+                    if(hasFreq)document.getElementById(safeId+'_Freq').value=d[safeId+'_Freq'];
+                }
+            });
+            syncMultiMedField(medId);
+        }else{
+            onMedChange(medId);
+            var doseEl=document.getElementById(medId+'_Dose');
+            if(doseEl&&d[medId+'_Dose'])doseEl.value=d[medId+'_Dose'];
+            var dateEl=document.getElementById(medId+'_Date');
+            if(dateEl&&d[medId+'_Date'])dateEl.value=d[medId+'_Date'];
+            var dcEl=document.getElementById(medId+'_DoseCustom');
+            if(dcEl&&d[medId+'_DoseCustom'])dcEl.value=d[medId+'_DoseCustom'];
+            var fqEl=document.getElementById(medId+'_Freq');
+            if(fqEl&&d[medId+'_Freq'])fqEl.value=d[medId+'_Freq'];
+        }
     });
     GDMT_PILLARS.forEach(function(medId){
         var el=document.getElementById('Rationale_'+medId);
         if(el&&d['Rationale_'+medId])el.value=d['Rationale_'+medId];
     });
-    applyPhenotypeEmphasis();updateGDMTRationale();checkGDMTAlerts();checkCRTIndication();
+    applyPhenotypeEmphasis();updateGDMTRationale();checkGDMTAlerts();checkCRTIndication();calcBMI();
     document.getElementById("formTitle").innerText="Editing: "+d.Patient_Name;
     document.getElementById("cancelEditBtn").classList.remove("d-none");
     document.getElementById("submitBtn").innerHTML='<i class="fa fa-save me-1"></i> Update Patient';
