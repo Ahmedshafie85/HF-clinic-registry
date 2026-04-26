@@ -301,6 +301,19 @@ label{font-weight:600;font-size:.75rem;color:#495057;display:block;margin-bottom
     </div>
 
 <div class="container mt-3 mb-5" style="padding-bottom:80px;">
+
+    <!-- MAIN PAGE ALERTS PANEL — Upcoming, No Follow-up, No Vaccinations -->
+    <div class="card p-3 border-top border-4 border-warning shadow-sm mb-3" id="mainAlertsCard">
+        <ul class="nav nav-tabs nav-fill mb-2" id="mainAlertsTabs" style="font-size:0.78rem;">
+            <li class="nav-item"><button class="nav-link active" onclick="showMainAlertsTab('upcoming',this)" style="font-weight:600;"><i class="fa fa-clock text-warning"></i> Upcoming 14 Days <span class="badge bg-warning text-dark ms-1" id="mainUpcomingCount">0</span></button></li>
+            <li class="nav-item"><button class="nav-link" onclick="showMainAlertsTab('overdue',this)" style="font-weight:600;"><i class="fa fa-user-clock text-danger"></i> No Follow-up &gt;2 mo <span class="badge bg-danger ms-1" id="mainOverdueCount">0</span></button></li>
+            <li class="nav-item"><button class="nav-link" onclick="showMainAlertsTab('vacc',this)" style="font-weight:600;"><i class="fa fa-syringe text-primary"></i> Vaccinations Due <span class="badge bg-primary ms-1" id="mainVaccCount">0</span></button></li>
+        </ul>
+        <div id="mainAlertsBody" style="max-height:200px;overflow-y:auto;font-size:0.85rem;">
+            <div class="text-muted small text-center py-2"><i class="fa fa-spinner fa-spin"></i> Loading alerts...</div>
+        </div>
+    </div>
+
     <div class="card p-3 border-top border-4 border-danger shadow">
         <div class="d-flex justify-content-between align-items-center mb-2">
             <h6 class="text-secondary fw-bold mb-0">Search Patient</h6>
@@ -332,7 +345,7 @@ label{font-weight:600;font-size:.75rem;color:#495057;display:block;margin-bottom
                 <div class="col-4 col-md-2"><label>Age</label><input type="number" class="form-control" id="Age" inputmode="numeric" oninput="calcBaselineEGFR(); calcMAGGIC(); calcEGFR();"></div>
                 <div class="col-4 col-md-2"><label>Gender</label><select class="form-select" id="Gender" onchange="calcBaselineEGFR(); calcMAGGIC(); calcEGFR();"><option value="">Select...</option><option>Male</option><option>Female</option></select></div>
                 <div class="col-4 col-md-4"><label>Nationality</label><input type="text" class="form-control" id="Nationality"></div>
-                <div class="col-12 col-md-4"><label>Mobile</label><input type="tel" class="form-control" id="Mobile" inputmode="tel"></div>
+                <div class="col-12 col-md-4"><label>Mobile *</label><input type="tel" class="form-control" id="Mobile" inputmode="tel" required><small class="error-msg" id="mobileError">Mobile number is required</small></div>
             </div>
         </div>
 
@@ -345,7 +358,7 @@ label{font-weight:600;font-size:.75rem;color:#495057;display:block;margin-bottom
                 <div class="col-6 col-md-2"><label>Advanced HF</label><select class="form-select" id="Advanced_HF"><option>No</option><option>Yes</option></select></div>
                 <div class="col-6 col-md-5"><label>Other Cardiomyopathies</label><input type="text" class="form-control" id="Other_Cardio"></div>
                 <div class="col-6 col-md-3"><label>Valvular Disease</label><select class="form-select" id="Valvular_Disease"><option>No</option><option>Yes</option></select></div>
-                <div class="col-6 col-md-3"><label>Admissions Last Yr</label><input type="number" class="form-control" id="Admissions" inputmode="numeric"></div>
+                <div class="col-6 col-md-3"><label>Number of Admissions Last Year</label><input type="number" class="form-control" id="Admissions" inputmode="numeric"></div>
                 <div class="col-6 col-md-3"><label>Last Admission Date</label><input type="date" class="form-control" id="Last_Admission"></div>
                 <div class="col-6 col-md-3"><label>Length of Stay (Days)</label><input type="number" class="form-control" id="LOS" inputmode="numeric"></div>
             </div>
@@ -360,7 +373,8 @@ label{font-weight:600;font-size:.75rem;color:#495057;display:block;margin-bottom
                 <div class="col-4 col-md-2"><label class="text-success fw-bold">BMI <span class="auto-badge"><i class="fa fa-lock"></i> Auto</span></label><input type="text" class="form-control bg-light text-success fw-bold" id="BMI" readonly></div>
                 <div class="col-4 col-md-2"><label>Dry Weight (kg)</label><input type="number" class="form-control" id="Dry_Weight" inputmode="numeric"></div>
                 <div class="col-4 col-md-2"><label>NYHA Visit</label><select class="form-select" id="NYHA" onchange="calcMAGGIC()"><option value="">Select...</option><option>I</option><option>II</option><option>III</option><option>IV</option></select></div>
-                <div class="col-4 col-md-2"><label>KCCQ (0-100)</label><input type="number" class="form-control" id="KCCQ" min="0" max="100" inputmode="numeric" placeholder="0-100"></div>
+                <!-- KCCQ removed from baseline — tracked only in visits -->
+                <input type="hidden" id="KCCQ">
                 <div class="col-4 col-md-2"><label>Fatigue</label><select class="form-select" id="Fatigue"><option>No</option><option>Yes</option></select></div>
                 <div class="col-4 col-md-2"><label>Pulse</label><input type="text" class="form-control" id="Pulse" inputmode="numeric"></div>
                 <div class="col-4 col-md-2"><label>BP</label><input type="text" class="form-control" id="BP" placeholder="120/80" oninput="calcMAGGIC()"></div>
@@ -377,7 +391,12 @@ label{font-weight:600;font-size:.75rem;color:#495057;display:block;margin-bottom
         <div class="form-step" data-step="4">
             <h6 class="section-title">4. Investigations &amp; Procedures</h6>
             <div class="row g-2">
-                <div class="col-12 col-md-6"><label>ECG (LBBB/QRS/Arrhythmia)</label><input type="text" class="form-control" id="ECG"></div>
+                <h6 class="col-12 text-secondary m-0"><i class="fa fa-heartbeat"></i> ECG</h6>
+                <div class="col-6 col-md-3"><label>LBBB</label><select class="form-select" id="ECG_LBBB" onchange="checkCRTIndication()"><option value="">Select...</option><option>No</option><option>Yes</option></select></div>
+                <div class="col-6 col-md-3"><label>QRS Duration (ms)</label><input type="number" class="form-control" id="ECG_QRS" inputmode="numeric" placeholder="e.g. 120" oninput="checkCRTIndication()"></div>
+                <div class="col-12 col-md-3"><label>Arrhythmia</label><input type="text" class="form-control" id="ECG_Arrhythmia" placeholder="Type, if any"></div>
+                <div class="col-12 col-md-3"><label>Pacing Rhythm</label><input type="text" class="form-control" id="ECG_Pacing" placeholder="e.g. AAI, VVI, DDD, BiV"></div>
+                <div class="col-12"><hr class="my-1"></div>
                 <div class="col-12 col-md-6"><label>ECHO Details</label><input type="text" class="form-control" id="ECHO"></div>
                 <div class="col-12 col-md-6"><label>CMR/CT Angio</label><input type="text" class="form-control" id="CMR_CT"></div>
                 <div class="col-6 col-md-3"><label>6 Min Walk Test</label><input type="text" class="form-control" id="Walk_Test"></div>
@@ -410,7 +429,13 @@ label{font-weight:600;font-size:.75rem;color:#495057;display:block;margin-bottom
             </div>
             <div class="row g-2 mt-2">
                 <div class="col-12 col-md-6"><label>IHD Type</label><select class="form-select" id="IHD_Visible" onchange="document.getElementById('IHD').value=this.value"><option>No</option><option>STEMI</option><option>NSTEMI</option></select></div>
-                <div class="col-12 col-md-6"><label>PCI/CABG</label><select class="form-select" id="PCI_CABG_Visible" onchange="document.getElementById('PCI_CABG').value=this.value"><option>No</option><option>PCI</option><option>CABG</option></select></div>
+                <div class="col-12 col-md-6"><label>PCI/CABG</label><select class="form-select" id="PCI_CABG_Visible" onchange="document.getElementById('PCI_CABG').value=this.value;togglePCICABGDetails()"><option>No</option><option>PCI</option><option>CABG</option></select></div>
+                <div class="col-12" id="pciCabgDetailsWrap" style="display:none;">
+                    <div class="row g-2 p-2 mt-1" style="background:#fff5f5;border-left:3px solid #8b0000;border-radius:6px;">
+                        <div class="col-12 col-md-4"><label class="text-danger fw-bold" id="pciCabgDateLabel">Date of Procedure</label><input type="date" class="form-control" id="PCI_CABG_Date"></div>
+                        <div class="col-12 col-md-8"><label class="text-danger fw-bold" id="pciCabgDetailsLabel">Procedure Details (vessels, stents, grafts, etc.)</label><input type="text" class="form-control" id="PCI_CABG_Details" placeholder="e.g. LAD DES x1, RCA POBA"></div>
+                    </div>
+                </div>
                 <div class="col-12 col-md-6"><label>Smoking Status</label><select class="form-select" id="Smoker_Visible" onchange="document.getElementById('Smoker').value=this.value;calcMAGGIC()"><option>Never</option><option>Current</option><option>Former</option></select></div>
                 <div class="col-12 col-md-6"><label>F.H. Cardio/Genetics</label><input type="text" class="form-control" id="FH_Genetics"></div>
             </div>
@@ -418,20 +443,61 @@ label{font-weight:600;font-size:.75rem;color:#495057;display:block;margin-bottom
 
         <!-- STEP 6: Labs -->
         <div class="form-step" data-step="6">
-            <h6 class="section-title">6. Lab Results (Baseline)</h6>
+            <h6 class="section-title">6. Lab Results (Baseline) <small class="text-muted fw-normal">— Kuwait SI units</small></h6>
             <div class="row g-2">
-                <div class="col-4 col-md-2"><label>HbA1c</label><input type="text" class="form-control" id="Lab_HbA1c"></div>
-                <div class="col-4 col-md-2"><label>Gluc</label><input type="text" class="form-control" id="Lab_Gluc"></div>
-                <div class="col-4 col-md-2"><label>Urea/Creat</label><input type="text" class="form-control" id="Lab_UreaCreat" oninput="calcBaselineEGFR(); calcMAGGIC(); checkGDMTAlerts();" placeholder="e.g. 5/80"></div>
-                <div class="col-4 col-md-2"><label class="text-success fw-bold">eGFR <span class="auto-badge"><i class="fa fa-lock"></i> Auto</span></label><input type="text" class="form-control bg-light text-success fw-bold" id="Lab_eGFR" readonly></div>
-                <div class="col-4 col-md-2"><label>Na/K</label><input type="text" class="form-control" id="Lab_NaK" oninput="checkGDMTAlerts()"></div>
-                <div class="col-4 col-md-2"><label>NT-proBNP</label><input type="text" class="form-control" id="Lab_BNP"></div>
-                <div class="col-4 col-md-2"><label>Iron/Ferritin</label><input type="text" class="form-control" id="Lab_IronFerritin"></div>
-                <div class="col-4 col-md-2"><label>Tr Sats</label><input type="text" class="form-control" id="Lab_TrSats"></div>
-                <div class="col-4 col-md-2"><label>Hb/WBC/Plt</label><input type="text" class="form-control" id="Lab_CBC"></div>
-                <div class="col-4 col-md-2"><label>TSH/Free T4</label><input type="text" class="form-control" id="Lab_Thyroid"></div>
-                <div class="col-4 col-md-2"><label>LDL/HDL/TG</label><input type="text" class="form-control" id="Lab_Lipids"></div>
-                <div class="col-4 col-md-2"><label>Alb/Creat Ratio</label><input type="text" class="form-control" id="Lab_AlbCreat"></div>
+                <h6 class="col-12 text-secondary m-0"><i class="fa fa-vial"></i> Glycemic</h6>
+                <div class="col-6 col-md-3"><label>HbA1c (%)</label><input type="text" class="form-control" id="Lab_HbA1c" inputmode="decimal" placeholder="e.g. 6.5"></div>
+                <div class="col-6 col-md-3"><label>Fasting Glucose (mmol/L)</label><input type="text" class="form-control" id="Lab_Gluc" inputmode="decimal" placeholder="e.g. 5.5"></div>
+
+                <div class="col-12"><hr class="my-1"></div>
+                <h6 class="col-12 text-secondary m-0"><i class="fa fa-tint"></i> Renal &amp; Electrolytes</h6>
+                <div class="col-6 col-md-3"><label>Urea (mmol/L)</label><input type="text" class="form-control" id="Lab_Urea" inputmode="decimal" placeholder="e.g. 5.0" oninput="syncBaselineUreaCreat();calcBaselineEGFR();"></div>
+                <div class="col-6 col-md-3"><label>Creatinine (µmol/L)</label><input type="text" class="form-control" id="Lab_Creat" inputmode="decimal" placeholder="e.g. 80" oninput="syncBaselineUreaCreat();calcBaselineEGFR();checkGDMTAlerts();"></div>
+                <div class="col-6 col-md-3"><label class="text-success fw-bold">eGFR (ml/min/1.73m²) <span class="auto-badge"><i class="fa fa-lock"></i> Auto</span></label><input type="text" class="form-control bg-light text-success fw-bold" id="Lab_eGFR" readonly></div>
+                <div class="col-6 col-md-3"><label>Sodium / Na (mmol/L)</label><input type="text" class="form-control" id="Lab_Na" inputmode="decimal" placeholder="e.g. 138" oninput="syncBaselineNaK();checkGDMTAlerts()"></div>
+                <div class="col-6 col-md-3"><label>Potassium / K (mmol/L)</label><input type="text" class="form-control" id="Lab_K" inputmode="decimal" placeholder="e.g. 4.2" oninput="syncBaselineNaK();checkGDMTAlerts()"></div>
+
+                <div class="col-12"><hr class="my-1"></div>
+                <h6 class="col-12 text-secondary m-0"><i class="fa fa-heartbeat"></i> Cardiac Biomarker</h6>
+                <div class="col-6 col-md-3"><label>NT-proBNP (pg/mL)</label><input type="text" class="form-control" id="Lab_BNP" inputmode="decimal" placeholder="e.g. 1500"></div>
+
+                <div class="col-12"><hr class="my-1"></div>
+                <h6 class="col-12 text-secondary m-0"><i class="fa fa-syringe"></i> Iron Studies</h6>
+                <div class="col-6 col-md-3"><label>Serum Iron (µmol/L)</label><input type="text" class="form-control" id="Lab_Iron" inputmode="decimal" placeholder="e.g. 12" oninput="syncBaselineIron()"></div>
+                <div class="col-6 col-md-3"><label>Ferritin (µg/L)</label><input type="text" class="form-control" id="Lab_Ferritin" inputmode="decimal" placeholder="e.g. 100" oninput="syncBaselineIron()"></div>
+                <div class="col-6 col-md-3"><label>Transferrin Sat. / TSAT (%)</label><input type="text" class="form-control" id="Lab_TrSats" inputmode="decimal" placeholder="e.g. 20"></div>
+
+                <div class="col-12"><hr class="my-1"></div>
+                <h6 class="col-12 text-secondary m-0"><i class="fa fa-vials"></i> CBC</h6>
+                <div class="col-4 col-md-2"><label>Hb (g/dL)</label><input type="text" class="form-control" id="Lab_Hb" inputmode="decimal" placeholder="e.g. 12.5" oninput="syncBaselineCBC()"></div>
+                <div class="col-4 col-md-2"><label>WBC (×10⁹/L)</label><input type="text" class="form-control" id="Lab_WBC" inputmode="decimal" placeholder="e.g. 7.5" oninput="syncBaselineCBC()"></div>
+                <div class="col-4 col-md-2"><label>Platelets (×10⁹/L)</label><input type="text" class="form-control" id="Lab_Plt" inputmode="decimal" placeholder="e.g. 250" oninput="syncBaselineCBC()"></div>
+
+                <div class="col-12"><hr class="my-1"></div>
+                <h6 class="col-12 text-secondary m-0"><i class="fa fa-flask"></i> Thyroid</h6>
+                <div class="col-6 col-md-3"><label>TSH (mIU/L)</label><input type="text" class="form-control" id="Lab_TSH" inputmode="decimal" placeholder="e.g. 2.0" oninput="syncBaselineThyroid()"></div>
+                <div class="col-6 col-md-3"><label>Free T4 (pmol/L)</label><input type="text" class="form-control" id="Lab_FreeT4" inputmode="decimal" placeholder="e.g. 15" oninput="syncBaselineThyroid()"></div>
+
+                <div class="col-12"><hr class="my-1"></div>
+                <h6 class="col-12 text-secondary m-0"><i class="fa fa-chart-line"></i> Lipids (mmol/L)</h6>
+                <div class="col-4 col-md-2"><label>Total Chol.</label><input type="text" class="form-control" id="Lab_TotalChol" inputmode="decimal" placeholder="e.g. 4.5" oninput="syncBaselineLipids()"></div>
+                <div class="col-4 col-md-2"><label>LDL</label><input type="text" class="form-control" id="Lab_LDL" inputmode="decimal" placeholder="e.g. 2.0" oninput="syncBaselineLipids()"></div>
+                <div class="col-4 col-md-2"><label>HDL</label><input type="text" class="form-control" id="Lab_HDL" inputmode="decimal" placeholder="e.g. 1.2" oninput="syncBaselineLipids()"></div>
+                <div class="col-4 col-md-2"><label>Triglycerides</label><input type="text" class="form-control" id="Lab_TG" inputmode="decimal" placeholder="e.g. 1.5" oninput="syncBaselineLipids()"></div>
+
+                <div class="col-12"><hr class="my-1"></div>
+                <h6 class="col-12 text-secondary m-0"><i class="fa fa-droplet"></i> Urine</h6>
+                <div class="col-6 col-md-3"><label>Albumin/Creatinine Ratio (mg/g)</label><input type="text" class="form-control" id="Lab_AlbCreat" inputmode="decimal" placeholder="e.g. 30"></div>
+
+                <!-- Hidden mirror fields for backward compatibility with existing functions -->
+                <div style="display:none;">
+                    <input type="text" id="Lab_UreaCreat">
+                    <input type="text" id="Lab_NaK">
+                    <input type="text" id="Lab_IronFerritin">
+                    <input type="text" id="Lab_CBC">
+                    <input type="text" id="Lab_Thyroid">
+                    <input type="text" id="Lab_Lipids">
+                </div>
             </div>
             <div class="clinical-alert alert-warning-soft" id="alertHyperK">
                 <i class="fa fa-exclamation-triangle"></i>
@@ -470,11 +536,16 @@ label{font-weight:600;font-size:.75rem;color:#495057;display:block;margin-bottom
                 <div class="col-6 col-md-3"><label>Mortality</label><select class="form-select" id="Mortality"><option>Alive</option><option>In-hospital</option><option>Out-of-hospital</option></select></div>
                 <div class="col-6 col-md-3"><label>Cardiac Rehab</label><select class="form-select" id="Rehab"><option>No</option><option>Yes</option></select></div>
                 <div class="col-12"><hr class="my-2"></div>
-                <h6 class="col-12 text-secondary m-0"><i class="fa fa-calculator"></i> MAGGIC Risk Calculator</h6>
-                <div class="col-6 col-md-3"><label>HF Duration &gt; 18 mo</label><select class="form-select" id="HF_Dur" onchange="calcMAGGIC()"><option>No</option><option>Yes</option></select></div>
-                <div class="col-6 col-md-3"><label class="text-success fw-bold">MAGGIC Points <span class="auto-badge"><i class="fa fa-lock"></i> Auto</span></label><input type="text" class="form-control bg-light text-success fw-bold" id="MAGGIC_Score" readonly></div>
-                <div class="col-12 col-md-6"><label class="text-danger fw-bold">Est. Mortality (1yr | 3yr)</label><input type="text" class="form-control bg-light text-danger fw-bold" id="MAGGIC_Risk" readonly></div>
                 <div class="col-12"><hr class="my-2"></div>
+                <h6 class="col-12 text-secondary m-0"><i class="fa fa-syringe"></i> HF Vaccinations</h6>
+                <div class="col-6 col-md-3"><label>Influenza (Year Given)</label><input type="number" class="form-control" id="Vacc_Influenza_Year" inputmode="numeric" placeholder="e.g. 2026" min="2000" max="2100"></div>
+                <div class="col-6 col-md-3"><label>Pneumococcal (Year Given)</label><input type="number" class="form-control" id="Vacc_Pneumococcal_Year" inputmode="numeric" placeholder="e.g. 2024" min="2000" max="2100"></div>
+                <div class="col-6 col-md-3"><label>COVID-19 (Year Given)</label><input type="number" class="form-control" id="Vacc_COVID_Year" inputmode="numeric" placeholder="e.g. 2026" min="2000" max="2100"></div>
+                <div class="col-6 col-md-3"><label>RSV / Other</label><input type="text" class="form-control" id="Vacc_Other" placeholder="Notes / type / date"></div>
+                <!-- MAGGIC Risk Calculator removed per user request -->
+                <input type="hidden" id="HF_Dur" value="No">
+                <input type="hidden" id="MAGGIC_Score">
+                <input type="hidden" id="MAGGIC_Risk">
                 <div class="col-12 col-md-12"><label>Management Plan / Notes</label><textarea class="form-control" id="Notes" rows="2"></textarea></div>
             </div>
         </div>
@@ -617,10 +688,8 @@ label{font-weight:600;font-size:.75rem;color:#495057;display:block;margin-bottom
                 </button>
             </div>
         </div>
-        <div class="card p-3 border-top border-4 border-warning shadow-sm mb-3">
-            <h6 class="text-warning fw-bold mb-2"><i class="fa fa-clock"></i> Upcoming Follow-ups (Next 14 Days)</h6>
-            <div id="upcomingAppts" style="max-height:150px;overflow-y:auto;"></div>
-        </div>
+        <!-- Upcoming Follow-ups moved to Main page; div kept hidden for loadAdmin compatibility -->
+        <div style="display:none;"><div id="upcomingAppts"></div></div>
         <div class="card p-2 overflow-auto" style="max-height:60vh;">
             <table class="table table-sm table-hover text-center align-middle">
                 <thead class="table-dark">
@@ -664,7 +733,6 @@ label{font-weight:600;font-size:.75rem;color:#495057;display:block;margin-bottom
             <div class="analytics-tabs" id="analyticsTabs">
                 <button class="analytics-tab-btn active" onclick="switchAnalyticsTab('overview',this)">Overview</button>
                 <button class="analytics-tab-btn" onclick="switchAnalyticsTab('gdmt',this)">GDMT</button>
-                <button class="analytics-tab-btn" onclick="switchAnalyticsTab('risk',this)">Risk Scores</button>
                 <button class="analytics-tab-btn" onclick="switchAnalyticsTab('demographics',this)">Demographics</button>
                 <button class="analytics-tab-btn" onclick="switchAnalyticsTab('comorbidities',this)">Comorbidities</button>
                 <button class="analytics-tab-btn" onclick="switchAnalyticsTab('outcomes',this)">Outcomes</button>
@@ -686,13 +754,7 @@ label{font-weight:600;font-size:.75rem;color:#495057;display:block;margin-bottom
                     <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-hand-holding-medical"></i> Treatment Compliance</div><div class="analytics-chart-wrap-sm"><canvas id="chartCompliance"></canvas></div></div></div>
                 </div>
             </div>
-            <div class="analytics-panel" id="tab-risk">
-                <div class="row g-3">
-                    <div class="col-12"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-chart-bar"></i> MAGGIC Risk Score Distribution</div><div class="analytics-chart-wrap-lg"><canvas id="chartMAGGIC"></canvas></div></div></div>
-                    <div class="col-12 col-md-5"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-exclamation-triangle"></i> Risk Stratification</div><div class="analytics-chart-wrap-sm"><canvas id="chartRiskStrat"></canvas></div></div></div>
-                    <div class="col-12 col-md-7"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-fire"></i> High-Risk Patients <span class="badge bg-danger ms-1" id="highRiskCount">0</span></div><div id="highRiskList" style="max-height:220px;overflow-y:auto;"></div></div></div>
-                </div>
-            </div>
+            <div class="analytics-panel" id="tab-risk" style="display:none;"></div>
             <div class="analytics-panel" id="tab-demographics">
                 <div class="row g-3">
                     <div class="col-12 col-md-6"><div class="analytics-card"><div class="analytics-card-title"><i class="fa fa-globe"></i> Nationality Breakdown</div><div id="nationalityBars"></div></div></div>
@@ -999,7 +1061,108 @@ function doLogin() {
 }
 function doLogout(){if(confirm('Sign out of HF Registry?'))auth.signOut();}
 
-function goToMain(){['pageAdmin','pageAnalytics'].forEach(function(p){document.getElementById(p).classList.remove('active');});document.getElementById('pageMain').classList.add('active');showStickySave();}
+function goToMain(){['pageAdmin','pageAnalytics'].forEach(function(p){document.getElementById(p).classList.remove('active');});document.getElementById('pageMain').classList.add('active');showStickySave();if(typeof loadMainAlerts==='function')loadMainAlerts();}
+
+// ========== MAIN PAGE ALERTS (Upcoming / Overdue / Vaccinations) ==========
+var _mainAlertsData={upcoming:[],overdue:[],vacc:[]};
+var _mainAlertsActiveTab='upcoming';
+
+function showMainAlertsTab(tab,btn){
+    _mainAlertsActiveTab=tab;
+    document.querySelectorAll('#mainAlertsTabs .nav-link').forEach(function(b){b.classList.remove('active');});
+    if(btn)btn.classList.add('active');
+    renderMainAlertsBody();
+}
+
+function renderMainAlertsBody(){
+    var body=document.getElementById('mainAlertsBody');
+    if(!body)return;
+    var list=_mainAlertsData[_mainAlertsActiveTab]||[];
+    if(list.length===0){
+        var msg={upcoming:'No appointments in the next 14 days.',overdue:'No patients overdue (>2 months without visit).',vacc:'All patients up to date with HF vaccinations this year.'}[_mainAlertsActiveTab];
+        body.innerHTML='<p class="text-muted small mb-0 text-center py-2"><i class="fa fa-check-circle text-success me-1"></i>'+msg+'</p>';
+        return;
+    }
+    var html='';
+    list.forEach(function(item){
+        if(_mainAlertsActiveTab==='upcoming'){
+            var color=item.daysUntil<=3?'danger':(item.daysUntil<=7?'warning':'info');
+            html+='<div class="alert alert-'+color+' py-1 px-2 mb-1 d-flex justify-content-between align-items-center" style="font-size:0.82rem;">';
+            html+='<span><b>'+(item.name||'Unknown')+'</b> <small class="text-muted">(File: '+(item.file||'-')+')</small></span>';
+            html+='<span><i class="fa fa-calendar"></i> '+item.date+' (in '+item.daysUntil+' day'+(item.daysUntil===1?'':'s')+')</span>';
+            html+='</div>';
+        }else if(_mainAlertsActiveTab==='overdue'){
+            html+='<div class="alert alert-danger py-1 px-2 mb-1 d-flex justify-content-between align-items-center" style="font-size:0.82rem;">';
+            html+='<span><b>'+(item.name||'Unknown')+'</b> <small class="text-muted">(File: '+(item.file||'-')+')</small></span>';
+            html+='<span><i class="fa fa-clock"></i> Last visit: '+(item.lastVisit||'never')+' ('+item.daysSince+' days ago)</span>';
+            html+='</div>';
+        }else if(_mainAlertsActiveTab==='vacc'){
+            html+='<div class="alert alert-primary py-1 px-2 mb-1 d-flex justify-content-between align-items-center" style="font-size:0.82rem;">';
+            html+='<span><b>'+(item.name||'Unknown')+'</b> <small class="text-muted">(File: '+(item.file||'-')+')</small></span>';
+            html+='<span style="font-size:0.75rem;"><i class="fa fa-syringe"></i> Missing: '+item.missing+'</span>';
+            html+='</div>';
+        }
+    });
+    body.innerHTML=html;
+}
+
+function loadMainAlerts(){
+    var body=document.getElementById('mainAlertsBody');
+    if(!body)return;
+    body.innerHTML='<div class="text-muted small text-center py-2"><i class="fa fa-spinner fa-spin"></i> Loading alerts...</div>';
+    var today=new Date();
+    var todayStr=today.toISOString().split('T')[0];
+    var twoMonthsAgo=new Date(today.getTime()-60*24*60*60*1000);
+    var thisYear=today.getFullYear();
+    db.collection("patients").get().then(function(snap){
+        _mainAlertsData={upcoming:[],overdue:[],vacc:[]};
+        var patientPromises=[];
+        snap.forEach(function(docSnap){
+            var d=docSnap.data();
+            var id=docSnap.id;
+            // Skip deceased patients from alerts
+            if(d.Mortality&&d.Mortality!=='Alive'&&d.Mortality!=='')return;
+            // Upcoming appointments
+            if(d.Next_Appt&&d.Next_Appt>=todayStr){
+                var da=Math.floor((new Date(d.Next_Appt)-new Date(todayStr))/(1000*60*60*24));
+                if(da<=14)_mainAlertsData.upcoming.push({name:d.Patient_Name,file:d.File_No,date:d.Next_Appt,daysUntil:da});
+            }
+            // Vaccinations: check baseline patient record for this-year flags
+            var vMissing=[];
+            var fluYear=parseInt(d.Vacc_Influenza_Year||0);
+            var pneuYear=parseInt(d.Vacc_Pneumococcal_Year||0);
+            var covidYear=parseInt(d.Vacc_COVID_Year||0);
+            if(fluYear<thisYear)vMissing.push('Flu');
+            // Pneumococcal is given every several years — flag if never recorded OR more than 5 yr ago
+            if(!pneuYear||thisYear-pneuYear>5)vMissing.push('Pneumococcal');
+            if(covidYear<thisYear)vMissing.push('COVID');
+            if(vMissing.length>0)_mainAlertsData.vacc.push({name:d.Patient_Name,file:d.File_No,missing:vMissing.join(', ')});
+            // Overdue: needs visit query
+            patientPromises.push(
+                db.collection("patients").doc(id).collection("visits").orderBy("visitDate","desc").limit(1).get().then(function(vsnap){
+                    var lastVisit=null;
+                    if(!vsnap.empty){lastVisit=vsnap.docs[0].data().visitDate;}
+                    var lastDate=lastVisit?new Date(lastVisit):(d.timestamp?new Date(d.timestamp):null);
+                    if(lastDate&&lastDate<twoMonthsAgo){
+                        var daysSince=Math.floor((today-lastDate)/(1000*60*60*24));
+                        _mainAlertsData.overdue.push({name:d.Patient_Name,file:d.File_No,lastVisit:lastVisit||(d.timestamp?d.timestamp.split('T')[0]+' (registered)':'never'),daysSince:daysSince});
+                    }
+                }).catch(function(){})
+            );
+        });
+        Promise.all(patientPromises).then(function(){
+            // Sort each list
+            _mainAlertsData.upcoming.sort(function(a,b){return a.daysUntil-b.daysUntil;});
+            _mainAlertsData.overdue.sort(function(a,b){return b.daysSince-a.daysSince;});
+            _mainAlertsData.vacc.sort(function(a,b){return (a.name||'').localeCompare(b.name||'');});
+            // Update badges
+            var uc=document.getElementById('mainUpcomingCount');if(uc)uc.textContent=_mainAlertsData.upcoming.length;
+            var oc=document.getElementById('mainOverdueCount');if(oc)oc.textContent=_mainAlertsData.overdue.length;
+            var vc=document.getElementById('mainVaccCount');if(vc)vc.textContent=_mainAlertsData.vacc.length;
+            renderMainAlertsBody();
+        });
+    }).catch(function(e){body.innerHTML='<p class="text-danger small mb-0">Error loading alerts: '+e.message+'</p>';});
+}
 function goToAdmin(){['pageMain','pageAnalytics'].forEach(function(p){document.getElementById(p).classList.remove('active');});document.getElementById('pageAdmin').classList.add('active');hideStickySave();loadAdmin();}
 function goToAnalytics(){['pageMain','pageAdmin'].forEach(function(p){document.getElementById(p).classList.remove('active');});document.getElementById('pageAnalytics').classList.add('active');hideStickySave();loadAnalytics();}
 function showAdminLogin(){if(prompt("Admin PIN:")==="1234"){goToAdmin();}else alert("Wrong PIN");}
@@ -1014,6 +1177,7 @@ function initFormUI(){
     buildVisitMedDoses();
     showStickySave();
     goToWizardStep(1);
+    if(typeof loadMainAlerts==='function')loadMainAlerts();
 }
 
 // ===== CHANGE 2: WIZARD WITH SHORT LABELS UNDER DOTS =====
@@ -1098,7 +1262,9 @@ function buildMedSection7(){
         med.options.forEach(function(o){html+='<option>'+o+'</option>';});
         html+='</select>';
         html+='<div class="med-sub-fields" id="sub_'+medId+'">';
-        html+='<label>Dose</label><select class="form-select" id="'+medId+'_Dose"><option value="">Select dose...</option></select>';
+        html+='<label>Dose (preset)</label><select class="form-select" id="'+medId+'_Dose"><option value="">Select dose...</option></select>';
+        html+='<label class="mt-1" style="font-size:0.7rem;">Custom Dose <small class="text-muted">(if not in list)</small></label><input type="text" class="form-control form-control-sm" id="'+medId+'_DoseCustom" placeholder="e.g. 12.5 mg">';
+        html+='<label class="mt-1" style="font-size:0.7rem;">Frequency</label><input type="text" class="form-control form-control-sm" id="'+medId+'_Freq" placeholder="e.g. OD, BID, TID, QHS">';
         html+='<label class="mt-1">Start Date</label><input type="date" class="form-control" id="'+medId+'_Date">';
         html+='</div>';
         html+='</div>';
@@ -1116,6 +1282,8 @@ function onMedChange(medId){
         sub.classList.remove('visible');
         doseSel.innerHTML='<option value="">Select dose...</option>';
         document.getElementById(medId+'_Date').value='';
+        var dc=document.getElementById(medId+'_DoseCustom');if(dc)dc.value='';
+        var fq=document.getElementById(medId+'_Freq');if(fq)fq.value='';
     }else{
         sub.classList.add('visible');
         doseSel.innerHTML='<option value="">Select dose...</option>';
@@ -1193,14 +1361,37 @@ function checkVisitIronAlert(){
     if(ferritin>0&&(ferritin<100||(ferritin>=100&&ferritin<300&&tsat>0&&tsat<20))){alertIron.classList.add('visible');}else{alertIron.classList.remove('visible');}
 }
 
+function togglePCICABGDetails(){
+    var sel=document.getElementById('PCI_CABG_Visible');
+    var wrap=document.getElementById('pciCabgDetailsWrap');
+    var lblDate=document.getElementById('pciCabgDateLabel');
+    var lblDet=document.getElementById('pciCabgDetailsLabel');
+    if(!sel||!wrap)return;
+    var v=sel.value;
+    if(v==='PCI'||v==='CABG'){
+        wrap.style.display='block';
+        if(lblDate)lblDate.textContent='Date of '+v;
+        if(lblDet)lblDet.textContent=v+' Details ('+(v==='PCI'?'vessels, stents':'grafts, vessels')+')';
+    }else{
+        wrap.style.display='none';
+        var d=document.getElementById('PCI_CABG_Date');if(d)d.value='';
+        var dt=document.getElementById('PCI_CABG_Details');if(dt)dt.value='';
+    }
+}
+
 function checkCRTIndication(){
     var ef=parseInt(document.getElementById('EF_Diagnosis').value)||0;
-    var lbbb=document.getElementById('V_LBBB')&&document.getElementById('V_LBBB').value;
-    var qrs=parseInt(document.getElementById('V_QRS')&&document.getElementById('V_QRS').value)||0;
+    // Prefer Section 4 ECG fields; fall back to Visit fields if not set
+    var lbbbBaseline=document.getElementById('ECG_LBBB')&&document.getElementById('ECG_LBBB').value;
+    var qrsBaseline=parseInt(document.getElementById('ECG_QRS')&&document.getElementById('ECG_QRS').value)||0;
+    var lbbbVisit=document.getElementById('V_LBBB')&&document.getElementById('V_LBBB').value;
+    var qrsVisit=parseInt(document.getElementById('V_QRS')&&document.getElementById('V_QRS').value)||0;
+    var lbbb=lbbbBaseline||lbbbVisit;
+    var qrs=qrsBaseline||qrsVisit;
     var alertEl=document.getElementById('alertCRT');
     var textEl=document.getElementById('alertCRTText');
     if(ef<=35&&qrs>=150&&lbbb==='Yes'){textEl.textContent='EF ≤35%, QRS ≥150ms, LBBB present → Patient meets Class I indication for CRT. Consider EP referral.';alertEl.classList.add('visible');}
-    else if(ef<=35&&qrs>=120){textEl.textContent='EF ≤35% with QRS ≥120ms → Evaluate for CRT/ICD. Complete ECG data in Visit section for full assessment.';alertEl.classList.add('visible');}
+    else if(ef<=35&&qrs>=120){textEl.textContent='EF ≤35% with QRS ≥120ms → Evaluate for CRT/ICD.';alertEl.classList.add('visible');}
     else if(ef<=35){textEl.textContent='EF ≤35% → ICD may be indicated if on optimal GDMT ≥3 months. Complete ECG data for CRT assessment.';alertEl.classList.add('visible');}
     else{alertEl.classList.remove('visible');}
 }
@@ -1213,10 +1404,16 @@ function buildVisitMedDoses(){
         html+='<div class="visit-med-group-label"><i class="fa fa-pills me-1"></i>'+group.label+'</div>';
         html+='<div class="row g-2">';
         group.meds.forEach(function(m){
-            html+='<div class="col-6 col-md-3"><label>'+m.label+'</label>';
-            html+='<select class="form-select" id="'+m.id+'" style="font-size:0.78rem;padding:3px 6px;">';
+            html+='<div class="col-12 col-md-4" style="border:1px solid #f0e6e6;border-radius:6px;padding:6px;background:#fafafa;">';
+            html+='<label style="font-weight:600;">'+m.label+'</label>';
+            html+='<select class="form-select form-select-sm" id="'+m.id+'" style="font-size:0.78rem;">';
             m.doses.forEach(function(d){html+='<option value="'+d+'">'+d+'</option>';});
-            html+='</select></div>';
+            html+='</select>';
+            html+='<div class="row g-1 mt-1">';
+            html+='<div class="col-7"><input type="text" class="form-control form-control-sm" id="'+m.id+'_Custom" placeholder="Custom dose" style="font-size:0.72rem;"></div>';
+            html+='<div class="col-5"><input type="text" class="form-control form-control-sm" id="'+m.id+'_Freq" placeholder="Freq (OD/BID/TID)" style="font-size:0.72rem;"></div>';
+            html+='</div>';
+            html+='</div>';
         });
         html+='</div></div>';
     });
@@ -1228,17 +1425,42 @@ function isNumberKey(evt){var c=(evt.which)?evt.which:evt.keyCode;if(c>31&&(c<48
 function validateCivilID(input){var e=document.getElementById('civilError');if(input.value.length!==12&&input.value.length>0){input.classList.add('input-error');e.style.display='block';}else{input.classList.remove('input-error');e.style.display='none';}}
 function validateFileNo(input){var e=document.getElementById('fileError');if(input.value.length!==6&&input.value.length>0){input.classList.add('input-error');e.style.display='block';}else{input.classList.remove('input-error');e.style.display='none';}}
 function calcBMI(){var w=parseFloat(document.getElementById("Weight").value),h=parseFloat(document.getElementById("Height").value);document.getElementById("BMI").value=(w&&h)?(w/((h/100)**2)).toFixed(1):"";calcMAGGIC();}
+// Sync new individual baseline lab fields back to the legacy combined fields used elsewhere
+function syncBaselineUreaCreat(){var u=document.getElementById('Lab_Urea').value.trim(),c=document.getElementById('Lab_Creat').value.trim();var combo=(u||c)?(u+'/'+c):'';var t=document.getElementById('Lab_UreaCreat');if(t)t.value=combo;}
+function syncBaselineNaK(){var n=document.getElementById('Lab_Na').value.trim(),k=document.getElementById('Lab_K').value.trim();var combo=(n||k)?(n+'/'+k):'';var t=document.getElementById('Lab_NaK');if(t)t.value=combo;}
+function syncBaselineIron(){var i=document.getElementById('Lab_Iron').value.trim(),f=document.getElementById('Lab_Ferritin').value.trim();var combo=(i||f)?(i+'/'+f):'';var t=document.getElementById('Lab_IronFerritin');if(t)t.value=combo;}
+function syncBaselineCBC(){var h=document.getElementById('Lab_Hb').value.trim(),w=document.getElementById('Lab_WBC').value.trim(),p=document.getElementById('Lab_Plt').value.trim();var combo=(h||w||p)?(h+'/'+w+'/'+p):'';var t=document.getElementById('Lab_CBC');if(t)t.value=combo;}
+function syncBaselineThyroid(){var t=document.getElementById('Lab_TSH').value.trim(),f=document.getElementById('Lab_FreeT4').value.trim();var combo=(t||f)?(t+'/'+f):'';var el=document.getElementById('Lab_Thyroid');if(el)el.value=combo;}
+function syncBaselineLipids(){var l=document.getElementById('Lab_LDL').value.trim(),h=document.getElementById('Lab_HDL').value.trim(),tg=document.getElementById('Lab_TG').value.trim();var combo=(l||h||tg)?(l+'/'+h+'/'+tg):'';var t=document.getElementById('Lab_Lipids');if(t)t.value=combo;}
+// Reverse-sync legacy combined fields → individual fields (called when loading a saved patient with old data format)
+function unpackBaselineLabs(){
+    var uc=(document.getElementById('Lab_UreaCreat')||{}).value||'';
+    if(uc.indexOf('/')>=0){var p=uc.split('/');if(!document.getElementById('Lab_Urea').value)document.getElementById('Lab_Urea').value=(p[0]||'').trim();if(!document.getElementById('Lab_Creat').value)document.getElementById('Lab_Creat').value=(p[1]||'').trim();}
+    var nk=(document.getElementById('Lab_NaK')||{}).value||'';
+    if(nk.indexOf('/')>=0){var p2=nk.split('/');if(!document.getElementById('Lab_Na').value)document.getElementById('Lab_Na').value=(p2[0]||'').trim();if(!document.getElementById('Lab_K').value)document.getElementById('Lab_K').value=(p2[1]||'').trim();}
+    var ifd=(document.getElementById('Lab_IronFerritin')||{}).value||'';
+    if(ifd.indexOf('/')>=0){var p3=ifd.split('/');if(!document.getElementById('Lab_Iron').value)document.getElementById('Lab_Iron').value=(p3[0]||'').trim();if(!document.getElementById('Lab_Ferritin').value)document.getElementById('Lab_Ferritin').value=(p3[1]||'').trim();}
+    var cbc=(document.getElementById('Lab_CBC')||{}).value||'';
+    if(cbc.indexOf('/')>=0){var p4=cbc.split('/');if(!document.getElementById('Lab_Hb').value)document.getElementById('Lab_Hb').value=(p4[0]||'').trim();if(!document.getElementById('Lab_WBC').value)document.getElementById('Lab_WBC').value=(p4[1]||'').trim();if(!document.getElementById('Lab_Plt').value)document.getElementById('Lab_Plt').value=(p4[2]||'').trim();}
+    var thy=(document.getElementById('Lab_Thyroid')||{}).value||'';
+    if(thy.indexOf('/')>=0){var p5=thy.split('/');if(!document.getElementById('Lab_TSH').value)document.getElementById('Lab_TSH').value=(p5[0]||'').trim();if(!document.getElementById('Lab_FreeT4').value)document.getElementById('Lab_FreeT4').value=(p5[1]||'').trim();}
+    var lip=(document.getElementById('Lab_Lipids')||{}).value||'';
+    if(lip.indexOf('/')>=0){var p6=lip.split('/');if(!document.getElementById('Lab_LDL').value)document.getElementById('Lab_LDL').value=(p6[0]||'').trim();if(!document.getElementById('Lab_HDL').value)document.getElementById('Lab_HDL').value=(p6[1]||'').trim();if(!document.getElementById('Lab_TG').value)document.getElementById('Lab_TG').value=(p6[2]||'').trim();}
+}
+
 function calcBaselineEGFR(){var age=parseFloat(document.getElementById("Age").value);var gender=document.getElementById("Gender").value;var input=document.getElementById("Lab_UreaCreat").value||"";var creatStr=input.includes('/')?input.split('/')[1]:input;var creat=parseFloat(creatStr);var f=document.getElementById("Lab_eGFR");if(!age||!gender||!creat||isNaN(creat)){f.value="";return;}var cr=creat/88.4,k=gender==="Female"?0.7:0.9,a=gender==="Female"?-0.244:-0.302;if(cr>k)a=-1.200;f.value=Math.round(142*Math.pow(cr/k,a)*Math.pow(0.9938,age)*(gender==="Female"?1.012:1));checkGDMTAlerts();}
 function calcEGFR(){var age=parseFloat(document.getElementById("Age").value),gender=document.getElementById("Gender").value,creat=parseFloat(document.getElementById("V_Creat").value),f=document.getElementById("V_eGFR");if(!age||!gender||!creat||isNaN(creat)){f.value="";return;}var cr=creat/88.4,k=gender==="Female"?0.7:0.9,a=gender==="Female"?-0.244:-0.302;if(cr>k)a=-1.200;f.value=Math.round(142*Math.pow(cr/k,a)*Math.pow(0.9938,age)*(gender==="Female"?1.012:1));}
-function calcMAGGIC(){var pts=0;var age=parseInt(document.getElementById('Age').value)||0;if(age>=85)pts+=7;else if(age>=80)pts+=6;else if(age>=75)pts+=5;else if(age>=70)pts+=4;else if(age>=65)pts+=3;else if(age>=60)pts+=2;else if(age>=55)pts+=1;var ef=parseInt(document.getElementById('EF_Diagnosis').value)||0;if(ef>0){if(ef<20)pts+=7;else if(ef<25)pts+=6;else if(ef<30)pts+=5;else if(ef<35)pts+=3;else if(ef<40)pts+=2;}var bpStr=document.getElementById('BP').value||"";var sysBP=parseInt(bpStr.split('/')[0])||0;if(sysBP>0){if(sysBP<110)pts+=5;else if(sysBP<120)pts+=4;else if(sysBP<130)pts+=3;else if(sysBP<140)pts+=2;else if(sysBP<150)pts+=1;}var bmi=parseFloat(document.getElementById('BMI').value)||0;if(bmi>0){if(bmi<15)pts+=6;else if(bmi<20)pts+=5;else if(bmi<25)pts+=3;else if(bmi<30)pts+=2;}var crStr=document.getElementById('Lab_UreaCreat').value||"";var creat=parseFloat(crStr.includes('/')?crStr.split('/')[1]:crStr)||0;var cm=creat/88.4;if(cm>=2.8)pts+=8;else if(cm>=2.4)pts+=6;else if(cm>=2.0)pts+=5;else if(cm>=1.7)pts+=4;else if(cm>=1.5)pts+=3;else if(cm>=1.3)pts+=2;else if(cm>=1.0)pts+=1;var nyha=document.getElementById('NYHA').value;if(nyha==='II')pts+=2;else if(nyha==='III')pts+=6;else if(nyha==='IV')pts+=8;if(document.getElementById('Gender').value==='Male')pts+=1;if(document.getElementById('Smoker').value==='Current')pts+=1;if(document.getElementById('DM').value==='Yes')pts+=3;if(document.getElementById('Lung_Dz').value==='Yes')pts+=2;if(document.getElementById('HF_Dur').value==='Yes')pts+=2;var bb=document.getElementById('Med_BB').value;if(bb==='None'||bb==='')pts+=3;var ace=document.getElementById('Med_ACEiARB').value,arni=document.getElementById('Med_ARNI').value;if((ace==='None'||ace==='')&&(arni==='No'||arni===''))pts+=1;var r1="<5%",r3="<10%";if(pts>35){r1=">40%";r3=">70%";}else if(pts>30){r1="~30%";r3="~60%";}else if(pts>25){r1="~20%";r3="~45%";}else if(pts>20){r1="~10%";r3="~25%";}else if(pts>15){r1="~6%";r3="~15%";}document.getElementById('MAGGIC_Score').value=pts;document.getElementById('MAGGIC_Risk').value=r1+" | "+r3;}
+function calcMAGGIC(){/* MAGGIC removed per user request — kept as no-op to preserve onchange handlers */}
 
 function clearSearchResults(){document.getElementById("searchInput").value="";document.getElementById("searchResults").innerHTML="";}
 function showPopup(type,title,msg){var old=document.getElementById("popOv");if(old)old.remove();var color=type==="success"?"#28a745":type==="delete"?"#dc3545":"#ffc107",icon=type==="success"?"fa-check-circle":type==="delete"?"fa-trash-alt":"fa-exclamation-triangle";var ov=document.createElement("div");ov.id="popOv";ov.className="modal-overlay";ov.innerHTML="<div class='modal-box'><div class='modal-icon' style='background:"+color+";width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;'><i class='fa-solid "+icon+"' style='color:#fff;font-size:1.2rem;'></i></div><h4 style='color:"+color+"'>"+title+"</h4><p class='text-muted'>"+msg+"</p><button class='btn btn-dark w-100' onclick='this.parentElement.parentElement.remove()'>OK</button></div>";document.body.appendChild(ov);}
 
 function savePatient(){
     var civilID=document.getElementById("Civil_ID").value,fileNo=document.getElementById("File_No").value;
+    var mobile=(document.getElementById("Mobile").value||'').trim();
     if(civilID.length!==12){showPopup("error","Invalid Civil ID","Civil ID must be exactly 12 digits");return;}
     if(fileNo.length!==6){showPopup("error","Invalid File No","File Number must be exactly 6 digits");return;}
+    if(!mobile){showPopup("error","Mobile Required","Mobile number is required.");document.getElementById("Mobile").classList.add('input-error');var me=document.getElementById('mobileError');if(me)me.style.display='block';return;}else{document.getElementById("Mobile").classList.remove('input-error');var me2=document.getElementById('mobileError');if(me2)me2.style.display='none';}
     var data={};
     document.querySelectorAll('#hfForm input, #hfForm select, #hfForm textarea').forEach(function(el){
         if(el.id&&!el.id.startsWith('V_')&&el.id!=='Next_Appt'&&el.id!=='Visit_Date'&&el.id!=='Visit_Type'&&!el.id.endsWith('_Visible'))data[el.id]=el.value;
@@ -1246,6 +1468,8 @@ function savePatient(){
     Object.keys(MED_FORMULARY).forEach(function(medId){
         data[medId+'_Dose']=document.getElementById(medId+'_Dose')&&document.getElementById(medId+'_Dose').value||'';
         data[medId+'_Date']=document.getElementById(medId+'_Date')&&document.getElementById(medId+'_Date').value||'';
+        data[medId+'_DoseCustom']=document.getElementById(medId+'_DoseCustom')&&document.getElementById(medId+'_DoseCustom').value||'';
+        data[medId+'_Freq']=document.getElementById(medId+'_Freq')&&document.getElementById(medId+'_Freq').value||'';
     });
     GDMT_PILLARS.forEach(function(medId){
         var el=document.getElementById('Rationale_'+medId);
@@ -1510,14 +1734,29 @@ function generateCardHTML(data,id){
 }
 
 function searchPatient(){
-    var val=document.getElementById("searchInput").value.trim().toLowerCase(),res=document.getElementById("searchResults");
-    if(!val){res.innerHTML="";return;}
+    var rawVal=document.getElementById("searchInput").value.trim();
+    var res=document.getElementById("searchResults");
+    if(!rawVal){res.innerHTML="";return;}
+    var valLower=rawVal.toLowerCase();
+    var valDigits=rawVal.replace(/\D/g,""); // digits only — for civil/file ID comparison
     res.innerHTML="<div class='text-center'><i class='fa fa-spinner fa-spin'></i> Searching...</div>";
     db.collection("patients").get().then(function(s){
         res.innerHTML="<div class='mb-2'><button class='btn btn-sm btn-outline-dark fw-bold' onclick='clearSearchResults()'><i class='fa fa-arrow-left'></i> Back</button></div>";
         var found=0;
-        s.forEach(function(d){var data=d.data(),name=(data.Patient_Name||"").toLowerCase(),civil=data.Civil_ID||"",fno=data.File_No||"";
-        if(civil===val||fno===val||name.includes(val)){found++;PC[d.id]=data;res.innerHTML+=generateCardHTML(data,d.id);}});
+        s.forEach(function(d){
+            var data=d.data();
+            var name=String(data.Patient_Name||"").toLowerCase();
+            var civil=String(data.Civil_ID||"").trim();
+            var fno=String(data.File_No||"").trim();
+            var civilDigits=civil.replace(/\D/g,"");
+            var fnoDigits=fno.replace(/\D/g,"");
+            var matches=false;
+            // Civil/File: digit-based match (exact or substring) — works regardless of case
+            if(valDigits && (civilDigits===valDigits || fnoDigits===valDigits || (civilDigits&&civilDigits.indexOf(valDigits)>=0) || (fnoDigits&&fnoDigits.indexOf(valDigits)>=0))) matches=true;
+            // Name: case-insensitive substring
+            else if(name && name.indexOf(valLower)>=0) matches=true;
+            if(matches){found++;PC[d.id]=data;res.innerHTML+=generateCardHTML(data,d.id);}
+        });
         if(found===0){res.innerHTML="<div class='alert alert-warning'>No patient found. <button class='btn btn-sm btn-outline-dark ms-2' onclick='clearSearchResults()'>Back</button></div>";}
     }).catch(function(e){res.innerHTML="<div class='alert alert-danger'>Error: "+e.message+"</div>";});
 }
@@ -1549,12 +1788,20 @@ function editPt(id){
     var d=PC[id];editingDocId=id;currentPatientId=id;
     Object.keys(d).forEach(function(k){var el=document.getElementById(k);if(el)el.value=d[k]||"";});
     syncPillsFromData();
+    // Unpack any legacy combined baseline labs into the new individual fields
+    if(typeof unpackBaselineLabs==='function')unpackBaselineLabs();
+    // Restore PCI/CABG details panel
+    if(typeof togglePCICABGDetails==='function')togglePCICABGDetails();
     Object.keys(MED_FORMULARY).forEach(function(medId){
         onMedChange(medId);
         var doseEl=document.getElementById(medId+'_Dose');
         if(doseEl&&d[medId+'_Dose'])doseEl.value=d[medId+'_Dose'];
         var dateEl=document.getElementById(medId+'_Date');
         if(dateEl&&d[medId+'_Date'])dateEl.value=d[medId+'_Date'];
+        var dcEl=document.getElementById(medId+'_DoseCustom');
+        if(dcEl&&d[medId+'_DoseCustom'])dcEl.value=d[medId+'_DoseCustom'];
+        var fqEl=document.getElementById(medId+'_Freq');
+        if(fqEl&&d[medId+'_Freq'])fqEl.value=d[medId+'_Freq'];
     });
     GDMT_PILLARS.forEach(function(medId){
         var el=document.getElementById('Rationale_'+medId);
@@ -1677,10 +1924,10 @@ function loadAnalytics(){
     }).catch(function(e){document.getElementById('analyticsSpinner').innerHTML='<div class="text-danger">Error: '+e.message+'</div>';});
 }
 
-function buildKPIs(d,n){var quad=d.filter(function(p){return p.Quad_GDMT==='Yes';}).length;var hfref=d.filter(function(p){return p.HF_Type==='HFrEF';}).length;var highRisk=d.filter(function(p){return parseInt(p.MAGGIC_Score||0)>25;}).length;var avgEF=0,efCount=0;d.forEach(function(p){var ef=parseFloat(p.EF_Diagnosis);if(!isNaN(ef)&&ef>0){avgEF+=ef;efCount++;}});avgEF=efCount>0?Math.round(avgEF/efCount):0;var kpis=[{num:n,label:'Total Patients',sub:'Registry',color:'#8b0000'},{num:pctStr(quad,n),label:'Quad GDMT',sub:quad+' patients',color:'#1d6f42'},{num:pctStr(hfref,n),label:'HFrEF',sub:hfref+' patients',color:'#c0392b'},{num:highRisk,label:'High-Risk (MAGGIC>25)',sub:pctStr(highRisk,n)+' of registry',color:'#dc3545'},{num:avgEF+(avgEF?'%':'—'),label:'Mean EF',sub:efCount+' with data',color:'#0f3460'},{num:pctStr(d.filter(function(p){return p.Mortality&&p.Mortality!=='Alive';}).length,n),label:'Mortality',sub:d.filter(function(p){return p.Mortality&&p.Mortality!=='Alive';}).length+' deaths',color:'#6c757d'}];var html='';kpis.forEach(function(k){html+="<div class='col-4 col-md-2'><div class='stat-kpi' style='border-top-color:"+k.color+"'><div class='kpi-num' style='color:"+k.color+"'>"+k.num+"</div><div class='kpi-label'>"+k.label+"</div><div class='kpi-sub'>"+k.sub+"</div></div></div>";});document.getElementById('kpiRow').innerHTML=html;}
+function buildKPIs(d,n){var quad=d.filter(function(p){return p.Quad_GDMT==='Yes';}).length;var hfref=d.filter(function(p){return p.HF_Type==='HFrEF';}).length;var anyAdm=d.filter(function(p){var a=parseInt(p.Admissions||0);return a>0;}).length;var avgEF=0,efCount=0;d.forEach(function(p){var ef=parseFloat(p.EF_Diagnosis);if(!isNaN(ef)&&ef>0){avgEF+=ef;efCount++;}});avgEF=efCount>0?Math.round(avgEF/efCount):0;var kpis=[{num:n,label:'Total Patients',sub:'Registry',color:'#8b0000'},{num:pctStr(quad,n),label:'Quad GDMT',sub:quad+' patients',color:'#1d6f42'},{num:pctStr(hfref,n),label:'HFrEF',sub:hfref+' patients',color:'#c0392b'},{num:anyAdm,label:'≥1 Admission Last Yr',sub:pctStr(anyAdm,n)+' of registry',color:'#dc3545'},{num:avgEF+(avgEF?'%':'—'),label:'Mean EF',sub:efCount+' with data',color:'#0f3460'},{num:pctStr(d.filter(function(p){return p.Mortality&&p.Mortality!=='Alive';}).length,n),label:'Mortality',sub:d.filter(function(p){return p.Mortality&&p.Mortality!=='Alive';}).length+' deaths',color:'#6c757d'}];var html='';kpis.forEach(function(k){html+="<div class='col-4 col-md-2'><div class='stat-kpi' style='border-top-color:"+k.color+"'><div class='kpi-num' style='color:"+k.color+"'>"+k.num+"</div><div class='kpi-label'>"+k.label+"</div><div class='kpi-sub'>"+k.sub+"</div></div></div>";});document.getElementById('kpiRow').innerHTML=html;}
 function buildOverview(d,n){var hfTypes={HFrEF:0,HFmrEF:0,HFpEF:0,Other:0};d.forEach(function(p){if(hfTypes[p.HF_Type]!==undefined)hfTypes[p.HF_Type]++;else if(p.HF_Type)hfTypes.Other++;});makeChart('chartHFType','doughnut',Object.keys(hfTypes),[{data:Object.values(hfTypes),backgroundColor:['#8b0000','#c0392b','#e74c3c','#aaa'],borderWidth:2}],{plugins:{legend:{position:'bottom'}}});var nyha={I:0,II:0,III:0,IV:0,Unknown:0};d.forEach(function(p){if(nyha[p.NYHA]!==undefined)nyha[p.NYHA]++;else nyha.Unknown++;});makeChart('chartNYHA','bar',Object.keys(nyha),[{label:'Patients',data:Object.values(nyha),backgroundColor:['#27ae60','#f39c12','#e74c3c','#8b0000','#aaa'],borderRadius:6}],{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}});var male=d.filter(function(p){return p.Gender==='Male';}).length,female=d.filter(function(p){return p.Gender==='Female';}).length;makeChart('chartGender','pie',['Male','Female','Unknown'],[{data:[male,female,n-male-female],backgroundColor:['#2980b9','#e91e63','#aaa'],borderWidth:2}],{});var ag={'<40':0,'40-49':0,'50-59':0,'60-69':0,'70-79':0,'≥80':0};d.forEach(function(p){var a=parseInt(p.Age)||0;if(a<40)ag['<40']++;else if(a<50)ag['40-49']++;else if(a<60)ag['50-59']++;else if(a<70)ag['60-69']++;else if(a<80)ag['70-79']++;else ag['≥80']++;});makeChart('chartAge','bar',Object.keys(ag),[{label:'Patients',data:Object.values(ag),backgroundColor:'#0f3460',borderRadius:6}],{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}});}
 function buildGDMT(d,n){var gdmtItems=[{label:'Any ARNI (Entresto)',fn:function(p){return p.Med_ARNI==='Yes';}},{label:'Any SGLT2i',fn:function(p){return p.Med_SGLT2i&&p.Med_SGLT2i!=='None'&&p.Med_SGLT2i!=='';}},{label:'Any Beta-Blocker',fn:function(p){return p.Med_BB&&p.Med_BB!=='None'&&p.Med_BB!=='';}},{label:'Any MRA',fn:function(p){return p.Med_MRA&&p.Med_MRA!=='None'&&p.Med_MRA!=='';}},{label:'ACEi/ARB/ARNI',fn:function(p){return(p.Med_ACEiARB&&p.Med_ACEiARB!=='None'&&p.Med_ACEiARB!=='')||p.Med_ARNI==='Yes';}},{label:'Diuretics',fn:function(p){return p.Med_Diuretic&&p.Med_Diuretic!=='None'&&p.Med_Diuretic!=='';}},{label:'OAC',fn:function(p){return p.Med_OAC&&p.Med_OAC!=='None'&&p.Med_OAC!=='';}},{label:'Procorolan',fn:function(p){return p.Med_Procorolan&&p.Med_Procorolan!=='None'&&p.Med_Procorolan!=='';}},{label:'CCB',fn:function(p){return p.Med_CCB&&p.Med_CCB!=='None'&&p.Med_CCB!=='';}}];var html='';gdmtItems.forEach(function(item){var cnt=d.filter(item.fn).length;var p=pct(cnt,n);var cls=p>=70?'gdmt-pill-high':(p>=40?'gdmt-pill-mid':'gdmt-pill-low');html+="<div class='gdmt-row'><span class='gdmt-name'>"+item.label+"</span><div style='flex:1;margin:0 12px;'><div style='background:#f0f0f0;border-radius:4px;height:10px;overflow:hidden;'><div style='width:"+p+"%;height:100%;background:linear-gradient(90deg,#8b0000,#c0392b);border-radius:4px;transition:width 0.8s;'></div></div></div><span class='gdmt-pill "+cls+"'>"+p+"%</span></div>";});document.getElementById('gdmtBars').innerHTML=html;var qy=d.filter(function(p){return p.Quad_GDMT==='Yes';}).length,qn=n-qy;makeChart('chartQuad','doughnut',['Quadruple GDMT','Incomplete'],[{data:[qy,qn],backgroundColor:['#1d6f42','#f0f0f0'],borderWidth:2}],{});var cy=d.filter(function(p){return p.Compliance==='Yes';}).length;makeChart('chartCompliance','doughnut',['Compliant','Non-compliant'],[{data:[cy,n-cy],backgroundColor:['#2980b9','#e74c3c'],borderWidth:2}],{});}
-function buildRisk(d,n){var bins={'0-5':0,'6-10':0,'11-15':0,'16-20':0,'21-25':0,'26-30':0,'31-35':0,'>35':0};d.forEach(function(p){var s=parseInt(p.MAGGIC_Score)||0;if(s<=5)bins['0-5']++;else if(s<=10)bins['6-10']++;else if(s<=15)bins['11-15']++;else if(s<=20)bins['16-20']++;else if(s<=25)bins['21-25']++;else if(s<=30)bins['26-30']++;else if(s<=35)bins['31-35']++;else bins['>35']++;});makeChart('chartMAGGIC','bar',Object.keys(bins),[{label:'Patients',data:Object.values(bins),backgroundColor:['#27ae60','#27ae60','#f39c12','#f39c12','#e67e22','#e74c3c','#c0392b','#8b0000'],borderRadius:6}],{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}});var low=d.filter(function(p){return parseInt(p.MAGGIC_Score||0)<=15;}).length;var mid=d.filter(function(p){var s=parseInt(p.MAGGIC_Score||0);return s>15&&s<=25;}).length;var high=d.filter(function(p){return parseInt(p.MAGGIC_Score||0)>25;}).length;makeChart('chartRiskStrat','doughnut',['Low Risk (≤15)','Intermediate (16-25)','High Risk (>25)'],[{data:[low,mid,high],backgroundColor:['#27ae60','#f39c12','#dc3545'],borderWidth:2}],{});document.getElementById('highRiskCount').textContent=high;var hiPts=d.filter(function(p){return parseInt(p.MAGGIC_Score||0)>25;}).sort(function(a,b){return(parseInt(b.MAGGIC_Score)||0)-(parseInt(a.MAGGIC_Score)||0);});var html='';if(hiPts.length===0)html='<p class="text-muted small">No high-risk patients.</p>';hiPts.forEach(function(p){html+="<div class='high-risk-item'><span class='hr-name'>"+(p.Patient_Name||'Unknown')+" <small style='font-weight:400;color:#888;'>File: "+(p.File_No||'-')+"</small></span><div class='hr-detail'>MAGGIC: <b>"+p.MAGGIC_Score+"</b> pts · HF: "+(p.HF_Type||'?')+" · NYHA: "+(p.NYHA||'?')+" · <span class='risk-badge risk-high'>"+p.MAGGIC_Risk+"</span></div></div>";});document.getElementById('highRiskList').innerHTML=html;}
+function buildRisk(d,n){/* MAGGIC Risk panel removed per user request */}
 function buildDemographics(d,n){var natCount={};d.forEach(function(p){var nat=(p.Nationality||'Unknown').trim();natCount[nat]=(natCount[nat]||0)+1;});var sorted=Object.entries(natCount).sort(function(a,b){return b[1]-a[1];}).slice(0,8);var nbHtml='';sorted.forEach(function(entry){var nat=entry[0],cnt=entry[1];var p=pct(cnt,n);nbHtml+="<div class='comorbidity-bar-row'><span class='cb-label' style='width:90px;'>"+nat+"</span><div class='cb-bar-wrap'><div class='cb-bar' style='width:"+p+"%;background:linear-gradient(90deg,#0f3460,#2980b9);'></div></div><span class='cb-pct' style='color:#0f3460;'>"+cnt+"</span></div>";});document.getElementById('nationalityBars').innerHTML=nbHtml||'<p class="text-muted small">No data.</p>';var docCount={};d.forEach(function(p){var doc=p.Doctor_Name||'Unknown';docCount[doc]=(docCount[doc]||0)+1;});makeChart('chartDoctors','bar',Object.keys(docCount),[{label:'Patients',data:Object.values(docCount),backgroundColor:PIE_COLORS,borderRadius:6}],{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}});var icd=d.filter(function(p){return p.Device_Info&&p.Device_Info.toLowerCase().includes('icd');}).length;var crt=d.filter(function(p){return p.Device_Info&&p.Device_Info.toLowerCase().includes('crt');}).length;var none=d.filter(function(p){return!p.Device_Info||p.Device_Info.trim()==='';}).length;var dHtml="<div class='gdmt-row'><span class='gdmt-name'>ICD</span><span class='gdmt-pill gdmt-pill-high'>"+icd+" ("+pctStr(icd,n)+")</span></div>";dHtml+="<div class='gdmt-row'><span class='gdmt-name'>CRT</span><span class='gdmt-pill gdmt-pill-mid'>"+crt+" ("+pctStr(crt,n)+")</span></div>";dHtml+="<div class='gdmt-row'><span class='gdmt-name'>No Device</span><span class='gdmt-pill gdmt-pill-low'>"+none+" ("+pctStr(none,n)+")</span></div>";document.getElementById('deviceStats').innerHTML=dHtml;var efBins={'<20':0,'20-29':0,'30-39':0,'40-49':0,'50-59':0,'≥60':0,'N/A':0};d.forEach(function(p){var ef=parseFloat(p.EF_Diagnosis);if(isNaN(ef)||ef<=0)efBins['N/A']++;else if(ef<20)efBins['<20']++;else if(ef<30)efBins['20-29']++;else if(ef<40)efBins['30-39']++;else if(ef<50)efBins['40-49']++;else if(ef<60)efBins['50-59']++;else efBins['≥60']++;});makeChart('chartEF','bar',Object.keys(efBins),[{label:'Patients',data:Object.values(efBins),backgroundColor:['#c0392b','#e74c3c','#e67e22','#f39c12','#27ae60','#1d6f42','#aaa'],borderRadius:6}],{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}});}
 function buildComorbidities(d,n){var comorbItems=[{label:'HTN',fn:function(p){return p.HTN==='Yes';}},{label:'DM',fn:function(p){return p.DM==='Yes';}},{label:'IHD',fn:function(p){return p.IHD&&p.IHD!=='No'&&p.IHD!=='';}},{label:'AF',fn:function(p){return p.AF==='Yes';}},{label:'CKD',fn:function(p){return p.CKD==='Yes';}},{label:'Obese/OSA',fn:function(p){return p.Obese_OSA==='Yes';}},{label:'PCI/CABG',fn:function(p){return p.PCI_CABG&&p.PCI_CABG!=='No'&&p.PCI_CABG!=='';}},{label:'CVA',fn:function(p){return p.CVA==='Yes';}},{label:'Lung Dz',fn:function(p){return p.Lung_Dz==='Yes';}},{label:'PVD',fn:function(p){return p.PVD==='Yes';}},{label:'Liver Dz',fn:function(p){return p.Liver_Dz==='Yes';}}];var sorted=comorbItems.map(function(item){return Object.assign({},item,{cnt:d.filter(item.fn).length});}).sort(function(a,b){return b.cnt-a.cnt;});var html='';sorted.forEach(function(item){var p=pct(item.cnt,n);html+="<div class='comorbidity-bar-row'><span class='cb-label'>"+item.label+"</span><div class='cb-bar-wrap'><div class='cb-bar' style='width:"+p+"%;'></div></div><span class='cb-pct'>"+item.cnt+" ("+p+"%)</span></div>";});document.getElementById('comorbiditiesBars').innerHTML=html;var snv=d.filter(function(p){return p.Smoker==='Never'||!p.Smoker;}).length;var sc=d.filter(function(p){return p.Smoker==='Current';}).length;var sf=d.filter(function(p){return p.Smoker==='Former';}).length;makeChart('chartSmoking','pie',['Never','Current','Former'],[{data:[snv,sc,sf],backgroundColor:['#27ae60','#e74c3c','#f39c12'],borderWidth:2}],{});var adv=d.filter(function(p){return p.Advanced_HF==='Yes';}).length;var val=d.filter(function(p){return p.Valvular_Disease==='Yes';}).length;var both=d.filter(function(p){return p.Advanced_HF==='Yes'&&p.Valvular_Disease==='Yes';}).length;var aHtml="<div class='gdmt-row'><span class='gdmt-name'>Advanced HF</span><span class='gdmt-pill gdmt-pill-low'>"+adv+" ("+pctStr(adv,n)+")</span></div>";aHtml+="<div class='gdmt-row'><span class='gdmt-name'>Valvular Disease</span><span class='gdmt-pill gdmt-pill-mid'>"+val+" ("+pctStr(val,n)+")</span></div>";aHtml+="<div class='gdmt-row'><span class='gdmt-name'>Both</span><span class='gdmt-pill gdmt-pill-low'>"+both+" ("+pctStr(both,n)+")</span></div>";document.getElementById('advancedStats').innerHTML=aHtml;}
 function buildOutcomes(d,n){var alive=d.filter(function(p){return p.Mortality==='Alive'||!p.Mortality;}).length;var inh=d.filter(function(p){return p.Mortality==='In-hospital';}).length;var outh=d.filter(function(p){return p.Mortality==='Out-of-hospital';}).length;makeChart('chartMortality','doughnut',['Alive','In-hospital Death','Out-of-hospital Death'],[{data:[alive,inh,outh],backgroundColor:['#27ae60','#e74c3c','#8b0000'],borderWidth:2}],{});var admBins={'0':0,'1':0,'2':0,'3':0,'4+':0};d.forEach(function(p){var a=parseInt(p.Admissions)||0;if(a===0)admBins['0']++;else if(a===1)admBins['1']++;else if(a===2)admBins['2']++;else if(a===3)admBins['3']++;else admBins['4+']++;});makeChart('chartAdmissions','bar',Object.keys(admBins).map(function(k){return k+' admission'+(k==='1'?'':'s');}),[{label:'Patients',data:Object.values(admBins),backgroundColor:'#c0392b',borderRadius:6}],{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}});var ry=d.filter(function(p){return p.Rehab==='Yes';}).length;makeChart('chartRehab','doughnut',['Enrolled','Not Enrolled'],[{data:[ry,n-ry],backgroundColor:['#2980b9','#e9ecef'],borderWidth:2}],{});var losVals=d.map(function(p){return parseFloat(p.LOS);}).filter(function(v){return!isNaN(v)&&v>0;});var avgLOS=losVals.length>0?(losVals.reduce(function(a,b){return a+b;},0)/losVals.length).toFixed(1):'—';var maxLOS=losVals.length>0?Math.max.apply(null,losVals):'—';var losHtml="<div class='row text-center g-2'><div class='col-4'><div style='font-size:1.8rem;font-weight:700;color:#8b0000;font-family:Crimson Pro,serif;'>"+avgLOS+"</div><div style='font-size:0.7rem;color:#666;text-transform:uppercase;letter-spacing:0.05em;'>Avg Days</div></div><div class='col-4'><div style='font-size:1.8rem;font-weight:700;color:#c0392b;font-family:Crimson Pro,serif;'>"+maxLOS+"</div><div style='font-size:0.7rem;color:#666;text-transform:uppercase;letter-spacing:0.05em;'>Max Days</div></div><div class='col-4'><div style='font-size:1.8rem;font-weight:700;color:#0f3460;font-family:Crimson Pro,serif;'>"+losVals.length+"</div><div style='font-size:0.7rem;color:#666;text-transform:uppercase;letter-spacing:0.05em;'>With Data</div></div></div>";document.getElementById('losStats').innerHTML=losHtml;}
@@ -1689,9 +1936,9 @@ function buildEnrollment(d,n){var months={};d.forEach(function(p){if(!p.timestam
     [{label:'New Patients',data:sorted.map(function(m){return months[m];}),borderColor:'#8b0000',backgroundColor:'rgba(139,0,0,0.1)',fill:true,tension:0.3,pointRadius:5,pointBackgroundColor:'#8b0000'}],
     {plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}});}
 
-function exportClinicDayPDF(){var today=new Date().toISOString().split('T')[0];var todayPts=allPatientsData.filter(function(p){return p.Next_Appt===today;});var container=document.getElementById('pdfContainer');container.innerHTML='';container.classList.add('active');var html="<div id='pdfContent' style='width:750px;margin:0 auto;background:#fff;padding:20px;font-family:Arial,Helvetica,sans-serif;color:#000;'>";html+="<div style='text-align:center;border-bottom:3px solid #8b0000;padding-bottom:10px;margin-bottom:20px;'><h2 style='color:#8b0000;margin:0;'>Mubarak Al-Kabeer Hospital</h2><h3 style='margin:5px 0;color:#333;'>HF Clinic — Day Summary</h3><p style='font-size:12px;color:#666;margin:0;'>Date: "+today+"</p></div>";if(todayPts.length===0){html+="<p style='color:#666;text-align:center;padding:30px;'>No patients scheduled for today ("+today+").</p>";html+="<p style='font-size:11px;color:#aaa;text-align:center;'>Showing all patients with upcoming appointments instead:</p>";todayPts=allPatientsData.filter(function(p){return p.Next_Appt&&p.Next_Appt>=today;}).sort(function(a,b){return(a.Next_Appt||'').localeCompare(b.Next_Appt||'');}).slice(0,20);}html+="<table style='width:100%;border-collapse:collapse;font-size:11px;'><thead><tr style='background:#8b0000;color:#fff;'><th style='padding:6px;'>Name</th><th style='padding:6px;'>File</th><th style='padding:6px;'>HF Type</th><th style='padding:6px;'>EF%</th><th style='padding:6px;'>NYHA</th><th style='padding:6px;'>MAGGIC</th><th style='padding:6px;'>GDMT</th><th style='padding:6px;'>Next Appt</th></tr></thead><tbody>";todayPts.forEach(function(p){html+="<tr style='border-bottom:1px solid #eee;'><td style='padding:5px;font-weight:600;'>"+(p.Patient_Name||'?')+"</td><td style='padding:5px;'>"+(p.File_No||'?')+"</td><td style='padding:5px;'>"+(p.HF_Type||'?')+"</td><td style='padding:5px;'>"+(p.EF_Diagnosis||'?')+"</td><td style='padding:5px;'>"+(p.NYHA||'?')+"</td><td style='padding:5px;font-weight:700;'>"+(p.MAGGIC_Score||'?')+"</td><td style='padding:5px;'>"+(p.Quad_GDMT||'?')+"</td><td style='padding:5px;'>"+(p.Next_Appt||'-')+"</td></tr>";});html+="</tbody></table>";html+="<div style='margin-top:30px;text-align:center;font-size:11px;color:#666;'>Generated: "+new Date().toLocaleString()+" · "+todayPts.length+" patients</div></div>";container.innerHTML=html;setTimeout(function(){html2pdf().from(document.getElementById('pdfContent')).set({margin:[0.4,0.4,0.4,0.4],filename:"HF_Clinic_Day_"+today+".pdf",html2canvas:{scale:2,useCORS:true,scrollY:0,scrollX:0,windowWidth:800},jsPDF:{unit:'in',format:'letter',orientation:'portrait'}}).save().then(function(){container.innerHTML='';container.classList.remove('active');}).catch(function(){container.innerHTML='';container.classList.remove('active');});},500);}
+function exportClinicDayPDF(){var today=new Date().toISOString().split('T')[0];var todayPts=allPatientsData.filter(function(p){return p.Next_Appt===today;});var container=document.getElementById('pdfContainer');container.innerHTML='';container.classList.add('active');var html="<div id='pdfContent' style='width:750px;margin:0 auto;background:#fff;padding:20px;font-family:Arial,Helvetica,sans-serif;color:#000;'>";html+="<div style='text-align:center;border-bottom:3px solid #8b0000;padding-bottom:10px;margin-bottom:20px;'><h2 style='color:#8b0000;margin:0;'>Mubarak Al-Kabeer Hospital</h2><h3 style='margin:5px 0;color:#333;'>HF Clinic — Day Summary</h3><p style='font-size:12px;color:#666;margin:0;'>Date: "+today+"</p></div>";if(todayPts.length===0){html+="<p style='color:#666;text-align:center;padding:30px;'>No patients scheduled for today ("+today+").</p>";html+="<p style='font-size:11px;color:#aaa;text-align:center;'>Showing all patients with upcoming appointments instead:</p>";todayPts=allPatientsData.filter(function(p){return p.Next_Appt&&p.Next_Appt>=today;}).sort(function(a,b){return(a.Next_Appt||'').localeCompare(b.Next_Appt||'');}).slice(0,20);}html+="<table style='width:100%;border-collapse:collapse;font-size:11px;'><thead><tr style='background:#8b0000;color:#fff;'><th style='padding:6px;'>Name</th><th style='padding:6px;'>File</th><th style='padding:6px;'>HF Type</th><th style='padding:6px;'>EF%</th><th style='padding:6px;'>NYHA</th><th style='padding:6px;'>GDMT</th><th style='padding:6px;'>Next Appt</th></tr></thead><tbody>";todayPts.forEach(function(p){html+="<tr style='border-bottom:1px solid #eee;'><td style='padding:5px;font-weight:600;'>"+(p.Patient_Name||'?')+"</td><td style='padding:5px;'>"+(p.File_No||'?')+"</td><td style='padding:5px;'>"+(p.HF_Type||'?')+"</td><td style='padding:5px;'>"+(p.EF_Diagnosis||'?')+"</td><td style='padding:5px;'>"+(p.NYHA||'?')+"</td><td style='padding:5px;'>"+(p.Quad_GDMT||'?')+"</td><td style='padding:5px;'>"+(p.Next_Appt||'-')+"</td></tr>";});html+="</tbody></table>";html+="<div style='margin-top:30px;text-align:center;font-size:11px;color:#666;'>Generated: "+new Date().toLocaleString()+" · "+todayPts.length+" patients</div></div>";container.innerHTML=html;setTimeout(function(){html2pdf().from(document.getElementById('pdfContent')).set({margin:[0.4,0.4,0.4,0.4],filename:"HF_Clinic_Day_"+today+".pdf",html2canvas:{scale:2,useCORS:true,scrollY:0,scrollX:0,windowWidth:800},jsPDF:{unit:'in',format:'letter',orientation:'portrait'}}).save().then(function(){container.innerHTML='';container.classList.remove('active');}).catch(function(){container.innerHTML='';container.classList.remove('active');});},500);}
 
-function exportAnalyticsPDF(){var container=document.getElementById('pdfContainer');container.innerHTML='';container.classList.add('active');var d=allPatientsData,n=d.length;var html="<div id='pdfContent' style='width:750px;margin:0 auto;background:#fff;padding:20px;font-family:Arial,Helvetica,sans-serif;color:#000;'>";html+="<div style='text-align:center;border-bottom:3px solid #8b0000;padding-bottom:10px;margin-bottom:20px;'><h2 style='color:#8b0000;margin:0;'>Mubarak Al-Kabeer Hospital</h2><h3 style='margin:5px 0;color:#333;'>HF Clinic Registry — Analytics Report</h3><p style='margin:0;font-size:11px;color:#666;'>Generated: "+new Date().toLocaleString()+" · Total: "+n+" patients</p></div>";function section(t){return"<h4 style='background:#f0f0f0;padding:8px 12px;margin:18px 0 10px;color:#8b0000;border-left:4px solid #8b0000;'>"+t+"</h4>";}function row(l,v){return"<tr style='border-bottom:1px solid #eee;'><td style='padding:5px 10px;background:#fafafa;font-weight:bold;width:45%;font-size:12px;'>"+l+"</td><td style='padding:5px 10px;font-size:12px;'>"+v+"</td></tr>";}function tbl(r){return"<table style='width:100%;border-collapse:collapse;'>"+r+"</table>";}var hfTypes={HFrEF:0,HFmrEF:0,HFpEF:0};d.forEach(function(p){if(hfTypes[p.HF_Type]!==undefined)hfTypes[p.HF_Type]++;});var nyha={I:0,II:0,III:0,IV:0};d.forEach(function(p){if(nyha[p.NYHA]!==undefined)nyha[p.NYHA]++;});var quad=d.filter(function(p){return p.Quad_GDMT==='Yes';}).length;var male=d.filter(function(p){return p.Gender==='Male';}).length;var avgEF=0,efC=0;d.forEach(function(p){var e=parseFloat(p.EF_Diagnosis);if(!isNaN(e)&&e>0){avgEF+=e;efC++;}});var alive=d.filter(function(p){return p.Mortality==='Alive'||!p.Mortality;}).length;var inh=d.filter(function(p){return p.Mortality==='In-hospital';}).length;var outh=d.filter(function(p){return p.Mortality==='Out-of-hospital';}).length;var low=d.filter(function(p){return parseInt(p.MAGGIC_Score||0)<=15;}).length;var mid=d.filter(function(p){var s=parseInt(p.MAGGIC_Score||0);return s>15&&s<=25;}).length;var high=d.filter(function(p){return parseInt(p.MAGGIC_Score||0)>25;}).length;html+=section("1. Registry Summary");html+=tbl(row("Total Patients",n)+row("Male / Female",male+" / "+(n-male))+row("Mean EF",efC>0?Math.round(avgEF/efC)+"%":"—"));html+=section("2. HF Type Distribution");html+=tbl(row("HFrEF",hfTypes.HFrEF+" ("+pctStr(hfTypes.HFrEF,n)+")")+row("HFmrEF",hfTypes.HFmrEF+" ("+pctStr(hfTypes.HFmrEF,n)+")")+row("HFpEF",hfTypes.HFpEF+" ("+pctStr(hfTypes.HFpEF,n)+")"));html+=section("3. NYHA Class Distribution");html+=tbl(row("NYHA I",nyha.I+" ("+pctStr(nyha.I,n)+")")+row("NYHA II",nyha.II+" ("+pctStr(nyha.II,n)+")")+row("NYHA III",nyha.III+" ("+pctStr(nyha.III,n)+")")+row("NYHA IV",nyha.IV+" ("+pctStr(nyha.IV,n)+")"));html+=section("4. GDMT Compliance");html+=tbl(row("Quadruple GDMT",quad+" ("+pctStr(quad,n)+")")+row("ARNI",d.filter(function(p){return p.Med_ARNI==='Yes';}).length+" ("+pctStr(d.filter(function(p){return p.Med_ARNI==='Yes';}).length,n)+")")+row("SGLT2i",d.filter(function(p){return p.Med_SGLT2i&&p.Med_SGLT2i!=='None';}).length+" ("+pctStr(d.filter(function(p){return p.Med_SGLT2i&&p.Med_SGLT2i!=='None';}).length,n)+")")+row("BB",d.filter(function(p){return p.Med_BB&&p.Med_BB!=='None';}).length+" ("+pctStr(d.filter(function(p){return p.Med_BB&&p.Med_BB!=='None';}).length,n)+")")+row("MRA",d.filter(function(p){return p.Med_MRA&&p.Med_MRA!=='None';}).length+" ("+pctStr(d.filter(function(p){return p.Med_MRA&&p.Med_MRA!=='None';}).length,n)+")"));html+=section("5. MAGGIC Risk Stratification");html+=tbl(row("Low Risk (≤15 pts)",low+" ("+pctStr(low,n)+")")+row("Intermediate (16-25 pts)",mid+" ("+pctStr(mid,n)+")")+row("High Risk (>25 pts)",high+" ("+pctStr(high,n)+")"));html+=section("6. Outcomes");html+=tbl(row("Alive",alive+" ("+pctStr(alive,n)+")")+row("In-hospital Mortality",inh+" ("+pctStr(inh,n)+")")+row("Out-of-hospital Mortality",outh+" ("+pctStr(outh,n)+")"));html+=section("7. High-Risk Patients (MAGGIC > 25)");var hrPts=d.filter(function(p){return parseInt(p.MAGGIC_Score||0)>25;}).sort(function(a,b){return(parseInt(b.MAGGIC_Score)||0)-(parseInt(a.MAGGIC_Score)||0);});if(hrPts.length>0){html+="<table style='width:100%;border-collapse:collapse;font-size:11px;'><thead><tr style='background:#8b0000;color:#fff;'><th style='padding:6px;'>Name</th><th style='padding:6px;'>File</th><th style='padding:6px;'>MAGGIC</th><th style='padding:6px;'>HF</th><th style='padding:6px;'>NYHA</th></tr></thead><tbody>";hrPts.forEach(function(p){html+="<tr style='border-bottom:1px solid #eee;'><td style='padding:5px;'>"+(p.Patient_Name||'?')+"</td><td style='padding:5px;'>"+(p.File_No||'?')+"</td><td style='padding:5px;font-weight:bold;color:#8b0000;'>"+(p.MAGGIC_Score||'?')+"</td><td style='padding:5px;'>"+(p.HF_Type||'?')+"</td><td style='padding:5px;'>"+(p.NYHA||'?')+"</td></tr>";});html+="</tbody></table>";}else html+="<p style='color:#666;'>None.</p>";html+="</div>";container.innerHTML=html;setTimeout(function(){html2pdf().from(document.getElementById('pdfContent')).set({margin:[0.4,0.4,0.4,0.4],filename:"HF_Analytics_"+new Date().toISOString().split('T')[0]+".pdf",html2canvas:{scale:2,useCORS:true,scrollY:0,scrollX:0,windowWidth:800},jsPDF:{unit:'in',format:'letter',orientation:'portrait'},pagebreak:{mode:['css','legacy']}}).save().then(function(){container.innerHTML='';container.classList.remove('active');}).catch(function(){container.innerHTML='';container.classList.remove('active');});},500);}
+function exportAnalyticsPDF(){var container=document.getElementById('pdfContainer');container.innerHTML='';container.classList.add('active');var d=allPatientsData,n=d.length;var html="<div id='pdfContent' style='width:750px;margin:0 auto;background:#fff;padding:20px;font-family:Arial,Helvetica,sans-serif;color:#000;'>";html+="<div style='text-align:center;border-bottom:3px solid #8b0000;padding-bottom:10px;margin-bottom:20px;'><h2 style='color:#8b0000;margin:0;'>Mubarak Al-Kabeer Hospital</h2><h3 style='margin:5px 0;color:#333;'>HF Clinic Registry — Analytics Report</h3><p style='margin:0;font-size:11px;color:#666;'>Generated: "+new Date().toLocaleString()+" · Total: "+n+" patients</p></div>";function section(t){return"<h4 style='background:#f0f0f0;padding:8px 12px;margin:18px 0 10px;color:#8b0000;border-left:4px solid #8b0000;'>"+t+"</h4>";}function row(l,v){return"<tr style='border-bottom:1px solid #eee;'><td style='padding:5px 10px;background:#fafafa;font-weight:bold;width:45%;font-size:12px;'>"+l+"</td><td style='padding:5px 10px;font-size:12px;'>"+v+"</td></tr>";}function tbl(r){return"<table style='width:100%;border-collapse:collapse;'>"+r+"</table>";}var hfTypes={HFrEF:0,HFmrEF:0,HFpEF:0};d.forEach(function(p){if(hfTypes[p.HF_Type]!==undefined)hfTypes[p.HF_Type]++;});var nyha={I:0,II:0,III:0,IV:0};d.forEach(function(p){if(nyha[p.NYHA]!==undefined)nyha[p.NYHA]++;});var quad=d.filter(function(p){return p.Quad_GDMT==='Yes';}).length;var male=d.filter(function(p){return p.Gender==='Male';}).length;var avgEF=0,efC=0;d.forEach(function(p){var e=parseFloat(p.EF_Diagnosis);if(!isNaN(e)&&e>0){avgEF+=e;efC++;}});var alive=d.filter(function(p){return p.Mortality==='Alive'||!p.Mortality;}).length;var inh=d.filter(function(p){return p.Mortality==='In-hospital';}).length;var outh=d.filter(function(p){return p.Mortality==='Out-of-hospital';}).length;html+=section("5. Outcomes");html+=tbl(row("Alive",alive+" ("+pctStr(alive,n)+")")+row("In-hospital Mortality",inh+" ("+pctStr(inh,n)+")")+row("Out-of-hospital Mortality",outh+" ("+pctStr(outh,n)+")"));html+="</div>";container.innerHTML=html;setTimeout(function(){html2pdf().from(document.getElementById('pdfContent')).set({margin:[0.4,0.4,0.4,0.4],filename:"HF_Analytics_"+new Date().toISOString().split('T')[0]+".pdf",html2canvas:{scale:2,useCORS:true,scrollY:0,scrollX:0,windowWidth:800},jsPDF:{unit:'in',format:'letter',orientation:'portrait'},pagebreak:{mode:['css','legacy']}}).save().then(function(){container.innerHTML='';container.classList.remove('active');}).catch(function(){container.innerHTML='';container.classList.remove('active');});},500);}
 
 /* ===== ADMIN: EXPORT ALL + MERGE DUPLICATES ===== */
 
@@ -2490,7 +2737,7 @@ function purgeDeletedRecord(tombstoneId){
     }).catch(function(e){ showPopup("error","Error",e.message); });
 }
 
-function exportAnalyticsExcel(){var d=allPatientsData,n=d.length;if(n===0){showPopup("error","No Data","No patient data.");return;}var wb=XLSX.utils.book_new();var s1=[["HF CLINIC REGISTRY — ANALYTICS REPORT"],["MKH · Generated: "+new Date().toLocaleString()],["Total Patients:",n],[]];s1.push(["METRIC","COUNT","PERCENTAGE"]);var hfTypes={HFrEF:0,HFmrEF:0,HFpEF:0};d.forEach(function(p){if(hfTypes[p.HF_Type]!==undefined)hfTypes[p.HF_Type]++;});s1.push(["HFrEF",hfTypes.HFrEF,pctStr(hfTypes.HFrEF,n)]);s1.push(["HFmrEF",hfTypes.HFmrEF,pctStr(hfTypes.HFmrEF,n)]);s1.push(["HFpEF",hfTypes.HFpEF,pctStr(hfTypes.HFpEF,n)]);s1.push([]);s1.push(["Quadruple GDMT",d.filter(function(p){return p.Quad_GDMT==='Yes';}).length,pctStr(d.filter(function(p){return p.Quad_GDMT==='Yes';}).length,n)]);XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(s1),"Summary");var headers=["File No","Name","Age","Gender","Nationality","HF Type","EF (%)","NYHA","MAGGIC Score","MAGGIC Risk","Quad GDMT","Compliance","Mortality","DM","HTN","AF","IHD","CKD","ARNI","ARNI Dose","SGLT2i","SGLT2i Dose","BB","BB Dose","MRA","MRA Dose","ACEi/ARB","Procorolan","CCB","Rehab","Next Appt","Doctor"];var rows=[headers];d.forEach(function(p){rows.push([p.File_No||'',p.Patient_Name||'',p.Age||'',p.Gender||'',p.Nationality||'',p.HF_Type||'',p.EF_Diagnosis||'',p.NYHA||'',p.MAGGIC_Score||'',p.MAGGIC_Risk||'',p.Quad_GDMT||'',p.Compliance||'',p.Mortality||'',p.DM||'',p.HTN||'',p.AF||'',p.IHD||'',p.CKD||'',p.Med_ARNI||'',p.Med_ARNI_Dose||'',p.Med_SGLT2i||'',p.Med_SGLT2i_Dose||'',p.Med_BB||'',p.Med_BB_Dose||'',p.Med_MRA||'',p.Med_MRA_Dose||'',p.Med_ACEiARB||'',p.Med_Procorolan||'',p.Med_CCB||'',p.Rehab||'',p.Next_Appt||'',p.Doctor_Name||'']);});XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(rows),"All Patients");var hrPts=d.filter(function(p){return parseInt(p.MAGGIC_Score||0)>25;}).sort(function(a,b){return(parseInt(b.MAGGIC_Score)||0)-(parseInt(a.MAGGIC_Score)||0);});var hrRows=[["HIGH-RISK PATIENTS (MAGGIC > 25)"],["File","Name","Age","MAGGIC","Est. Mortality","HF Type","NYHA","EF%","Doctor"]];hrPts.forEach(function(p){hrRows.push([p.File_No||'',p.Patient_Name||'',p.Age||'',p.MAGGIC_Score||'',p.MAGGIC_Risk||'',p.HF_Type||'',p.NYHA||'',p.EF_Diagnosis||'',p.Doctor_Name||'']);});XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(hrRows),"High Risk");var gapRows=[["GDMT GAP ANALYSIS (HFrEF)"],["File","Name","ARNI","SGLT2i","BB","MRA","Gaps"]];d.filter(function(p){return p.HF_Type==='HFrEF';}).forEach(function(p){var arni=p.Med_ARNI==='Yes',sglt=p.Med_SGLT2i&&p.Med_SGLT2i!=='None',bb=p.Med_BB&&p.Med_BB!=='None',mra=p.Med_MRA&&p.Med_MRA!=='None';var gaps=4-[arni,sglt,bb,mra].filter(Boolean).length;if(gaps>0)gapRows.push([p.File_No||'',p.Patient_Name||'',arni?'Yes':'NO',sglt?'Yes':'NO',bb?'Yes':'NO',mra?'Yes':'NO',gaps]);});XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(gapRows),"GDMT Gaps");XLSX.writeFile(wb,"HF_Analytics_MKH_"+new Date().toISOString().split('T')[0]+".xlsx");showPopup("success","Excel Exported!","Analytics workbook downloaded (4 sheets).");}
+function exportAnalyticsExcel(){var d=allPatientsData,n=d.length;if(n===0){showPopup("error","No Data","No patient data.");return;}var wb=XLSX.utils.book_new();var s1=[["HF CLINIC REGISTRY — ANALYTICS REPORT"],["MKH · Generated: "+new Date().toLocaleString()],["Total Patients:",n],[]];s1.push(["METRIC","COUNT","PERCENTAGE"]);var hfTypes={HFrEF:0,HFmrEF:0,HFpEF:0};d.forEach(function(p){if(hfTypes[p.HF_Type]!==undefined)hfTypes[p.HF_Type]++;});s1.push(["HFrEF",hfTypes.HFrEF,pctStr(hfTypes.HFrEF,n)]);s1.push(["HFmrEF",hfTypes.HFmrEF,pctStr(hfTypes.HFmrEF,n)]);s1.push(["HFpEF",hfTypes.HFpEF,pctStr(hfTypes.HFpEF,n)]);s1.push([]);s1.push(["Quadruple GDMT",d.filter(function(p){return p.Quad_GDMT==='Yes';}).length,pctStr(d.filter(function(p){return p.Quad_GDMT==='Yes';}).length,n)]);XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(s1),"Summary");var headers=["File No","Name","Age","Gender","Nationality","HF Type","EF (%)","NYHA","Quad GDMT","Compliance","Mortality","DM","HTN","AF","IHD","CKD","ARNI","ARNI Dose","SGLT2i","SGLT2i Dose","BB","BB Dose","MRA","MRA Dose","ACEi/ARB","Procorolan","CCB","Rehab","Next Appt","Doctor"];var rows=[headers];d.forEach(function(p){rows.push([p.File_No||'',p.Patient_Name||'',p.Age||'',p.Gender||'',p.Nationality||'',p.HF_Type||'',p.EF_Diagnosis||'',p.NYHA||'',p.Quad_GDMT||'',p.Compliance||'',p.Mortality||'',p.DM||'',p.HTN||'',p.AF||'',p.IHD||'',p.CKD||'',p.Med_ARNI||'',p.Med_ARNI_Dose||'',p.Med_SGLT2i||'',p.Med_SGLT2i_Dose||'',p.Med_BB||'',p.Med_BB_Dose||'',p.Med_MRA||'',p.Med_MRA_Dose||'',p.Med_ACEiARB||'',p.Med_Procorolan||'',p.Med_CCB||'',p.Rehab||'',p.Next_Appt||'',p.Doctor_Name||'']);});XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(rows),"All Patients");var gapRows=[["GDMT GAP ANALYSIS (HFrEF)"],["File","Name","ARNI","SGLT2i","BB","MRA","Gaps"]];d.filter(function(p){return p.HF_Type==='HFrEF';}).forEach(function(p){var arni=p.Med_ARNI==='Yes',sglt=p.Med_SGLT2i&&p.Med_SGLT2i!=='None',bb=p.Med_BB&&p.Med_BB!=='None',mra=p.Med_MRA&&p.Med_MRA!=='None';var gaps=4-[arni,sglt,bb,mra].filter(Boolean).length;if(gaps>0)gapRows.push([p.File_No||'',p.Patient_Name||'',arni?'Yes':'NO',sglt?'Yes':'NO',bb?'Yes':'NO',mra?'Yes':'NO',gaps]);});XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(gapRows),"GDMT Gaps");XLSX.writeFile(wb,"HF_Analytics_MKH_"+new Date().toISOString().split('T')[0]+".xlsx");showPopup("success","Excel Exported!","Analytics workbook downloaded.");}
 
 
 /* ===== BULK IMPORT FROM EXCEL / CSV ===== */
