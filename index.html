@@ -199,8 +199,13 @@ label{font-weight:600;font-size:.75rem;color:#495057;display:block;margin-bottom
 .multi-med-check{display:flex;align-items:center;gap:6px;font-size:0.82rem;font-weight:500;cursor:pointer;margin-bottom:3px;}
 .multi-med-check input{margin:0;}
 .multi-med-detail{padding-left:22px;background:#fafafa;border-radius:4px;padding:5px;}
-.multi-med-group-label{font-size:0.66rem;font-weight:700;color:#8b0000;text-transform:uppercase;letter-spacing:0.05em;background:#fff5f5;padding:3px 6px;margin:6px -6px 3px -6px;border-left:3px solid #8b0000;}
-.multi-med-group-label:first-child{margin-top:-6px;}
+.multi-med-accordion{border-bottom:1px solid #f0f0f0;}
+.multi-med-accordion:last-child{border-bottom:none;}
+.multi-med-acc-header{width:100%;background:#fff5f5;border:none;border-left:3px solid #8b0000;padding:6px 8px;display:flex;justify-content:space-between;align-items:center;font-size:0.78rem;font-weight:700;color:#8b0000;text-transform:uppercase;letter-spacing:0.04em;cursor:pointer;text-align:left;margin:4px -6px;}
+.multi-med-acc-header:hover{background:#ffe5e5;}
+.multi-med-acc-header .fa-chevron-right,.multi-med-acc-header .fa-chevron-down{font-size:0.65rem;transition:transform 0.15s;}
+.multi-med-acc-count{background:#8b0000;color:#fff;border-radius:10px;font-size:0.62rem;padding:1px 6px;font-weight:700;display:none;}
+.multi-med-acc-body{padding:4px 0 4px 6px;}
 
 /* ===== VISIT MED GROUPS ===== */
 .visit-med-group{margin-bottom:10px;}
@@ -1444,13 +1449,16 @@ function buildMedSection7(){
             // If groups defined, render grouped; otherwise flat
             html+='<div class="multi-med-wrap" id="multi_'+medId+'">';
             if(med.groups){
-                // Grouped multi-select
-                med.groups.forEach(function(grp){
-                    html+='<div class="multi-med-group-label">'+grp.name+'</div>';
+                // Grouped accordion multi-select
+                med.groups.forEach(function(grp,grpIdx){
+                    var grpId=medId+'_grp_'+grp.name.replace(/[^a-zA-Z0-9]/g,'');
+                    html+='<div class="multi-med-accordion">';
+                    html+='<button type="button" class="multi-med-acc-header" onclick="toggleMedGroup(\''+grpId+'\')" id="'+grpId+'_btn"><span><i class="fa fa-chevron-right me-1" id="'+grpId+'_icon"></i>'+grp.name+'</span><span class="multi-med-acc-count" id="'+grpId+'_count"></span></button>';
+                    html+='<div class="multi-med-acc-body" id="'+grpId+'_body" style="display:none;">';
                     grp.drugs.forEach(function(o){
                         var safeId=medId+'_opt_'+o.replace(/[^a-zA-Z0-9]/g,'');
-                        html+='<div class="multi-med-item">';
-                        html+='<label class="multi-med-check"><input type="checkbox" class="form-check-input" id="'+safeId+'_chk" data-med="'+medId+'" data-opt="'+o+'" onchange="onMultiMedToggle(\''+medId+'\',\''+o+'\')"> <span>'+o+'</span></label>';
+                        html+='<div class="multi-med-item" data-group="'+grpId+'">';
+                        html+='<label class="multi-med-check"><input type="checkbox" class="form-check-input" id="'+safeId+'_chk" data-med="'+medId+'" data-opt="'+o+'" data-group="'+grpId+'" onchange="onMultiMedToggle(\''+medId+'\',\''+o+'\')"> <span>'+o+'</span></label>';
                         html+='<div class="multi-med-detail" id="'+safeId+'_detail" style="display:none;">';
                         html+='<select class="form-select form-select-sm" id="'+safeId+'_Dose"><option value="">Dose...</option></select>';
                         html+='<input type="text" class="form-control form-control-sm mt-1" id="'+safeId+'_DoseCustom" placeholder="Custom dose">';
@@ -1458,6 +1466,8 @@ function buildMedSection7(){
                         html+='</div>';
                         html+='</div>';
                     });
+                    html+='</div>';
+                    html+='</div>';
                 });
             }else{
                 med.options.forEach(function(o){
@@ -1490,6 +1500,47 @@ function buildMedSection7(){
         html+='</div>';
     });
     document.getElementById('medSection7').innerHTML=html;
+}
+
+function toggleMedGroup(grpId){
+    var body=document.getElementById(grpId+'_body');
+    var icon=document.getElementById(grpId+'_icon');
+    if(!body)return;
+    if(body.style.display==='none'){
+        body.style.display='block';
+        if(icon){icon.classList.remove('fa-chevron-right');icon.classList.add('fa-chevron-down');}
+    }else{
+        body.style.display='none';
+        if(icon){icon.classList.remove('fa-chevron-down');icon.classList.add('fa-chevron-right');}
+    }
+}
+
+function updateMedGroupCount(medId){
+    var med=MED_FORMULARY[medId];
+    if(!med||!med.groups)return;
+    med.groups.forEach(function(grp){
+        var grpId=medId+'_grp_'+grp.name.replace(/[^a-zA-Z0-9]/g,'');
+        var count=0;
+        grp.drugs.forEach(function(o){
+            var safeId=medId+'_opt_'+o.replace(/[^a-zA-Z0-9]/g,'');
+            var chk=document.getElementById(safeId+'_chk');
+            if(chk&&chk.checked)count++;
+        });
+        var badge=document.getElementById(grpId+'_count');
+        if(badge){
+            if(count>0){badge.textContent=count;badge.style.display='inline-block';}
+            else{badge.textContent='';badge.style.display='none';}
+        }
+        // Auto-expand the group if any item is checked
+        if(count>0){
+            var body=document.getElementById(grpId+'_body');
+            var icon=document.getElementById(grpId+'_icon');
+            if(body&&body.style.display==='none'){
+                body.style.display='block';
+                if(icon){icon.classList.remove('fa-chevron-right');icon.classList.add('fa-chevron-down');}
+            }
+        }
+    });
 }
 
 function onMultiMedToggle(medId,opt){
@@ -1527,6 +1578,7 @@ function syncMultiMedField(medId){
     });
     var legacy=document.getElementById(medId);
     if(legacy)legacy.value=parts.length?parts.join(', '):'None';
+    updateMedGroupCount(medId);
     if(typeof checkGDMTAlerts==='function')checkGDMTAlerts();
     if(typeof updateGDMTRationale==='function')updateGDMTRationale();
 }
