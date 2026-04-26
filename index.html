@@ -170,6 +170,29 @@ label{font-weight:600;font-size:.75rem;color:#495057;display:block;margin-bottom
 .visit-history-body table td{padding:3px 6px;border-bottom:1px solid #f0f0f0;vertical-align:top;}
 .visit-history-body table td:first-child{font-weight:600;color:#6c757d;width:38%;font-size:0.72rem;}
 .vh-section-label{font-size:0.68rem;font-weight:700;color:#8b0000;text-transform:uppercase;letter-spacing:0.06em;margin:7px 0 3px;border-bottom:1px solid #f0f0f0;padding-bottom:2px;}
+/* Calendar styles */
+.appt-cal-wrap{user-select:none;}
+.appt-cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.appt-cal-month{font-weight:700;font-size:0.95rem;color:#8b0000;}
+.appt-cal-nav{display:flex;gap:4px;}
+.appt-cal-nav button{background:#fff;border:1px solid #dee2e6;border-radius:6px;padding:3px 10px;font-size:0.8rem;cursor:pointer;color:#495057;}
+.appt-cal-nav button:hover{background:#f8f9fa;border-color:#8b0000;color:#8b0000;}
+.appt-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.appt-cal-dow{text-align:center;font-size:0.65rem;font-weight:700;color:#6c757d;text-transform:uppercase;padding:4px 0;}
+.appt-cal-day{aspect-ratio:1;border:1px solid #e9ecef;border-radius:6px;padding:3px;font-size:0.72rem;background:#fff;cursor:pointer;position:relative;display:flex;flex-direction:column;align-items:flex-start;transition:all 0.15s;min-height:42px;}
+.appt-cal-day:hover{border-color:#8b0000;background:#fff5f5;}
+.appt-cal-day.other-month{background:#f8f9fa;color:#adb5bd;cursor:default;}
+.appt-cal-day.other-month:hover{border-color:#e9ecef;background:#f8f9fa;}
+.appt-cal-day.today{border:2px solid #0d6efd;font-weight:700;}
+.appt-cal-day.has-appts{background:#fff5f5;font-weight:600;}
+.appt-cal-day.has-appts.today{background:#fff0f0;}
+.appt-cal-day.selected{background:#8b0000;color:#fff;border-color:#8b0000;}
+.appt-cal-day.selected .appt-cal-badge{background:#fff;color:#8b0000;}
+.appt-cal-daynum{font-size:0.78rem;}
+.appt-cal-badge{position:absolute;bottom:2px;right:2px;background:#8b0000;color:#fff;border-radius:10px;font-size:0.6rem;padding:1px 5px;font-weight:700;min-width:16px;text-align:center;}
+.appt-cal-day-list{margin-top:10px;border-top:1px solid #e9ecef;padding-top:8px;}
+.appt-cal-day-list-title{font-size:0.78rem;font-weight:700;color:#8b0000;margin-bottom:6px;}
+.appt-cal-day-list-empty{font-size:0.78rem;color:#6c757d;font-style:italic;text-align:center;padding:8px;}
 
 /* ===== VISIT MED GROUPS ===== */
 .visit-med-group{margin-bottom:10px;}
@@ -302,14 +325,15 @@ label{font-weight:600;font-size:.75rem;color:#495057;display:block;margin-bottom
 
 <div class="container mt-3 mb-5" style="padding-bottom:80px;">
 
-    <!-- MAIN PAGE ALERTS PANEL — Upcoming, No Follow-up, No Vaccinations -->
+    <!-- MAIN PAGE ALERTS PANEL — Upcoming, No Follow-up, No Vaccinations, Calendar -->
     <div class="card p-3 border-top border-4 border-warning shadow-sm mb-3" id="mainAlertsCard">
         <ul class="nav nav-tabs nav-fill mb-2" id="mainAlertsTabs" style="font-size:0.78rem;">
             <li class="nav-item"><button class="nav-link active" onclick="showMainAlertsTab('upcoming',this)" style="font-weight:600;"><i class="fa fa-clock text-warning"></i> Upcoming 14 Days <span class="badge bg-warning text-dark ms-1" id="mainUpcomingCount">0</span></button></li>
             <li class="nav-item"><button class="nav-link" onclick="showMainAlertsTab('overdue',this)" style="font-weight:600;"><i class="fa fa-user-clock text-danger"></i> No Follow-up &gt;2 mo <span class="badge bg-danger ms-1" id="mainOverdueCount">0</span></button></li>
             <li class="nav-item"><button class="nav-link" onclick="showMainAlertsTab('vacc',this)" style="font-weight:600;"><i class="fa fa-syringe text-primary"></i> Vaccinations Due <span class="badge bg-primary ms-1" id="mainVaccCount">0</span></button></li>
+            <li class="nav-item"><button class="nav-link" onclick="showMainAlertsTab('calendar',this)" style="font-weight:600;"><i class="fa fa-calendar text-success"></i> Calendar</button></li>
         </ul>
-        <div id="mainAlertsBody" style="max-height:200px;overflow-y:auto;font-size:0.85rem;">
+        <div id="mainAlertsBody" style="max-height:420px;overflow-y:auto;font-size:0.85rem;">
             <div class="text-muted small text-center py-2"><i class="fa fa-spinner fa-spin"></i> Loading alerts...</div>
         </div>
     </div>
@@ -1081,20 +1105,34 @@ function doLogout(){if(confirm('Sign out of HF Registry?'))auth.signOut();}
 
 function goToMain(){['pageAdmin','pageAnalytics'].forEach(function(p){document.getElementById(p).classList.remove('active');});document.getElementById('pageMain').classList.add('active');showStickySave();if(typeof loadMainAlerts==='function')loadMainAlerts();}
 
-// ========== MAIN PAGE ALERTS (Upcoming / Overdue / Vaccinations) ==========
-var _mainAlertsData={upcoming:[],overdue:[],vacc:[]};
+// ========== MAIN PAGE ALERTS (Upcoming / Overdue / Vaccinations / Calendar) ==========
+var _mainAlertsData={upcoming:[],overdue:[],vacc:[],apptByDay:{}};
 var _mainAlertsActiveTab='upcoming';
+var _calendarView={year:null,month:null,selectedDate:null}; // month is 0-11
 
 function showMainAlertsTab(tab,btn){
     _mainAlertsActiveTab=tab;
     document.querySelectorAll('#mainAlertsTabs .nav-link').forEach(function(b){b.classList.remove('active');});
     if(btn)btn.classList.add('active');
+    if(tab==='calendar'){
+        // Default to current month if not set
+        if(_calendarView.year===null){
+            var now=new Date();
+            _calendarView.year=now.getFullYear();
+            _calendarView.month=now.getMonth();
+            _calendarView.selectedDate=now.toISOString().split('T')[0];
+        }
+    }
     renderMainAlertsBody();
 }
 
 function renderMainAlertsBody(){
     var body=document.getElementById('mainAlertsBody');
     if(!body)return;
+    if(_mainAlertsActiveTab==='calendar'){
+        renderApptCalendar();
+        return;
+    }
     var list=_mainAlertsData[_mainAlertsActiveTab]||[];
     if(list.length===0){
         var msg={upcoming:'No appointments in the next 14 days.',overdue:'No patients overdue (>2 months without visit).',vacc:'All patients up to date with HF vaccinations this year.'}[_mainAlertsActiveTab];
@@ -1133,17 +1171,20 @@ function loadMainAlerts(){
     var twoMonthsAgo=new Date(today.getTime()-60*24*60*60*1000);
     var thisYear=today.getFullYear();
     db.collection("patients").get().then(function(snap){
-        _mainAlertsData={upcoming:[],overdue:[],vacc:[]};
+        _mainAlertsData={upcoming:[],overdue:[],vacc:[],apptByDay:{}};
         var patientPromises=[];
         snap.forEach(function(docSnap){
             var d=docSnap.data();
             var id=docSnap.id;
             // Skip deceased patients from alerts
             if(d.Mortality&&d.Mortality!=='Alive'&&d.Mortality!=='')return;
-            // Upcoming appointments
+            // Upcoming appointments (14-day list) AND full calendar map (all future)
             if(d.Next_Appt&&d.Next_Appt>=todayStr){
                 var da=Math.floor((new Date(d.Next_Appt)-new Date(todayStr))/(1000*60*60*24));
                 if(da<=14)_mainAlertsData.upcoming.push({name:d.Patient_Name,file:d.File_No,date:d.Next_Appt,daysUntil:da});
+                // Add to calendar (any future date, no 14-day cap)
+                if(!_mainAlertsData.apptByDay[d.Next_Appt])_mainAlertsData.apptByDay[d.Next_Appt]=[];
+                _mainAlertsData.apptByDay[d.Next_Appt].push({name:d.Patient_Name,file:d.File_No,doctor:d.Doctor_Name,id:id});
             }
             // Vaccinations: check baseline patient record for this-year flags
             var vMissing=[];
@@ -1180,6 +1221,112 @@ function loadMainAlerts(){
             renderMainAlertsBody();
         });
     }).catch(function(e){body.innerHTML='<p class="text-danger small mb-0">Error loading alerts: '+e.message+'</p>';});
+}
+
+function renderApptCalendar(){
+    var body=document.getElementById('mainAlertsBody');
+    if(!body)return;
+    var year=_calendarView.year, month=_calendarView.month;
+    var monthNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var dowNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    var todayStr=new Date().toISOString().split('T')[0];
+    // First day of month and number of days
+    var firstDay=new Date(year,month,1);
+    var lastDay=new Date(year,month+1,0);
+    var firstDow=firstDay.getDay();
+    var daysInMonth=lastDay.getDate();
+    // Days from prev month to fill leading cells
+    var prevMonthLastDay=new Date(year,month,0).getDate();
+    var html='<div class="appt-cal-wrap">';
+    html+='<div class="appt-cal-header">';
+    html+='<div class="appt-cal-month">'+monthNames[month]+' '+year+'</div>';
+    html+='<div class="appt-cal-nav">';
+    html+='<button onclick="navApptCalendar(-1)" title="Previous month"><i class="fa fa-chevron-left"></i></button>';
+    html+='<button onclick="navApptCalendarToday()" title="Today">Today</button>';
+    html+='<button onclick="navApptCalendar(1)" title="Next month"><i class="fa fa-chevron-right"></i></button>';
+    html+='</div>';
+    html+='</div>';
+    html+='<div class="appt-cal-grid">';
+    dowNames.forEach(function(n){html+='<div class="appt-cal-dow">'+n+'</div>';});
+    // Leading prev-month days
+    for(var i=firstDow-1;i>=0;i--){
+        html+='<div class="appt-cal-day other-month"><span class="appt-cal-daynum">'+(prevMonthLastDay-i)+'</span></div>';
+    }
+    // Current-month days
+    for(var d=1;d<=daysInMonth;d++){
+        var dateStr=year+'-'+String(month+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+        var appts=_mainAlertsData.apptByDay[dateStr]||[];
+        var classes='appt-cal-day';
+        if(dateStr===todayStr)classes+=' today';
+        if(appts.length>0)classes+=' has-appts';
+        if(dateStr===_calendarView.selectedDate)classes+=' selected';
+        html+='<div class="'+classes+'" onclick="selectCalendarDay(\''+dateStr+'\')">';
+        html+='<span class="appt-cal-daynum">'+d+'</span>';
+        if(appts.length>0)html+='<span class="appt-cal-badge">'+appts.length+'</span>';
+        html+='</div>';
+    }
+    // Trailing next-month days to complete the last row
+    var totalCells=firstDow+daysInMonth;
+    var trailing=(7-(totalCells%7))%7;
+    for(var t=1;t<=trailing;t++){
+        html+='<div class="appt-cal-day other-month"><span class="appt-cal-daynum">'+t+'</span></div>';
+    }
+    html+='</div>';
+    // Selected day appointment list
+    html+='<div class="appt-cal-day-list" id="apptCalDayList">';
+    html+=renderCalendarDayList(_calendarView.selectedDate);
+    html+='</div>';
+    html+='</div>';
+    body.innerHTML=html;
+}
+
+function renderCalendarDayList(dateStr){
+    if(!dateStr)return '<div class="appt-cal-day-list-empty">Select a day to see appointments.</div>';
+    var appts=_mainAlertsData.apptByDay[dateStr]||[];
+    var dateObj=new Date(dateStr);
+    var dayLabel=dateObj.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+    var html='<div class="appt-cal-day-list-title"><i class="fa fa-calendar-day me-1"></i>'+dayLabel+' — '+appts.length+' appointment'+(appts.length===1?'':'s')+'</div>';
+    if(appts.length===0){
+        html+='<div class="appt-cal-day-list-empty">No appointments scheduled.</div>';
+        return html;
+    }
+    appts.forEach(function(a){
+        html+='<div class="alert alert-light border py-1 px-2 mb-1 d-flex justify-content-between align-items-center" style="font-size:0.82rem;">';
+        html+='<span><b>'+(a.name||'Unknown')+'</b> <small class="text-muted">(File: '+(a.file||'-')+')</small>';
+        if(a.doctor)html+=' <small class="text-muted ms-1"><i class="fa fa-user-md"></i> '+a.doctor+'</small>';
+        html+='</span>';
+        if(a.id)html+='<button class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size:0.72rem;" onclick="editPt(\''+a.id+'\')"><i class="fa fa-edit"></i> Open</button>';
+        html+='</div>';
+    });
+    return html;
+}
+
+function navApptCalendar(dir){
+    _calendarView.month+=dir;
+    if(_calendarView.month<0){_calendarView.month=11;_calendarView.year-=1;}
+    else if(_calendarView.month>11){_calendarView.month=0;_calendarView.year+=1;}
+    renderApptCalendar();
+}
+
+function navApptCalendarToday(){
+    var now=new Date();
+    _calendarView.year=now.getFullYear();
+    _calendarView.month=now.getMonth();
+    _calendarView.selectedDate=now.toISOString().split('T')[0];
+    renderApptCalendar();
+}
+
+function selectCalendarDay(dateStr){
+    _calendarView.selectedDate=dateStr;
+    // If selected day is in another month, navigate to that month
+    var parts=dateStr.split('-');
+    var newY=parseInt(parts[0]);
+    var newM=parseInt(parts[1])-1;
+    if(newY!==_calendarView.year||newM!==_calendarView.month){
+        _calendarView.year=newY;
+        _calendarView.month=newM;
+    }
+    renderApptCalendar();
 }
 function goToAdmin(){['pageMain','pageAnalytics'].forEach(function(p){document.getElementById(p).classList.remove('active');});document.getElementById('pageAdmin').classList.add('active');hideStickySave();loadAdmin();}
 function goToAnalytics(){['pageMain','pageAdmin'].forEach(function(p){document.getElementById(p).classList.remove('active');});document.getElementById('pageAnalytics').classList.add('active');hideStickySave();loadAnalytics();}
