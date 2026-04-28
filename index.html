@@ -430,10 +430,14 @@ label{font-weight:600;font-size:.75rem;color:#495057;display:block;margin-bottom
                 <div class="col-12">
                     <label class="form-label mb-1" style="font-size:0.82rem;"><i class="fa fa-camera me-1"></i>ECG Image <small class="text-muted fw-normal">(auto-compressed)</small></label>
                     <div class="d-flex gap-2 align-items-center flex-wrap">
-                        <input type="file" class="form-control form-control-sm" id="ECG_Image_File" accept="image/*" style="max-width:260px;" onchange="handleEcgImageUpload(this,'ECG_Image','ecgImagePreview','ecgImageMeta')">
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="document.getElementById('ECG_Image_FilePick').click()"><i class="fa fa-image me-1"></i>Gallery</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="document.getElementById('ECG_Image_FileCam').click()"><i class="fa fa-camera me-1"></i>Camera</button>
                         <button type="button" class="btn btn-sm btn-outline-danger" onclick="clearEcgImage('ECG_Image','ECG_Image_File','ecgImagePreview','ecgImageMeta')" title="Remove image"><i class="fa fa-times"></i></button>
                         <span id="ecgImageMeta" class="text-muted small"></span>
                     </div>
+                    <input type="file" id="ECG_Image_FilePick" accept="image/*" style="display:none" onchange="handleEcgImageUpload(this,'ECG_Image','ecgImagePreview','ecgImageMeta')">
+                    <input type="file" id="ECG_Image_FileCam" accept="image/*" capture="environment" style="display:none" onchange="handleEcgImageUpload(this,'ECG_Image','ecgImagePreview','ecgImageMeta')">
+                    <input type="hidden" id="ECG_Image_File">
                     <input type="hidden" id="ECG_Image">
                     <div id="ecgImagePreview" class="mt-1" style="max-width:100%;"></div>
                 </div>
@@ -625,10 +629,14 @@ label{font-weight:600;font-size:.75rem;color:#495057;display:block;margin-bottom
                     <div class="col-12">
                         <label class="form-label mb-1" style="font-size:0.82rem;"><i class="fa fa-camera me-1"></i>Visit ECG Image <small class="text-muted fw-normal">(auto-compressed)</small></label>
                         <div class="d-flex gap-2 align-items-center flex-wrap">
-                            <input type="file" class="form-control form-control-sm" id="V_ECG_Image_File" accept="image/*" style="max-width:260px;" onchange="handleEcgImageUpload(this,'V_ECG_Image','vEcgImagePreview','vEcgImageMeta')">
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="document.getElementById('V_ECG_Image_FilePick').click()"><i class="fa fa-image me-1"></i>Gallery</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="document.getElementById('V_ECG_Image_FileCam').click()"><i class="fa fa-camera me-1"></i>Camera</button>
                             <button type="button" class="btn btn-sm btn-outline-danger" onclick="clearEcgImage('V_ECG_Image','V_ECG_Image_File','vEcgImagePreview','vEcgImageMeta')" title="Remove image"><i class="fa fa-times"></i></button>
                             <span id="vEcgImageMeta" class="text-muted small"></span>
                         </div>
+                        <input type="file" id="V_ECG_Image_FilePick" accept="image/*" style="display:none" onchange="handleEcgImageUpload(this,'V_ECG_Image','vEcgImagePreview','vEcgImageMeta')">
+                        <input type="file" id="V_ECG_Image_FileCam" accept="image/*" capture="environment" style="display:none" onchange="handleEcgImageUpload(this,'V_ECG_Image','vEcgImagePreview','vEcgImageMeta')">
+                        <input type="hidden" id="V_ECG_Image_File">
                         <input type="hidden" id="V_ECG_Image">
                         <div id="vEcgImagePreview" class="mt-1" style="max-width:100%;"></div>
                     </div>
@@ -2097,7 +2105,10 @@ function renderEcgImagePreview(previewId,dataUrl){
 
 function clearEcgImage(hiddenId,fileId,previewId,metaId){
     var h=document.getElementById(hiddenId);if(h)h.value='';
-    var f=document.getElementById(fileId);if(f)f.value='';
+    var f=document.getElementById(fileId);if(f&&f.tagName==='INPUT'&&f.type==='file')f.value='';
+    // Also reset the Gallery / Camera pickers (new dual-button setup)
+    var fp=document.getElementById(hiddenId+'_FilePick');if(fp&&fp.type==='file')fp.value='';
+    var fc=document.getElementById(hiddenId+'_FileCam');if(fc&&fc.type==='file')fc.value='';
     var p=document.getElementById(previewId);if(p)p.innerHTML='';
     var m=document.getElementById(metaId);if(m)m.textContent='';
 }
